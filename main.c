@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "header.h"
 
 int main(){
@@ -21,28 +22,30 @@ int main(){
 }
 
 void pegarMemoria(char* memoria, FILE* fd){
-    char inputEsq[100];
-    char inputDir[100];
-    char c;
+    char inputEsq[30];
+    char inputDir[30];
+    char c[2];
+
+    inputEsq[0] = '\0';
+    inputDir[0] = '\0';
+    c[1] = '\0';
 
     while(!feof(fd)){
-        c = fgetc(fd);
+        c[0] = fgetc(fd);
         
-        while(c != ' '){
-            strcat(inputEsq, &c);
-            c = fgetc(fd);
-            printf("%c", c);    
+        while(!isspace(c[0])){
+            strcat(inputEsq, c);
+            c[0] = fgetc(fd);
         }
-        printf("%s", inputEsq);
-        exit(1);
         
-        c = fgetc(fd);
+        c[0] = fgetc(fd);
 
-        while(c != '\n'){
-            strcat(inputDir, &c);
-            c = fgetc(fd);
+        while(c[0] != '\n'){
+            strcat(inputDir, c);
+            c[0] = fgetc(fd);
         }
 
-        printf("%s", inputEsq);
+        inputEsq[0] = '\0';
+        inputDir[0] = '\0';
     }
 }
