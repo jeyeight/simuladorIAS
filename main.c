@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include "header.h"
 
 int main(){
@@ -25,6 +26,7 @@ void pegarMemoria(char* memoria, FILE* fd){
     char inputEsq[30];
     char inputDir[30];
     char c[2];
+    bool isExit = false;
 
     inputEsq[0] = '\0';
     inputDir[0] = '\0';
@@ -33,14 +35,18 @@ void pegarMemoria(char* memoria, FILE* fd){
     while(!feof(fd)){
         c[0] = fgetc(fd);
         
-        while(!isspace(c[0])){
+        while((!isspace(c[0]))   && (c[0] != EOF)){
             strcat(inputEsq, c);
             c[0] = fgetc(fd);
+        }
+
+        if(feof(fd)){
+            isExit = true;
         }
         
         c[0] = fgetc(fd);
 
-        while(c[0] != '\n'){
+        while((c[0] != '\n') && (isExit == false)){
             strcat(inputDir, c);
             c[0] = fgetc(fd);
         }
@@ -48,4 +54,37 @@ void pegarMemoria(char* memoria, FILE* fd){
         inputEsq[0] = '\0';
         inputDir[0] = '\0';
     }
+}
+
+int converterInstrucao(char* instrucaoEsq, char* instrucaoDir){
+    int retorno = 0;
+
+    if(strcmp(instrucaoEsq, "LOAD")){
+        verificaLoad(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "STOR")){
+        verificaStor(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "JUMP")){
+        verificaJump(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "JUMP+")){
+        verificaJumpPlus(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "ADD")){
+        verificaAdd(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "SUB")){
+        verificaSub(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "MUL")){
+        verificaLoad(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "DIV")){
+        verificaDiv(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "LSH")){
+
+    }else if(strcmp(instrucaoEsq, "RHS")){
+
+    }else if(strcmp(instrucaoEsq, "EXIT")){
+
+    }else{
+        perror("Operação não suportada");
+        exit(1);
+    }
+
+    return retorno;
 }

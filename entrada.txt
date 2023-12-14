@@ -1,3 +1,4 @@
 LOAD M(25)
 JUMP (X,0:19)
 ADD M(X)
+EXIT
