@@ -51,6 +51,8 @@ void pegarMemoria(char* memoria, FILE* fd){
             c[0] = fgetc(fd);
         }
 
+        converterInstrucao(inputEsq, inputDir);
+
         inputEsq[0] = '\0';
         inputDir[0] = '\0';
     }
@@ -59,9 +61,12 @@ void pegarMemoria(char* memoria, FILE* fd){
 int converterInstrucao(char* instrucaoEsq, char* instrucaoDir){
     int retorno = 0;
 
-    if(strcmp(instrucaoEsq, "LOAD")){
+
+    if(strcmp(instrucaoEsq, "LOAD") == 0){
         verificaLoad(instrucaoDir);
-    }else if(strcmp(instrucaoEsq, "STOR")){
+    }
+    /*
+    else if(strcmp(instrucaoEsq, "STOR")){
         verificaStor(instrucaoDir);
     }else if(strcmp(instrucaoEsq, "JUMP")){
         verificaJump(instrucaoDir);
@@ -79,12 +84,112 @@ int converterInstrucao(char* instrucaoEsq, char* instrucaoDir){
 
     }else if(strcmp(instrucaoEsq, "RHS")){
 
-    }else if(strcmp(instrucaoEsq, "EXIT")){
-
-    }else{
+    }*/
+    else if(strcmp(instrucaoEsq, "EXIT")){
+        printf("é um exit");
+    }
+    
+    else{
         perror("Operação não suportada");
         exit(1);
     }
 
     return retorno;
 }
+
+char verificaAdd(char* instrucaoDir){
+    char retorno;
+    
+    if(instrucaoDir[0] == 'M'){
+        retorno = OPC_ADD;
+    }else if (instrucaoDir[0] == '|'){
+        retorno = OPC_ADDM;
+    }else{
+        perror("Operação ADD não suportada");
+        exit(1);
+    }
+    return retorno;
+};
+char verificaSub(char* instrucaoDir){
+    char retorno;
+
+    if(instrucaoDir[0] == 'M'){
+        retorno = OPC_SUB;
+    }else if (instrucaoDir[0] == '|'){
+        retorno = OPC_SUBM;
+    }else{
+        perror("Operação ADD não suportada");
+        exit(1);
+    }
+    return retorno;
+};
+
+char verificaJump(char* instrucaoDir){
+    char retorno;
+    int contador = 0;
+
+    while(instrucaoDir[contador] != ','){
+        contador++;
+        printf("TESTE: Elemento está na posicao %i\n", contador);
+
+    }
+
+    printf("achei\n");
+    printf("Elemento está na posicao %i\n", contador);
+
+    contador++;
+
+    printf("instrucaoDir[contador] = %c", instrucaoDir[contador]);
+    if(instrucaoDir[contador] == '0'){
+
+        retorno = OPC_JUMPEsq;
+        printf("retorno 13");
+    }
+    else if(instrucaoDir[contador] == '2'){
+        retorno = OPC_JUMPPDir;
+        printf("retorno 14");
+    }
+
+    return retorno;
+
+}
+
+char verificaLoad(char* instrucaoDir){
+    char retorno;
+
+    if(instrucaoDir[0] == 'M'){
+        if(instrucaoDir[1] == 'Q'){
+            if(instrucaoDir[2] == ','){
+                retorno = OPC_LOADMQM;
+                printf("retorno 9");
+            }
+            else{
+                retorno = OPC_LOADMQ;
+                printf("retorno 10");
+            }
+        }
+        else{
+            retorno = OPC_LOAD;
+            printf("retorno 1");
+        }
+    }else if (instrucaoDir[0] == '-'){
+        if(instrucaoDir[1] == '|'){
+            retorno = OPC_LOADMenosModulo;
+            printf("retorno 4");
+        }
+        else if(instrucaoDir[1] == 'M'){
+            retorno = OPC_LOADMenos;
+            printf("retorno 2");
+
+        }
+    }else if(instrucaoDir[0] == '|'){
+        retorno = OPC_LOADModulo;
+        printf("retorno 3");
+
+    }else{
+        //perror("Operação LOAD não suportada");
+        printf("erro");
+        exit(1);
+    }
+    return retorno;
+};
