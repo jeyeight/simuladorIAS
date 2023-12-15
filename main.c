@@ -25,6 +25,8 @@ int main(){
 void pegarMemoria(char* memoria, FILE* fd){
     char inputEsq[30];
     char inputDir[30];
+    char opcode;
+    char endereco;
     char c[2];
     bool isExit = false;
 
@@ -51,50 +53,40 @@ void pegarMemoria(char* memoria, FILE* fd){
             c[0] = fgetc(fd);
         }
 
-        converterInstrucao(inputEsq, inputDir);
+        converterInstrucao(inputEsq, inputDir, opcode, endereco);
 
         inputEsq[0] = '\0';
         inputDir[0] = '\0';
     }
 }
 
-int converterInstrucao(char* instrucaoEsq, char* instrucaoDir){
-    int retorno = 0;
-
-
+void converterInstrucao(char* instrucaoEsq, char* instrucaoDir, char* opcode, char*  endereco){
     if(strcmp(instrucaoEsq, "LOAD") == 0){
-        verificaLoad(instrucaoDir);
-    }
-    /*
-    else if(strcmp(instrucaoEsq, "STOR")){
-        verificaStor(instrucaoDir);
-    }else if(strcmp(instrucaoEsq, "JUMP")){
-        verificaJump(instrucaoDir);
-    }else if(strcmp(instrucaoEsq, "JUMP+")){
-        verificaJumpPlus(instrucaoDir);
-    }else if(strcmp(instrucaoEsq, "ADD")){
-        verificaAdd(instrucaoDir);
-    }else if(strcmp(instrucaoEsq, "SUB")){
-        verificaSub(instrucaoDir);
-    }else if(strcmp(instrucaoEsq, "MUL")){
-        verificaLoad(instrucaoDir);
-    }else if(strcmp(instrucaoEsq, "DIV")){
-        verificaDiv(instrucaoDir);
-    }else if(strcmp(instrucaoEsq, "LSH")){
-
-    }else if(strcmp(instrucaoEsq, "RHS")){
-
-    }*/
-    else if(strcmp(instrucaoEsq, "EXIT")){
-        printf("é um exit");
-    }
-    
-    else{
+        opcode = verificaLoad(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "STOR") == 0){
+        //opcode = verificaStor(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "JUMP") == 0){
+        opcode = verificaJump(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "JUMP+") == 0){
+        opcode = verificaJumpP(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "ADD") == 0){
+        opcode = verificaAdd(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "SUB") == 0){
+        opcode = verificaSub(instrucaoDir);
+    }else if(strcmp(instrucaoEsq, "MUL") == 0){
+        opcode = OPC_MUL;
+    }else if(strcmp(instrucaoEsq, "DIV") == 0){
+        opcode = OPC_DIV;
+    }else if(strcmp(instrucaoEsq, "LSH") == 0){
+        opcode = OPC_LSH;
+    }else if(strcmp(instrucaoEsq, "RHS") == 0){
+        opcode = OPC_RSH;
+    }else if(strcmp(instrucaoEsq, "EXIT") == 0){
+        opcode = OPC_EXIT;
+    }else{
         perror("Operação não suportada");
         exit(1);
     }
-
-    return retorno;
 }
 
 char verificaAdd(char* instrucaoDir){
@@ -151,7 +143,26 @@ char verificaJump(char* instrucaoDir){
     }
 
     return retorno;
+}
 
+char verificaJumpP(char* instrucaoDir){
+    char retorno;
+    int contador = 0;
+
+    while(instrucaoDir[contador] != ','){
+        contador++;
+    }
+
+    if(instrucaoDir[contador] == '0'){
+        retorno = OPC_JUMPPEsq;
+        printf("JUMPPESQ");
+    }
+
+    if(instrucaoDir[contador] == '2'){
+        retorno = OPC_JUMPPDir;
+        printf("JUMPPESQ");
+    }
+    return retorno;
 }
 
 char verificaLoad(char* instrucaoDir){

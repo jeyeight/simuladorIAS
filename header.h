@@ -45,11 +45,14 @@
 
 //Funções
 void pegarMemoria(char* memoria, FILE* fd);
-int converterInstrucao(char* instrucaoDir, char* instrucaoEsq);
+void converterInstrucao(char* instrucaoDir, char* instrucaoEsq, char* opcode, char* endereco);
 
 //Verificar opcode
 char verificaLoad(char* instrucaoDir);
 char verificaJump(char* instrucaoDir);
+char verificaJumpP(char* instrucaoDir);
+char verificaAdd(char* instrucaoDir);
+char verificaSub(char* instrucaoDir);
 
 
 #endif
