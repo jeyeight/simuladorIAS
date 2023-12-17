@@ -1,5 +1,7 @@
 4
+-20
 5
+-1
 STOR M(3)
 LOAD M(1)
 ADD M(2)

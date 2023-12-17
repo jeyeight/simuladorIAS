@@ -7,7 +7,7 @@
 #define numeros_memoria 500
 #define null_address 0b000000000000
 #define tamanho_max_num 14
-#define quantidade_dados 2
+#define quantidade_dados 4
 
 //Opcodes
     //Data transfer

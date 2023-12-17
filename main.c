@@ -344,11 +344,18 @@ void teste_memoria(unsigned char* memoria){
 
 void teste_escrever_arquivo(unsigned char* memoria, FILE* fdSaida){
     int posicao_final = posicao_memoria;
+    bool isNegative;
     int numeros = 0;
     long long int linha = 0;
     char byte_atual = 0;
     while(byte_atual < posicao_memoria){ //sla se tá certo isso, mas quando deixei <= ele printou a mais.
+        isNegative = false;
         linha |= memoria[byte_atual];
+        if((linha >= 128) && (byte_atual/5 <= quantidade_dados + 1)){
+            linha -= 128;
+            isNegative = true;
+
+        }
         printf("linha = %lli\n", linha);
         linha <<= 8;
         printf("linha = %lli\n", linha);
@@ -371,8 +378,11 @@ void teste_escrever_arquivo(unsigned char* memoria, FILE* fdSaida){
         linha |= memoria[byte_atual];
         printf("linha = %lli\n", linha);
         byte_atual++;
-        //fseek(fdSaida, 0, SEEK_SET);
-        fprintf(fdSaida, "%lli\n", linha);
+        if(isNegative){
+            fprintf(fdSaida, "-%lli\n", linha);
+        }else{
+            fprintf(fdSaida, "%lli\n", linha);
+        }
         printf("Próximo número!"); //escrever '\n'? não sei se precisa.
         linha = 0;
         
