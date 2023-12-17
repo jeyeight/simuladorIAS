@@ -6,6 +6,10 @@
 #include <stdbool.h>
 #include "header.h"
 
+unsigned char opcodeLeft;
+short enderecoLeft;
+int posicao_memoria = 0;
+
 int main(){
     FILE* fdEntrada = fopen("entrada.txt", "r");
     FILE* fdSaida = fopen("saida.txt", "w");
@@ -28,16 +32,17 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
     char inputEsq[30];
     char inputDir[30];
     char caracter[2];
-    char opcode;
+    int instrucaoEsqORDir = 0;
+    unsigned char opcode;
     short endereco;
     bool isExit = false;
+    bool isLeft;
 
     inputEsq[0] = '\0';
     inputDir[0] = '\0';
     caracter[1] = '\0';
 
-    converterNumeros(memoria, fdEntrada, fdSaida);
-    exit(1);
+    converterNumeros(memoria, fdEntrada);
 
     while(!feof(fdEntrada)){
         caracter[0] = fgetc(fdEntrada);
@@ -60,14 +65,21 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
 
         opcode = converterInstrucao(inputEsq, inputDir, &endereco);
 
+        isLeft = (instrucaoEsqORDir % 2 == 0);
+
+        escreveInstrucao(opcode, endereco, fdEntrada, isLeft, memoria);
+
         inputEsq[0] = '\0';
         inputDir[0] = '\0';
+        instrucaoEsqORDir++;
     }
+    teste_memoria(memoria);
+    exit(1);
 }
 
 //Faz o reconhecimento do opcode e do endereço (caso tenha)
-char converterInstrucao(char instrucaoEsq[], char instrucaoDir[], short* endereco){
-    char opcode;
+unsigned char converterInstrucao(char instrucaoEsq[], char instrucaoDir[], short* endereco){
+    unsigned char opcode;
 
     if(strcmp(instrucaoEsq, "LOAD") == 0){
         opcode = verificaLoad(instrucaoDir);
@@ -82,23 +94,23 @@ char converterInstrucao(char instrucaoEsq[], char instrucaoDir[], short* enderec
     }else if(strcmp(instrucaoEsq, "SUB") == 0){
         opcode = verificaSub(instrucaoDir);
     }else if(strcmp(instrucaoEsq, "MUL") == 0){
-        opcode = (char)OPC_MUL;
+        opcode = (unsigned char)OPC_MUL;
     }else if(strcmp(instrucaoEsq, "DIV") == 0){
-        opcode = (char)OPC_DIV;
+        opcode = (unsigned char)OPC_DIV;
     }else if(strcmp(instrucaoEsq, "LSH") == 0){
-        opcode = (char)OPC_LSH;
+        opcode = (unsigned char)OPC_LSH;
     }else if(strcmp(instrucaoEsq, "RHS") == 0){
-        opcode = (char)OPC_RSH;
+        opcode = (unsigned char)OPC_RSH;
     }else if(strcmp(instrucaoEsq, "EXIT") == 0){
-        opcode = (char)OPC_EXIT;
+        opcode = (unsigned char)OPC_EXIT;
     }else{
         perror("Operação não suportada");
         exit(1);
     }
 
-    if(opcode == (char)OPC_JUMPEsq || opcode == (char)OPC_JUMPDir || opcode == (char)OPC_JUMPPEsq || opcode == (char)OPC_JUMPPDir || opcode == (char)OPC_STORDir || opcode == (char)OPC_STOREsq){
+    if(opcode == (unsigned char)OPC_JUMPEsq || opcode == (unsigned char)OPC_JUMPDir || opcode == (unsigned char)OPC_JUMPPEsq || opcode == (unsigned char)OPC_JUMPPDir || opcode == (unsigned char)OPC_STORDir || opcode == (unsigned char)OPC_STOREsq){
         *endereco = verificaEndereco(instrucaoDir, true);
-    }else if(opcode == (char)OPC_RSH || opcode == (char)OPC_LSH || opcode == (char)OPC_EXIT || opcode == (char)OPC_LOADMQ){
+    }else if(opcode == (unsigned char)OPC_RSH || opcode == (unsigned char)OPC_LSH || opcode == (unsigned char)OPC_EXIT || opcode == (unsigned char)OPC_LOADMQ){
         *endereco = null_address;
     }else{
         *endereco = verificaEndereco(instrucaoDir, false);
@@ -107,37 +119,37 @@ char converterInstrucao(char instrucaoEsq[], char instrucaoDir[], short* enderec
     return opcode;
 }
 
-char verificaAdd(char instrucaoDir[]){
-    char retorno;
+unsigned char verificaAdd(char instrucaoDir[]){
+    unsigned char opcode;
     
     if(instrucaoDir[0] == 'M'){
-        retorno = (char)OPC_ADD;
+        opcode = (char)OPC_ADD;
     }else if (instrucaoDir[0] == '|'){
-        retorno = (char)OPC_ADDM;
+        opcode = (char)OPC_ADDM;
     }else{
         perror("Operação ADD não suportada");
         exit(1);
     }
-    return retorno;
+    return opcode;
 };
 
-char verificaSub(char instrucaoDir[]){
-    char retorno;
+unsigned char verificaSub(char instrucaoDir[]){
+    unsigned char opcode;
 
     if(instrucaoDir[0] == 'M'){
-        retorno = (char)OPC_SUB;
+        opcode = (char)OPC_SUB;
     }else if (instrucaoDir[0] == '|'){
-        retorno = (char)OPC_SUBM;
+        opcode = (char)OPC_SUBM;
     }else{
         perror("Operação ADD não suportada");
         exit(1);
     }
 
-    return retorno;
+    return opcode;
 };
 
-char verificaJump(char instrucaoDir[]){
-    char retorno;
+unsigned char verificaJump(char instrucaoDir[]){
+    unsigned char opcode;
     int contador = 0;
 
     while(instrucaoDir[contador] != ','){
@@ -148,18 +160,17 @@ char verificaJump(char instrucaoDir[]){
     contador++;
 
     if(instrucaoDir[contador] == '0'){
-
-        retorno = (char)OPC_JUMPEsq;
+        opcode = (char)OPC_JUMPEsq;
     }
     else if(instrucaoDir[contador] == '2'){
-        retorno = (char)OPC_JUMPPDir;
+        opcode = (char)OPC_JUMPPDir;
     }
 
-    return retorno;
+    return opcode;
 }
 
-char verificaJumpP(char instrucaoDir[]){
-    char retorno;
+unsigned char verificaJumpP(char instrucaoDir[]){
+    unsigned char opcode;
     int contador = 0;
 
     while(instrucaoDir[contador] != ','){
@@ -167,49 +178,49 @@ char verificaJumpP(char instrucaoDir[]){
     }
 
     if(instrucaoDir[contador] == '0'){
-        retorno = (char)OPC_JUMPPEsq;
+        opcode = (char)OPC_JUMPPEsq;
     }
 
     if(instrucaoDir[contador] == '2'){
-        retorno = (char)OPC_JUMPPDir;
+        opcode = (char)OPC_JUMPPDir;
     }
-    return retorno;
+    return opcode;
 }
 
-char verificaLoad(char instrucaoDir[]){
-    char retorno;
+unsigned char verificaLoad(char instrucaoDir[]){
+    unsigned char opcode;
     if(instrucaoDir[0] == 'M'){
         if(instrucaoDir[1] == 'Q'){
             if(instrucaoDir[2] == ','){
-                retorno = (char)OPC_LOADMQM;
+                opcode = (char)OPC_LOADMQM;
             }
             else{
-                retorno = (char)OPC_LOADMQ;
+                opcode = (char)OPC_LOADMQ;
             }
         }
         else{
-            retorno = (char)OPC_LOAD;
+            opcode = (char)OPC_LOAD;
         }
     }else if (instrucaoDir[0] == '-'){
         if(instrucaoDir[1] == '|'){
-            retorno = (char)OPC_LOADMenosModulo;
+            opcode = (char)OPC_LOADMenosModulo;
         }
         else if(instrucaoDir[1] == 'M'){
-            retorno = (char)OPC_LOADMenos;
+            opcode = (char)OPC_LOADMenos;
         }
     }else if(instrucaoDir[0] == '|'){
-        retorno = (char)OPC_LOADModulo;
+        opcode = (char)OPC_LOADModulo;
     }else{
         //perror("Operação LOAD não suportada");
         printf("erro");
         exit(1);
     }
 
-    return retorno;
+    return opcode;
 };
 
-char verificaStor(char instrucaoDir[]){
-    char retorno;
+unsigned char verificaStor(char instrucaoDir[]){
+    unsigned char opcode;
     int contador = 0;
 
     while(instrucaoDir[contador] != ','){
@@ -218,15 +229,15 @@ char verificaStor(char instrucaoDir[]){
 
     if(instrucaoDir[contador] == ','){
         if(instrucaoDir[contador+1] == '8'){
-            retorno = (char)OPC_STOREsq;
+            opcode = (char)OPC_STOREsq;
         }else if(instrucaoDir[contador+1] == '2'){
-            retorno = (char)OPC_STORDir;
+            opcode = (char)OPC_STORDir;
         }
     }else if(instrucaoDir[contador] == ')'){
-        retorno = (char)OPC_STOR;
+        opcode = (char)OPC_STOR;
     }
 
-    return retorno;
+    return opcode;
 };
 
 short  verificaEndereco(char instrucaoDir[], bool isLeftRight){
@@ -251,26 +262,67 @@ short  verificaEndereco(char instrucaoDir[], bool isLeftRight){
     return endereco;
 }
 
-void converterNumeros(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
+void converterNumeros(unsigned char* memoria, FILE* fdEntrada){
     long long int numero;
     long long int temp;
     long long int cheio = 255;
+    long long int negativo = 128;
     int contador = 0;
-    int posicao_memoria = 0;
     char numeroString[tamanho_max_num];
+    char numero_sem_negativo[tamanho_max_num];
+    bool isNegative = false;
 
-    while(contador < 7){
+    while(contador < quantidade_dados){
         fgets(numeroString, tamanho_max_num, fdEntrada);
-        numero = atoll(numeroString);
+        isNegative = false;
+        if(numeroString[0] == '-'){
+            isNegative = true;
+            for (int i = 1; i < strlen(numeroString);i++){    
+                numero_sem_negativo[i-1] = numeroString[i];
+            }
+            numero = atoll(numero_sem_negativo);    
+        }else{
+            numero = atoll(numeroString);
+        }
 
-        printf("Indo da direita para a esquerda...\n");
         for(int i = 4;i>=0; i--){
             temp = (numero >> (8*i)) & cheio; 
+            if(isNegative && i == 4){
+                temp = temp | negativo; 
+            }
             memoria[posicao_memoria] = temp;
-
-            printf("m[%i] = %lld\n",posicao_memoria, memoria[posicao_memoria]);
             posicao_memoria++;
         }
         contador++;
+    }
+}
+
+void escreveInstrucao(unsigned char opcode, short endereco, FILE* fdEntrada, bool isLeft, unsigned char* memoria){
+    long long int linhaDeInstrucao = 0;
+    long long int temp;
+
+    if(isLeft){
+        opcodeLeft = opcode;
+        enderecoLeft = endereco;
+    }else{
+        linhaDeInstrucao |= opcodeLeft;
+        linhaDeInstrucao <<= 12;
+        linhaDeInstrucao |= enderecoLeft;
+        linhaDeInstrucao <<= 8;
+        linhaDeInstrucao |= opcode;
+        linhaDeInstrucao <<= 12;
+        linhaDeInstrucao |= endereco;
+    }
+
+    for(int i = 4;i>=0; i--){
+        temp = (linhaDeInstrucao >> (8*i)) & 0xFF; 
+        memoria[posicao_memoria] = temp;
+        posicao_memoria++;
+    }
+};
+
+void teste_memoria(unsigned char* memoria){
+    for(int i = 0; i < strlen(memoria); i++){
+        printf("%lli \n", memoria[i]);
     }
 }
