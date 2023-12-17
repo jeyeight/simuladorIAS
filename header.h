@@ -7,7 +7,7 @@
 #define numeros_memoria 500
 #define null_address 0b000000000000
 #define tamanho_max_num 14
-#define quantidade_dados 4
+#define quantidade_dados 500
 
 //Opcodes
     //Data transfer
@@ -50,7 +50,7 @@
 void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida);
 void converterNumeros(unsigned char* memoria, FILE* fdEntrada);
 unsigned char converterInstrucao(char instrucaoEsq[], char instrucaoDir[], short* endereco);
-void escreveInstrucao(unsigned char opcode, short endereco, FILE* fdEntrada, bool isLeft, unsigned char* memoria);
+void escreveInstrucao(unsigned char opcode, short endereco, bool isLeft, bool isExit, unsigned char* memoria);
 
 //Verificar opcode
 unsigned char verificaLoad(char instrucaoDir[]);
@@ -64,4 +64,6 @@ short verificaEndereco(char instrucaoDir[], bool isLeftRight);
 void teste_memoria(unsigned char* memoria);
 void teste_escrever_arquivo(unsigned char* memoria, FILE* fdSaida);
 
+
+void zerarString(char string[], int tamanho);
 #endif
