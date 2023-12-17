@@ -12,7 +12,7 @@ int posicao_memoria = 0;
 
 int main(){
     FILE* fdEntrada = fopen("entrada.txt", "r");
-    FILE* fdSaida = fopen("saida.txt", "w");
+    FILE* fdSaida = fopen("saida.txt", "wb");
     unsigned char* m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
 
     if (fdEntrada == NULL) {
@@ -46,14 +46,17 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
 
     while(!feof(fdEntrada)){
         caracter[0] = fgetc(fdEntrada);
+        printf("caracter0 = %c\n", caracter[0]);
         
         while((!isspace(caracter[0]))   && (caracter[0] != EOF)){
             strcat(inputEsq, caracter);
             caracter[0] = fgetc(fdEntrada);
         }
+        printf("InputEsq = %s\n", inputEsq);
 
         if(feof(fdEntrada)){
             isExit = true;
+            printf("\nisExit entrou\n");
         }
         
         caracter[0] = fgetc(fdEntrada);
@@ -63,7 +66,10 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
             caracter[0] = fgetc(fdEntrada);
         }
 
+        printf("InputDir = %s\n", inputDir);
+
         opcode = converterInstrucao(inputEsq, inputDir, &endereco);
+        printf("opcode obtido = %u, e endereco = %hd\n", opcode, endereco);
 
         isLeft = (instrucaoEsqORDir % 2 == 0);
 
@@ -74,6 +80,7 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
         instrucaoEsqORDir++;
     }
     teste_memoria(memoria);
+    teste_escrever_arquivo(memoria, fdSaida);
     exit(1);
 }
 
@@ -105,6 +112,7 @@ unsigned char converterInstrucao(char instrucaoEsq[], char instrucaoDir[], short
         opcode = (unsigned char)OPC_EXIT;
     }else{
         perror("Operação não suportada");
+        printf("opcode = %u", opcode);
         exit(1);
     }
 
@@ -223,8 +231,13 @@ unsigned char verificaStor(char instrucaoDir[]){
     unsigned char opcode;
     int contador = 0;
 
-    while(instrucaoDir[contador] != ','){
+    while((instrucaoDir[contador] != ',') && (contador <= 8)){ //se passar de 8, é apenas um STOR M(X), senão seria menor.
         contador++;
+        printf("contador = %i\n", contador);
+    }
+
+    if(contador >8){
+        opcode = (char)OPC_STOR; //rever isso, talvez fazer melhor
     }
 
     if(instrucaoDir[contador] == ','){
@@ -233,8 +246,6 @@ unsigned char verificaStor(char instrucaoDir[]){
         }else if(instrucaoDir[contador+1] == '2'){
             opcode = (char)OPC_STORDir;
         }
-    }else if(instrucaoDir[contador] == ')'){
-        opcode = (char)OPC_STOR;
     }
 
     return opcode;
@@ -290,6 +301,7 @@ void converterNumeros(unsigned char* memoria, FILE* fdEntrada){
             if(isNegative && i == 4){
                 temp = temp | negativo; 
             }
+            printf("Escrevendo %lli, na posicao_memoria %i\n", temp, posicao_memoria);
             memoria[posicao_memoria] = temp;
             posicao_memoria++;
         }
@@ -312,17 +324,57 @@ void escreveInstrucao(unsigned char opcode, short endereco, FILE* fdEntrada, boo
         linhaDeInstrucao |= opcode;
         linhaDeInstrucao <<= 12;
         linhaDeInstrucao |= endereco;
+
+        for(int i = 4;i>=0; i--){
+            temp = (linhaDeInstrucao >> (8*i)) & 0xFF; 
+            memoria[posicao_memoria] = temp;
+            posicao_memoria++;
+        }
     }
 
-    for(int i = 4;i>=0; i--){
-        temp = (linhaDeInstrucao >> (8*i)) & 0xFF; 
-        memoria[posicao_memoria] = temp;
-        posicao_memoria++;
-    }
+    
 };
 
 void teste_memoria(unsigned char* memoria){
-    for(int i = 0; i < strlen(memoria); i++){
-        printf("%lli \n", memoria[i]);
+    for(int i = 0; i < 20; i++){
+        printf("%u \n", memoria[i]);
+    }
+}
+
+
+void teste_escrever_arquivo(unsigned char* memoria, FILE* fdSaida){
+    int posicao_final = posicao_memoria;
+    int numeros = 0;
+    long long int linha = 0;
+    char byte_atual = 0;
+    while(byte_atual < posicao_memoria){ //sla se tá certo isso, mas quando deixei <= ele printou a mais.
+        linha |= memoria[byte_atual];
+        printf("linha = %lli\n", linha);
+        linha <<= 8;
+        printf("linha = %lli\n", linha);
+        byte_atual++;
+        linha |= memoria[byte_atual];
+        printf("linha = %lli\n", linha);
+        linha <<= 8;
+        printf("linha = %lli\n", linha);
+        byte_atual++;
+        linha |= memoria[byte_atual];
+        printf("linha = %lli\n", linha);
+        linha <<= 8;
+        printf("linha = %lli\n", linha);
+        byte_atual++;
+        linha |= memoria[byte_atual];
+        printf("linha = %lli\n", linha);
+        linha <<= 8;
+        printf("linha = %lli\n", linha);
+        byte_atual++;
+        linha |= memoria[byte_atual];
+        printf("linha = %lli\n", linha);
+        byte_atual++;
+        //fseek(fdSaida, 0, SEEK_SET);
+        fprintf(fdSaida, "%lli\n", linha);
+        printf("Próximo número!"); //escrever '\n'? não sei se precisa.
+        linha = 0;
+        
     }
 }

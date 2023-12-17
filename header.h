@@ -6,8 +6,8 @@
 #define size_memory 4096
 #define numeros_memoria 500
 #define null_address 0b000000000000
-#define tamanho_max_num 1
-#define quantidade_dados 500
+#define tamanho_max_num 14
+#define quantidade_dados 2
 
 //Opcodes
     //Data transfer
@@ -62,5 +62,6 @@ unsigned char verificaStor(char instrucaoDir[]);
 short verificaEndereco(char instrucaoDir[], bool isLeftRight);
 
 void teste_memoria(unsigned char* memoria);
+void teste_escrever_arquivo(unsigned char* memoria, FILE* fdSaida);
 
 #endif
