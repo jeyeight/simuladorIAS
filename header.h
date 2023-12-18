@@ -2,13 +2,15 @@
 #define HEADER_H
 
 //Definições
+typedef unsigned char opc;
 
 #define size_memory 4096
 #define numeros_memoria 500
 #define null_address 0b000000000000
 #define tamanho_max_num 14
 #define quantidade_dados 500
-
+#define tam_max_byte 255
+#define negativo_byte 128
 //Opcodes
     //Data transfer
     #define OPC_LOADMQ 0b00001010
@@ -49,16 +51,16 @@
 //Funções
 void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida);
 void converterNumeros(unsigned char* memoria, FILE* fdEntrada);
-unsigned char converterInstrucao(char instrucaoEsq[], char instrucaoDir[], short* endereco);
+opc converterInstrucao(char instrucaoEsq[], char instrucaoDir[], short* endereco);
 void escreveInstrucao(unsigned char opcode, short endereco, bool isLeft, bool isExit, unsigned char* memoria);
 
 //Verificar opcode
-unsigned char verificaLoad(char instrucaoDir[]);
-unsigned char verificaJump(char instrucaoDir[]);
-unsigned char verificaJumpP(char instrucaoDir[]);
-unsigned char verificaAdd(char instrucaoDir[]);
-unsigned char verificaSub(char instrucaoDir[]);
-unsigned char verificaStor(char instrucaoDir[]);
+opc verificaLoad(char instrucaoDir[]);
+opc verificaJump(char instrucaoDir[]);
+opc verificaJumpP(char instrucaoDir[]);
+opc verificaAdd(char instrucaoDir[]);
+opc verificaSub(char instrucaoDir[]);
+opc verificaStor(char instrucaoDir[]);
 short verificaEndereco(char instrucaoDir[], bool isLeftRight);
 
 void escreverArquivo(unsigned char* memoria, FILE* fdSaida);
