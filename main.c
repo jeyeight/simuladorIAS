@@ -81,8 +81,7 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
         inputDir[0] = '\0';
         instrucaoEsqORDir++;
     }
-    teste_memoria(memoria);
-    teste_escrever_arquivo(memoria, fdSaida);
+    escreverArquivo(memoria, fdSaida);
 }
 
 //Faz o reconhecimento do opcode e do endereço (caso tenha)
@@ -267,9 +266,7 @@ short  verificaEndereco(char instrucaoDir[], bool isLeftRight){
         pos++;
         contador++;
     }
-    printf("ANTES SHORTATOI: %s \n", enderecoTemp);
     endereco = (short)atoi(enderecoTemp);
-    printf("ENDERECO: %hd\n", endereco);
     return endereco;
 }
 
@@ -345,14 +342,7 @@ void escreveInstrucao(unsigned char opcode, short endereco, bool isLeft, bool is
     }
 };
 
-void teste_memoria(unsigned char* memoria){
-    for(int i = 0; i < 20; i++){
-        printf("%u \n", memoria[i]);
-    }
-}
-
-
-void teste_escrever_arquivo(unsigned char* memoria, FILE* fdSaida){
+void escreverArquivo(unsigned char* memoria, FILE* fdSaida){
     int contadorNumeros = 0;
     bool isNegative;
     long long int linha = 0;

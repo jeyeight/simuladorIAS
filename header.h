@@ -61,9 +61,7 @@ unsigned char verificaSub(char instrucaoDir[]);
 unsigned char verificaStor(char instrucaoDir[]);
 short verificaEndereco(char instrucaoDir[], bool isLeftRight);
 
-void teste_memoria(unsigned char* memoria);
-void teste_escrever_arquivo(unsigned char* memoria, FILE* fdSaida);
-
+void escreverArquivo(unsigned char* memoria, FILE* fdSaida);
 
 void zerarString(char string[], int tamanho);
 #endif
