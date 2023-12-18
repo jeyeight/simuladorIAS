@@ -91,11 +91,13 @@ opc converterInstrucao(char inputEsq[], char inputDir[], short* endereco){
 
     if(strcmp(inputEsq, "LOAD") == 0){
         opcode = verificaLoad(inputDir);
+    }else if(strcmp(inputEsq, "LOAD-") == 0){
+        opcode = verificaLoadMenos(inputDir);
     }else if(strcmp(inputEsq, "STOR") == 0){
         opcode = verificaStor(inputDir);
     }else if(strcmp(inputEsq, "JUMP") == 0){
         opcode = verificaJump(inputDir);
-    }else if(strcmp(inputEsq, "JUMP+") == 0){
+    }else if(strcmp(inputEsq, "JUMP+") == 0) {
         opcode = verificaJumpP(inputDir);
     }else if(strcmp(inputEsq, "ADD") == 0){
         opcode = verificaAdd(inputDir);
@@ -375,6 +377,17 @@ void escreverArquivo(unsigned char* memoria, FILE* fdSaida){
         }
         linha = 0;
     }
+}
+
+//Implementamos essa função, pois não sabiamos se o - viria junto do LOAD ou a direita
+opc verificaLoadMenos(char inputDir[]){
+    opc opcode;
+    if(inputDir[0] == '|'){
+        opcode = (opc)OPC_LOADMenosModulo;
+    }else if(inputDir[0] == 'M'){
+        opcode = (opc)OPC_LOADMenos;
+    }
+    return opcode;
 }
 
 void zerarString(char string[], int tamanho){

@@ -61,6 +61,7 @@ opc verificaJumpP(char instrucaoDir[]);
 opc verificaAdd(char instrucaoDir[]);
 opc verificaSub(char instrucaoDir[]);
 opc verificaStor(char instrucaoDir[]);
+opc verificaLoadMenos(char inputDir[]);
 short verificaEndereco(char instrucaoDir[], bool isLeftRight);
 
 void escreverArquivo(unsigned char* memoria, FILE* fdSaida);
