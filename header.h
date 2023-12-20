@@ -66,5 +66,7 @@ short verificaEndereco(char instrucaoDir[], bool isLeftRight);
 
 void escreverArquivo(unsigned char* memoria, FILE* fdSaida);
 
+void verificaArgumentos(int argc, char* argv[], FILE** inputFile, FILE** outputFile);
+
 void zerarString(char string[], int tamanho);
 #endif
