@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "utils.h"
+#include "headers/utils.h"
 
 void zerarString(char string[], int tamanho){
     for(int i = 0; i < tamanho; i++){
@@ -52,3 +52,16 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
         exit(EXIT_FAILURE);
     }
 }
+
+// bool isNegative(unsigned char* memoria, int number){
+//     long long int linha = 0;
+
+//     linha |= memoria[byte_atual];
+
+//     if((linha >= 128) && (contadorNumeros < quantidade_dados)){
+//             linha -= 128;
+//             return = true;
+//     }else{
+//         return false;
+//     }
+// }

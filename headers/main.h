@@ -11,6 +11,7 @@ typedef unsigned char opc;
 #define quantidade_dados 500
 #define tam_max_byte 255
 #define negativo_byte 128
+#define fim_entrada_dados 2500
 //Opcodes
     //Data transfer
     #define OPC_LOADMQ 0b00001010
@@ -49,6 +50,7 @@ typedef unsigned char opc;
 //Structs
 
 //Funções
+short determinarEndereco(opc opcode, char inputDir[]);
 void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida);
 void converterNumeros(unsigned char* memoria, FILE* fdEntrada);
 opc converterInstrucao(char instrucaoEsq[], char instrucaoDir[], short* endereco);
@@ -65,7 +67,7 @@ opc verificaLoadMenos(char inputDir[]);
 short verificaEndereco(char instrucaoDir[], bool isLeftRight);
 
 void escreverArquivo(unsigned char* memoria, FILE* fdSaida);
-
+void preencherZero(unsigned char* memoria);
 void verificaArgumentos(int argc, char* argv[], FILE** inputFile, FILE** outputFile);
 
 void zerarString(char string[], int tamanho);

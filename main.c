@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <getopt.h>
 #include "utils.c"
-#include "header.h"   
+#include "headers/main.h"   
 
 opc opcodeLeft;
 short enderecoLeft;
@@ -70,7 +70,7 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
                 strcat(inputDir, caracter);
                 caracter[0] = fgetc(fdEntrada);
             }
-        }
+        };
 
         if(feof(fdEntrada)) isExit = true;
 
@@ -150,7 +150,7 @@ opc verificaSub(char inputDir[]){
     }else if (inputDir[0] == '|'){
         opcode = (opc)OPC_SUBM;
     }else{
-        perror("Operação ADD não suportada");
+        perror("Operação SUB não suportada");
         exit(1);
     }
 
@@ -170,9 +170,11 @@ opc verificaJump(char inputDir[]){
 
     if(inputDir[contador] == '0'){
         opcode = (opc)OPC_JUMPEsq;
-    }
-    else if(inputDir[contador] == '2'){
+    }else if(inputDir[contador] == '2'){
         opcode = (opc)OPC_JUMPDir;
+    }else{
+        perror("Operação JUMP não suportada");
+        exit(1);
     }
 
     return opcode;
@@ -187,10 +189,11 @@ opc verificaJumpP(char inputDir[]){
 
     if(inputDir[contador + 1] == '0'){
         opcode = (opc)OPC_JUMPPEsq;
-    }
-
-    if(inputDir[contador + 1] == '2'){
+    }else if(inputDir[contador + 1] == '2'){
         opcode = (opc)OPC_JUMPPDir;
+    }else{
+        perror("Operação JUMPP não suportada");
+        exit(1);
     }
     return opcode;
 }
@@ -201,25 +204,17 @@ opc verificaLoad(char inputDir[]){
         if(inputDir[1] == 'Q'){
             if(inputDir[2] == ','){
                 opcode = (opc)OPC_LOADMQM;
-            }
-            else{
+            }else{
                 opcode = (opc)OPC_LOADMQ;
             }
         }
         else{
             opcode = (opc)OPC_LOAD;
         }
-    }else if (inputDir[0] == '-'){
-        if(inputDir[1] == '|'){
-            opcode = (opc)OPC_LOADMenosModulo;
-        }
-        else if(inputDir[1] == 'M'){
-            opcode = (opc)OPC_LOADMenos;
-        }
     }else if(inputDir[0] == '|'){
         opcode = (opc)OPC_LOADModulo;
     }else{
-        printf("erro");
+        printf("Operação LOAD não suportada");
         exit(1);
     }
 
@@ -242,12 +237,28 @@ opc verificaStor(char inputDir[]){
                 opcode = (opc)OPC_STOREsq;
             }else if(inputDir[contador+1] == '2'){
                 opcode = (opc)OPC_STORDir;
+            }else{
+                perror("Operação STOR não suportada");
+                exit(1);
             }
         }
     }
 
     return opcode;
 };
+
+opc verificaLoadMenos(char inputDir[]){
+    opc opcode;
+    if(inputDir[0] == '|'){
+        opcode = (opc)OPC_LOADMenosModulo;
+    }else if(inputDir[0] == 'M'){
+        opcode = (opc)OPC_LOADMenos;
+    }else{
+        perror("Operação LOAD- não suportada");
+        exit(1);
+    }
+    return opcode;
+}
 
 short verificaEndereco(char inputDir[], bool isLeftRight){
     int contador = 0;
@@ -279,9 +290,11 @@ void converterNumeros(unsigned char* memoria, FILE* fdEntrada){
     int contador = 0;
     char numeroString[tamanho_max_num];
     char numero_sem_negativo[tamanho_max_num];
+    int qntZeros = 0;
     bool isNegative = false;
+    bool isAlpha = false;
 
-    while(contador < quantidade_dados){
+    while(contador < quantidade_dados && !isAlpha){
         fgets(numeroString, tamanho_max_num, fdEntrada);
         isNegative = false;
         if(numeroString[0] == '-'){
@@ -294,15 +307,23 @@ void converterNumeros(unsigned char* memoria, FILE* fdEntrada){
             numero = atoll(numeroString);
         }
 
-        for(int i = 4;i>=0; i--){
-            temp = (numero >> (8*i)) & cheio; 
-            if(isNegative && i == 4){
-                temp = temp | negativo; 
+        if(isalpha(numeroString[0])){
+            isAlpha = true;
+            fseek(fdEntrada,-strlen(numeroString) , SEEK_CUR);
+            preencherZero(memoria);
+        } 
+        
+        if(!isAlpha){
+            for(int i = 4;i>=0; i--){
+                temp = (numero >> (8*i)) & cheio; 
+                if(isNegative && i == 4){
+                    temp = temp | negativo; 
+                }
+                memoria[posicao_memoria] = temp;
+                posicao_memoria++;
             }
-            memoria[posicao_memoria] = temp;
-            posicao_memoria++;
+            contador++;
         }
-        contador++;
     }
 }
 
@@ -345,16 +366,10 @@ void escreveInstrucao(opc opcode, short endereco, bool isLeft, bool isExit, unsi
 
 void escreverArquivo(unsigned char* memoria, FILE* fdSaida){
     int contadorNumeros = 0;
-    bool isNegative;
     long long int linha = 0;
     int byte_atual = 0;
     while(byte_atual < (size_memory * 5)){ 
-        isNegative = false;
         linha |= memoria[byte_atual];
-        if((linha >= 128) && (contadorNumeros < quantidade_dados)){
-            linha -= 128;
-            isNegative = true;
-        }
         if(contadorNumeros < quantidade_dados) contadorNumeros++;
         linha <<= 8;
         byte_atual++;
@@ -369,25 +384,11 @@ void escreverArquivo(unsigned char* memoria, FILE* fdSaida){
         byte_atual++;
         linha |= memoria[byte_atual];
         byte_atual++;
-        if(isNegative){
-            fprintf(fdSaida, "-%lli\n", linha);
-        }else{
-            fprintf(fdSaida, "%lli\n", linha);
-        }
+        fprintf(fdSaida, "%lli\n", linha);
         linha = 0;
     }
 }
 
-//Implementamos essa função, pois não sabiamos se o - viria junto do LOAD ou a direita
-opc verificaLoadMenos(char inputDir[]){
-    opc opcode;
-    if(inputDir[0] == '|'){
-        opcode = (opc)OPC_LOADMenosModulo;
-    }else if(inputDir[0] == 'M'){
-        opcode = (opc)OPC_LOADMenos;
-    }
-    return opcode;
-}
 
 short determinarEndereco(opc opcode, char inputDir[]){
     if(opcode == (opc)OPC_JUMPEsq || opcode == (opc)OPC_JUMPDir || opcode == (opc)OPC_JUMPPEsq || opcode == (opc)OPC_JUMPPDir || opcode == (opc)OPC_STORDir || opcode == (opc)OPC_STOREsq){
@@ -397,4 +398,11 @@ short determinarEndereco(opc opcode, char inputDir[]){
     }else{
         return verificaEndereco(inputDir, false);
     }
+}
+
+void preencherZero(unsigned char* memoria){
+    for(int i = posicao_memoria; i < fim_entrada_dados; i++){
+        memoria[i] = 0;
+    }
+    posicao_memoria = fim_entrada_dados;
 }
