@@ -243,7 +243,6 @@ opc verificaStor(char inputDir[]){
             }
         }
     }
-
     return opcode;
 };
 
@@ -290,7 +289,6 @@ void converterNumeros(unsigned char* memoria, FILE* fdEntrada){
     int contador = 0;
     char numeroString[tamanho_max_num];
     char numero_sem_negativo[tamanho_max_num];
-    int qntZeros = 0;
     bool isNegative = false;
     bool isAlpha = false;
 
@@ -309,7 +307,9 @@ void converterNumeros(unsigned char* memoria, FILE* fdEntrada){
 
         if(isalpha(numeroString[0])){
             isAlpha = true;
+            printf("%ld\n", ftell(fdEntrada));
             fseek(fdEntrada,-strlen(numeroString) , SEEK_CUR);
+            printf("%ld", ftell(fdEntrada));
             preencherZero(memoria);
         } 
         
