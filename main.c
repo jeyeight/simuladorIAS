@@ -307,9 +307,7 @@ void converterNumeros(unsigned char* memoria, FILE* fdEntrada){
 
         if(isalpha(numeroString[0])){
             isAlpha = true;
-            printf("%ld\n", ftell(fdEntrada));
             fseek(fdEntrada,-strlen(numeroString) , SEEK_CUR);
-            printf("%ld", ftell(fdEntrada));
             preencherZero(memoria);
         } 
         
