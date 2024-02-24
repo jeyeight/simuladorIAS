@@ -16,8 +16,10 @@ int main(int argc, char* argv[]){
     FILE* fdSaida = NULL;
     unsigned char* m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
     struct banco_de_registradores BR;
-    verificaArgumentos(argc, argv, &fdEntrada, &fdSaida, BR.PC);
-    printf("%s", BR.PC);
+    verificaArgumentos(argc, argv, &fdEntrada, &fdSaida, &BR);
+    printf("\nBR.PC = %s", BR.PC);
+
+    
     if (fdEntrada == NULL) {
         perror("Erro ao abrir o arquivo");
         exit(EXIT_FAILURE);

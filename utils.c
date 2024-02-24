@@ -14,7 +14,7 @@ void zerarString(char string[], int tamanho){
     }
 }
 
-void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida, registrador* PC){
+void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida, struct banco_de_registradores *BR){
     int opt;
     char *nomeArquivoEntrada = NULL;
     
@@ -25,7 +25,15 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
                 nomeArquivoEntrada = optarg;
                 break;
             case 'i':
-                PC = (unsigned char*)optarg;
+                printf("%s - optarg\n", optarg);
+                //printf("\n");
+                unsigned char optaaar[5];
+                for (int i = 0; i < strlen(optarg); i++) {
+                    optaaar[i] = (unsigned char)optarg[i];
+                    BR->PC[i] = optaaar[i];
+
+                }
+
                 break;
             default:
                 fprintf(stderr, "Uso: %s -p nomedoarquivodeentrada.ias -i PC\n", argv[0]);
