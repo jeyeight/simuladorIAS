@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #ifndef HEADER_H
 #define HEADER_H
 
@@ -68,7 +70,5 @@ short verificaEndereco(char instrucaoDir[], bool isLeftRight);
 
 void escreverArquivo(unsigned char* memoria, FILE* fdSaida);
 void preencherZero(unsigned char* memoria);
-void verificaArgumentos(int argc, char* argv[], FILE** inputFile, FILE** outputFile);
 
-void zerarString(char string[], int tamanho);
 #endif

@@ -1,4 +1,11 @@
 #include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <getopt.h>
+#include "headers/types.h"
 #include "headers/utils.h"
 
 void zerarString(char string[], int tamanho){
@@ -7,26 +14,26 @@ void zerarString(char string[], int tamanho){
     }
 }
 
-void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida) {
+void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida, registrador* PC){
     int opt;
     char *nomeArquivoEntrada = NULL;
-    char *nomeArquivoSaida = NULL;
+    
 
-    while ((opt = getopt(argc, argv, "p:m:")) != -1) {
+    while ((opt = getopt(argc, argv, "p:i:")) != -1) {
         switch (opt) {
             case 'p':
                 nomeArquivoEntrada = optarg;
                 break;
-            case 'm':
-                nomeArquivoSaida = optarg;
+            case 'i':
+                PC = (unsigned char*)optarg;
                 break;
             default:
-                fprintf(stderr, "Uso: %s -p <nomedoarquivodeentrada.ias> -m <nomedoarquivodesaida.ias.m>\n", argv[0]);
+                fprintf(stderr, "Uso: %s -p nomedoarquivodeentrada.ias -i PC\n", argv[0]);
                 exit(EXIT_FAILURE);
         }
     }
-    if (nomeArquivoEntrada == NULL || nomeArquivoSaida == NULL) {
-        fprintf(stderr, "É necessário fornecer os argumentos -p e -m\n");
+    if (nomeArquivoEntrada == NULL) {
+        fprintf(stderr, "É necessário fornecer os argumentos -p e -i\n");
         exit(EXIT_FAILURE);
     }
 
@@ -35,19 +42,14 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
         nomeArquivoEntrada[strlen(nomeArquivoEntrada) - 1] = '\0';
     }
 
-    if (nomeArquivoSaida[0] == '<' && nomeArquivoSaida[strlen(nomeArquivoSaida) - 1] == '>') {
-        nomeArquivoSaida++;
-        nomeArquivoSaida[strlen(nomeArquivoSaida) - 1] = '\0';
-    }
-
     *fdEntrada = fopen(nomeArquivoEntrada, "r");
     if (*fdEntrada == NULL) {
         perror("Erro ao abrir arquivo de entrada");
         exit(EXIT_FAILURE);
     }
 
-    *fdSaida = fopen(nomeArquivoSaida, "wb"); 
-    if (*fdSaida == NULL) {
+    *fdSaida = fopen("saida.ias.m", "wb"); 
+    if(*fdSaida == NULL) {
         perror("Erro ao abrir arquivo de saída");
         exit(EXIT_FAILURE);
     }
