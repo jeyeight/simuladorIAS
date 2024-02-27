@@ -14,7 +14,7 @@ void zerarString(char string[], int tamanho){
     }
 }
 
-void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida, struct banco_de_registradores *BR){
+void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida){
     int opt;
     char *nomeArquivoEntrada = NULL;
 
@@ -24,7 +24,7 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
                 nomeArquivoEntrada = optarg;
                 break;
             case 'i':
-                strcpy(BR->PC, optarg);
+                strcpy(BR.PC, optarg);
                 break;
             default:
                 fprintf(stderr, "Uso: %s -p nomedoarquivodeentrada.ias -i PC\n", argv[0]);
@@ -53,6 +53,10 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
         exit(EXIT_FAILURE);
     }
 }
+
+void incrementarPC(int* PC){
+    *PC++;
+} 
 
 // bool isNegative(unsigned char* memoria, int number){
 //     long long int linha = 0;

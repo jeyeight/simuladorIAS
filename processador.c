@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "headers/types.h"
 
-
-
 int executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos[], int* Custo){
     int result = 0;
     switch (Operacao) {
@@ -76,4 +74,7 @@ int executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos[
             printf("Operação não reconhecida.\n");
     };
     return result;
+};
+
+void UC(){
 };

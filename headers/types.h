@@ -16,8 +16,6 @@ typedef struct banco_de_registradores{
     registrador EX_ER;
 };
 
-struct banco_de_registradores BR;
-struct UnidadeLogicaAritmetica ULA;
 typedef struct UnidadeLogicaAritmetica
 {
     int A;
@@ -26,6 +24,11 @@ typedef struct UnidadeLogicaAritmetica
     int Resultado;
 };
 
+typedef struct Flags
+{
+    char ExemploDeFlag;
+    char ExemploDeFLag2;
+};
 
 enum Operacoes {
     ADD,
@@ -52,4 +55,7 @@ enum Operacoes {
     EXIT
 };
 
+struct banco_de_registradores BR;
+struct UnidadeLogicaAritmetica ULA;
+int flags = 0;
 #endif
