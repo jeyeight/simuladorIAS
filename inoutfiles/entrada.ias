@@ -1,0 +1,23 @@
+/*
+LOADM:
+LOADMM:
+STOR:
+LOAD:
+LOAD-M:
+LOAD|M:
+LOAD-|M:
+JUMP:
+JUMP+:
+ADD:
+ADD|: ?
+SUB:
+SUB|: 
+MUL:
+DIV:
+LSH:
+RSH: 
+STORM: 
+EXIT:
+*/
+LOAD M(5)
+ADD M(5)

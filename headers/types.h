@@ -2,7 +2,6 @@
 #define TYPES_H
 
 typedef unsigned char registrador[5];
-
 typedef struct banco_de_registradores{
     registrador IR;
     registrador IBR;
@@ -17,6 +16,40 @@ typedef struct banco_de_registradores{
     registrador EX_ER;
 };
 
+struct banco_de_registradores BR;
+struct UnidadeLogicaAritmetica ULA;
+typedef struct UnidadeLogicaAritmetica
+{
+    int A;
+    int B;
+    int C;
+    int Resultado;
+};
 
+
+enum Operacoes {
+    ADD,
+    ADDModulo,
+    SUB, 
+    SUBModulo,
+    MUL,
+    DIV,
+    LSH,
+    RSH,
+    STOR,
+    STOREsq,
+    STORDir,
+    LOADMQ,
+    LOADMQM,
+    LOAD,
+    LOADMenos,
+    LOADModulo, 
+    LOADMenosModulo,
+    JUMPDir,
+    JUMPEsq,
+    JUMPPDir,
+    JUMPPEsq,
+    EXIT
+};
 
 #endif
