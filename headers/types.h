@@ -2,6 +2,7 @@
 #define TYPES_H
 
 typedef unsigned char registrador[5];
+typedef unsigned char* Memoria; 
 typedef struct banco_de_registradores{
     registrador IR;
     registrador IBR;
@@ -55,6 +56,7 @@ enum Operacoes {
     EXIT
 };
 
+Memoria m;
 struct banco_de_registradores BR;
 struct UnidadeLogicaAritmetica ULA;
 int flags = 0;

@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <getopt.h>
 #include "headers/types.h"
-#include "headers/main.h" 
+#include "headers/memoria.h" 
 
 
 //Arquivo responsável por fazer a tradução do arquivo de entrada e carregar a memória da máquina 

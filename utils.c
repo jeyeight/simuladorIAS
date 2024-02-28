@@ -58,6 +58,12 @@ void incrementarPC(int* PC){
     *PC++;
 } 
 
+void transferirRegistradores(registrador Src, registrador Dest){
+    for(int i = 0; i < 5; i++){
+        Dest[i] = Src[i];
+    }
+}
+
 // bool isNegative(unsigned char* memoria, int number){
 //     long long int linha = 0;
 

@@ -6,20 +6,18 @@
 #include <stdbool.h>
 #include <getopt.h>
 #include "headers/types.h"
-#include "headers/main.h" 
+#include "headers/memoria.h" 
 #include "headers/utils.h"
 //#include "memoria.c"
 #include "utils.c"
 /*
 Array com flags globais
 */
-int flags[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 int clock = 0;
 int main(int argc, char* argv[]){
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
-    unsigned char* m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
-    struct banco_de_registradores BR;
+    m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
 
     if(atoi(BR.PC) > 4096 || atoi(BR.PC) < 0){

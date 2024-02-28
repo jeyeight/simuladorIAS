@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include "utils.h"
+#include "utils.c"
 #include "headers/types.h"
-
 int executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos[], int* Custo){
     int result = 0;
-    switch (Operacao) {
+    switch (Operacao){
         case ADD:
             result = Operando1 + BR.AC;
             break;
@@ -29,7 +30,7 @@ int executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos[
             printf("Operação de Deslocamento à Direita.\n");
             break;
         case STOR:
-            printf("Operação de Armazenamento.\n");
+            transferirRegistradores(BR.AC, m);
             break;
         case STOREsq:
             printf("Operação de Armazenamento Quadrado.\n");
@@ -74,7 +75,4 @@ int executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos[
             printf("Operação não reconhecida.\n");
     };
     return result;
-};
-
-void UC(){
 };
