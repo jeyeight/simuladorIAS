@@ -3,6 +3,8 @@
 
 typedef unsigned char registrador[5];
 typedef unsigned char* Memoria; 
+typedef char FlagsDoSistema; 
+typedef int ClockDoSistema;
 struct banco_de_registradores{
     registrador IR;
     registrador IBR;
@@ -82,6 +84,6 @@ const char *nomesOperacoes[] = {
 Memoria m;
 struct banco_de_registradores BR;
 struct UnidadeLogicaAritmetica ULA;
-char flags;
-int clock;
+FlagsDoSistema flags;
+ClockDoSistema clock;
 #endif
