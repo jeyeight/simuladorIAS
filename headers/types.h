@@ -3,7 +3,7 @@
 
 typedef unsigned char registrador[5];
 typedef unsigned char* Memoria; 
-typedef struct banco_de_registradores{
+struct banco_de_registradores{
     registrador IR;
     registrador IBR;
     registrador MAR;
@@ -17,16 +17,14 @@ typedef struct banco_de_registradores{
     registrador EX_ER;
 };
 
-typedef struct UnidadeLogicaAritmetica
-{
+struct UnidadeLogicaAritmetica{
     int A;
     int B;
     int C;
     int Resultado;
 };
 
-typedef struct Flags
-{
+struct Flags{
     char ExemploDeFlag;
     char ExemploDeFLag2;
 };
@@ -59,5 +57,6 @@ enum Operacoes {
 Memoria m;
 struct banco_de_registradores BR;
 struct UnidadeLogicaAritmetica ULA;
-int flags = 0;
+char flags;
+int clock;
 #endif

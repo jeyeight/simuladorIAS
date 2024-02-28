@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include "utils.h"
 #include "utils.c"
+#include "headers/utils.h"
 #include "headers/types.h"
-int executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos[], int* Custo){
-    int result = 0;
+char executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos[], int* Custo){
+    char result = 0;
     switch (Operacao){
         case ADD:
             result = Operando1 + BR.AC;

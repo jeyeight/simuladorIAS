@@ -1,12 +1,8 @@
 #include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
 #include <getopt.h>
-#include "headers/types.h"
 #include "headers/utils.h"
+#include "headers/types.h"
 
 void zerarString(char string[], int tamanho){
     for(int i = 0; i < tamanho; i++){
@@ -24,16 +20,16 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
                 nomeArquivoEntrada = optarg;
                 break;
             case 'i':
-                strcpy(BR.PC, optarg);
+                strcpy((char*)BR.PC, optarg);
                 break;
             default:
                 fprintf(stderr, "Uso: %s -p nomedoarquivodeentrada.ias -i PC\n", argv[0]);
-                exit(EXIT_FAILURE);
+                exit(1);
         }
     }
     if (nomeArquivoEntrada == NULL) {
         fprintf(stderr, "É necessário fornecer os argumentos -p e -i\n");
-        exit(EXIT_FAILURE);
+        exit(1);
     }
 
     if (nomeArquivoEntrada[0] == '<' && nomeArquivoEntrada[strlen(nomeArquivoEntrada) - 1] == '>') {
@@ -44,25 +40,16 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
     *fdEntrada = fopen(nomeArquivoEntrada, "r");
     if (*fdEntrada == NULL) {
         perror("Erro ao abrir arquivo de entrada");
-        exit(EXIT_FAILURE);
+        exit(1);
     }
 
-    *fdSaida = fopen("saida.ias.m", "wb"); 
+    *fdSaida = fopen("inoutfiles/saida.ias.m", "wb"); 
     if(*fdSaida == NULL) {
         perror("Erro ao abrir arquivo de saída");
-        exit(EXIT_FAILURE);
+        exit(1);
     }
 }
 
-void incrementarPC(int* PC){
-    *PC++;
-} 
-
-void transferirRegistradores(registrador Src, registrador Dest){
-    for(int i = 0; i < 5; i++){
-        Dest[i] = Src[i];
-    }
-}
 
 // bool isNegative(unsigned char* memoria, int number){
 //     long long int linha = 0;
