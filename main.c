@@ -8,7 +8,7 @@
 #include "headers/types.h"
 #include "headers/main.h" 
 #include "headers/utils.h"
-#include "memoria.c"
+//#include "memoria.c"
 #include "utils.c"
 /*
 Array com flags globais
