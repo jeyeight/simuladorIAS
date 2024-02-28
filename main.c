@@ -5,6 +5,7 @@
 #include "barramento.c"
 #include "flags.c"
 #include "utils.c"
+
 /*
 Array com flags globais
 */
@@ -25,6 +26,10 @@ int main(int argc, char* argv[]){
         perror("Erro ao abrir o arquivo");
         exit(EXIT_FAILURE);
     }
+
+    verificaPesos(fdEntrada);
+
+    testarPesos();
 
     carregarMemoria(m, fdEntrada, fdSaida);
     //BR.MBR =

@@ -54,6 +54,31 @@ enum Operacoes {
     EXIT
 };
 
+const char *nomesOperacoes[] = {
+    "ADD",
+    "ADD|",
+    "SUB", 
+    "SUB|",
+    "MUL",
+    "DIV",
+    "LSH",
+    "RSH",
+    "STOR",
+    "STORM",
+    "STORM",
+    "LOADM",
+    "LOADMM",
+    "LOAD",
+    "LOAD-M",
+    "LOAD|M", 
+    "LOAD-|M",
+    "JUMP",
+    "JUMP",
+    "JUMP+",
+    "JUMP+",
+    "EXIT"
+};
+
 Memoria m;
 struct banco_de_registradores BR;
 struct UnidadeLogicaAritmetica ULA;

@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "utils.c"
 #include "headers/utils.h"
 #include "headers/types.h"
+
 char executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos[], int* Custo){
     char result = 0;
     switch (Operacao){
@@ -30,7 +30,7 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos
             printf("Operação de Deslocamento à Direita.\n");
             break;
         case STOR:
-            transferirRegistradores(BR.AC, m);
+            transferirRR(BR.AC, m);
             break;
         case STOREsq:
             printf("Operação de Armazenamento Quadrado.\n");

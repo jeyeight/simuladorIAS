@@ -5,7 +5,6 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <getopt.h>
-#include "utils.c"
 #include "headers/types.h"
 #include "headers/memoria.h" 
 
@@ -15,6 +14,7 @@
 opc opcodeLeft;
 short enderecoLeft;
 int posicao_memoria = 0;
+int Pesos[23];
 
 void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
     char inputEsq[30];
