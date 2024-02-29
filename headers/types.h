@@ -1,35 +1,41 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-typedef unsigned char registrador[5];
+typedef unsigned char Registrador[5];
 typedef unsigned char* Memoria; 
 typedef char FlagsDoSistema; 
 typedef int ClockDoSistema;
-struct banco_de_registradores{
-    registrador IR;
-    registrador IBR;
-    registrador MAR;
-    registrador MBR;
-    registrador AC;
-    registrador PC;
-    registrador MQ;
-    registrador B_D;
-    registrador D_BO;
-    registrador BO_EX;
-    registrador EX_ER;
-};
+typedef char Dado[5];
+typedef char Endereco[3];
+typedef struct{
+    Registrador IR;
+    Registrador IBR;
+    Registrador MAR;
+    Registrador MBR;
+    Registrador AC;
+    Registrador PC;
+    Registrador MQ;
+    Registrador B_D;
+    Registrador D_BO;
+    Registrador BO_EX;
+    Registrador EX_ER;
+}BancoDeRegistradores;
 
-struct UnidadeLogicaAritmetica{
+typedef struct {
     int A;
     int B;
     int C;
     int Resultado;
-};
+}UnidadeLogicaAritmetica;
 
-struct Flags{
-    char ExemploDeFlag;
-    char ExemploDeFLag2;
-};
+typedef struct {
+    Endereco ed; 
+    Dado dd;
+} BarramentoMemoria;
+
+typedef struct {
+    Dado dados;
+} BarramentoDados;
 
 enum Operacoes {
     ADD,
@@ -82,8 +88,11 @@ const char *nomesOperacoes[] = {
 };
 
 Memoria m;
-struct banco_de_registradores BR;
-struct UnidadeLogicaAritmetica ULA;
+BancoDeRegistradores BR;
+UnidadeLogicaAritmetica ULA;
 FlagsDoSistema flags;
 ClockDoSistema clock;
-#endif
+BarramentoDados BD;
+BarramentoMemoria BM;
+
+#endif;

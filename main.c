@@ -32,8 +32,6 @@ int main(int argc, char* argv[]){
     testarPesos();
 
     carregarMemoria(m, fdEntrada, fdSaida);
-    //BR.MBR =
-    // 
 
     free(m);
     fclose(fdEntrada);

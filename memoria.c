@@ -388,18 +388,18 @@ void preencherZero(unsigned char* memoria){
     posicao_memoria = fim_entrada_dados;
 }
 
-void transferirRR(registrador reg1, registrador reg2){
+void transferirRR(Registrador reg1, Registrador reg2){
     for(int i = 0; i < 5; i++){
         reg1[i] = reg2[i];
     }
 }
-void transferirRM(registrador reg, Memoria m, int PosicaoInicialMemoria){
+void transferirRM(Registrador reg, Memoria m, int PosicaoInicialMemoria){
     for(int i = 0; i < 5; i++){
         reg[i] = m[PosicaoInicialMemoria];
         PosicaoInicialMemoria++;
     }
 }
-void transferirMR(registrador reg, Memoria m, int PosicaoMemoria){
+void transferirMR(Registrador reg, Memoria m, int PosicaoMemoria){
     for(int i = 0; i < 5; i++){
         m[PosicaoMemoria] =reg[i];
         PosicaoMemoria++;
