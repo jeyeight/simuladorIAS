@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <getopt.h>
 #include "headers/types.h"
-#include "headers/main.h" 
+#include "headers/memoria.h" 
 
 
 //Arquivo responsável por fazer a tradução do arquivo de entrada e carregar a memória da máquina 
@@ -14,6 +14,7 @@
 opc opcodeLeft;
 short enderecoLeft;
 int posicao_memoria = 0;
+int Pesos[23];
 
 void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
     char inputEsq[30];
@@ -370,7 +371,6 @@ void escreverArquivo(unsigned char* memoria, FILE* fdSaida){
     }
 }
 
-
 short determinarEndereco(opc opcode, char inputDir[]){
     if(opcode == (opc)OPC_JUMPEsq || opcode == (opc)OPC_JUMPDir || opcode == (opc)OPC_JUMPPEsq || opcode == (opc)OPC_JUMPPDir || opcode == (opc)OPC_STORDir || opcode == (opc)OPC_STOREsq){
         return verificaEndereco(inputDir, true);
@@ -386,4 +386,29 @@ void preencherZero(unsigned char* memoria){
         memoria[i] = 0;
     }
     posicao_memoria = fim_entrada_dados;
+}
+
+void transferirRR(Registrador reg1, Registrador reg2){
+    for(int i = 0; i < 5; i++){
+        reg1[i] = reg2[i];
+    }
+}
+void transferirRM(Registrador reg, Memoria m, int PosicaoInicialMemoria){
+    for(int i = 0; i < 5; i++){
+        reg[i] = m[PosicaoInicialMemoria];
+        PosicaoInicialMemoria++;
+    }
+}
+void transferirMR(Registrador reg, Memoria m, int PosicaoMemoria){
+    for(int i = 0; i < 5; i++){
+        m[PosicaoMemoria] =reg[i];
+        PosicaoMemoria++;
+    }
+}
+void transferirMM(Memoria m, int PosicaoMemoriaSrc, int PosicaoMemoriaDest){
+    for(int i = 0; i < 5; i++){
+        m[PosicaoMemoriaDest] = m[PosicaoMemoriaSrc];
+        PosicaoMemoriaSrc++;
+        PosicaoMemoriaDest++;
+    }
 }

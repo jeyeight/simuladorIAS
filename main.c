@@ -1,28 +1,23 @@
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
-#include <getopt.h>
-#include "headers/types.h"
-#include "headers/main.h" 
-#include "headers/utils.h"
-//#include "memoria.c"
+#include "memoria.c"
+#include "processador.c"
+#include "barramento.c"
+#include "flags.c"
 #include "utils.c"
+
 /*
 Array com flags globais
 */
-int flags[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-int clock = 0;
 int main(int argc, char* argv[]){
+    clock = 0;
+    flags = 0;
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
-    unsigned char* m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
-    struct banco_de_registradores BR;
+    m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
 
-    if(atoi(BR.PC) > 4096 || atoi(BR.PC) < 0){
+    if(atoi((char*)BR.PC) > 4096 || atoi((char*)BR.PC) < 0){
         perror("PC não pode ter um valor fora do alcance da memória");
         exit(EXIT_FAILURE);
     };
@@ -32,9 +27,11 @@ int main(int argc, char* argv[]){
         exit(EXIT_FAILURE);
     }
 
+    verificaPesos(fdEntrada);
+
+    testarPesos();
+
     carregarMemoria(m, fdEntrada, fdSaida);
-    //BR.MBR =
-    // 
 
     free(m);
     fclose(fdEntrada);
