@@ -7,6 +7,7 @@
 #include <getopt.h>
 #include "headers/types.h"
 #include "headers/memoria.h" 
+#include "headers/utils.h"
 
 
 //Arquivo responsável por fazer a tradução do arquivo de entrada e carregar a memória da máquina 

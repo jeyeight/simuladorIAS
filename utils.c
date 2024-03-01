@@ -53,7 +53,7 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
 void testarPesos(){
     printf("Testando os Pesos inseridos. \n");
     for(int i = 0; i< 22; i++){
-        printf("Na operacao: %s\ ", nomesOperacoes[i]);
+        printf("Na operacao: %s ", nomesOperacoes[i]);
         printf("O peso atribuido foi: %i \n", Pesos[i]);
         // printf("O valor do enum é: %d\n", Operacoes);
         
@@ -118,7 +118,7 @@ void verificaPesos(FILE * fdEntrada){
 
         caracter[0] = fgetc(fdEntrada);
         //printf("%c - caracter ", caracter[0]);
-        if(caracter != '*'){
+        if(caracter[0] != '*'){
             fseek(fdEntrada, -1, SEEK_CUR);
         }
 
@@ -126,11 +126,11 @@ void verificaPesos(FILE * fdEntrada){
         
     }
     caracter[0] = fgetc(fdEntrada); //ler novamente o *
-    printf("%c - caracter \n", caracter[0]);
+    //printf("%c - caracter \n", caracter[0]);
     caracter[0] = fgetc(fdEntrada); //ler a /
-    printf("%c - caracter \n", caracter[0]);
+    //printf("%c - caracter \n", caracter[0]);
     caracter[0] = fgetc(fdEntrada); //ler a \n sei la
-    printf("%c - caracter \n", caracter[0]); 
+    //printf("%c - caracter \n", caracter[0]); 
     
     
     

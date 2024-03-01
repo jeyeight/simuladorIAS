@@ -6,6 +6,7 @@
 #include "flags.c"
 #include "utils.c"
 
+
 /*
 Array com flags globais
 */
