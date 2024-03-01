@@ -31,7 +31,15 @@ int main(int argc, char* argv[]){
     verificaPesos(fdEntrada);
 
     carregarMemoria(m, fdEntrada, fdSaida);
+
+    int num1 = 1;
+    sprintf(BR.AC, "%i", num1);
     
+    printf("AC antes = %s", BR.AC);
+    executaULA(ADD, 1, atoi(BR.AC));
+
+    printf("AC depois = %s", BR.AC);
+
     free(m);
     fclose(fdEntrada);
 

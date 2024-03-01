@@ -86,6 +86,7 @@ typedef struct{
 typedef struct{
     Endereco end;
 }BarramentoEndereco;
+
 typedef struct{
     Dado dado;
 }BarramentoDados;

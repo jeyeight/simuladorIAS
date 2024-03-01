@@ -1,12 +1,16 @@
 #include <stdio.h>
+#include <string.h>
 #include "headers/utils.h"
 #include "headers/types.h"
 
-char executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos[], int* Custo){
+char executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
     char result = 0;
     switch (Operacao){
         case ADD:
-            //result = Operando1 + BR.AC;
+            printf("%i - Peso ADD", Pesos[ADD]);
+            int acumulador = atoi(BR.AC);
+            acumulador += Operando1;
+            sprintf(BR.AC, "%d", acumulador);
             break;
         case ADDModulo:
             printf("Operação de Adição com Módulo.\n");
@@ -39,7 +43,8 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos
             printf("Operação de Armazenamento Direto.\n");
             break;
         case LOADMQ:
-            printf("Operação de Carregamento MQ.\n");
+            printf("Operação de Carregamento MQ.");
+            printf("Peso = %i", Pesos[LOADMQ]);
             break;
         case LOADMQM:
             printf("Operação de Carregamento MQ Multiplicação.\n");

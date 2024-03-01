@@ -3,7 +3,7 @@
 #include <string.h>
 
 void setBarramentoDados(Dado dado){
-    strcpy(BD.dado,dado); 
+    strcpy((char*)BD.dado,(char*)dado); 
 };
 
 Dado* getBarramentoDados(){
@@ -15,7 +15,7 @@ Dado* getBarramentoDados(){
 }
 
 void setBarramentoEndereco(Endereco ende){
-    strcpy(BE.end,ende); 
+    strcpy((char*)BE.end,(char*)ende); 
 };
 
 Endereco* getBarramentoEndereco(){

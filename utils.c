@@ -64,8 +64,6 @@ void verificaPesos(FILE * fdEntrada){
     caracter[1] = '\0';
     char instrucao[10];
     char peso[10];
-    int indice_instrucao = 0;
-    int contador_teste = 0;
     caracter[0] = fgetc(fdEntrada);
     if(caracter[0] == '/'){
         caracter[0] = fgetc(fdEntrada);
