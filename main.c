@@ -38,6 +38,9 @@ int main(int argc, char* argv[]){
     printf("AC antes = %s", BR.AC);
     executaULA(ADD, 1, atoi(BR.AC));
 
+
+    
+
     printf("AC depois = %s", BR.AC);
 
     free(m);
