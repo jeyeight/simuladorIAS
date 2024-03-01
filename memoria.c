@@ -6,17 +6,9 @@
 #include <stdbool.h>
 #include <getopt.h>
 #include "headers/types.h"
-#include "headers/memoria.h" 
 #include "headers/utils.h"
-
-
+#include "headers/memoria.h" 
 //Arquivo responsável por fazer a tradução do arquivo de entrada e carregar a memória da máquina 
-
-opc opcodeLeft;
-short enderecoLeft;
-int posicao_memoria = 0;
-int Pesos[23];
-
 void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
     char inputEsq[30];
     char inputDir[30];

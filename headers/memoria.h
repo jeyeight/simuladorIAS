@@ -1,10 +1,7 @@
 #ifndef MEMORIA_H
 #define MEMORIA_H
-#include <stdio.h>
 
 //Definições
-typedef unsigned char opc;
-
 #define size_memory 4096
 #define numeros_memoria 500
 #define null_address 0b000000000000

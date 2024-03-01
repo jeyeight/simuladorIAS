@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "headers/types.h"
 #include "memoria.c"
 #include "processador.c"
 #include "barramento.c"
 #include "flags.c"
 #include "utils.c"
-
 
 /*
 Array com flags globais
@@ -30,12 +30,8 @@ int main(int argc, char* argv[]){
 
     verificaPesos(fdEntrada);
 
-    testarPesos();
-
     carregarMemoria(m, fdEntrada, fdSaida);
-    //BR.MBR =
-    // 
-
+    
     free(m);
     fclose(fdEntrada);
 

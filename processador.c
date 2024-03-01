@@ -6,7 +6,7 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos
     char result = 0;
     switch (Operacao){
         case ADD:
-            result = Operando1 + BR.AC;
+            //result = Operando1 + BR.AC;
             break;
         case ADDModulo:
             printf("Operação de Adição com Módulo.\n");
@@ -76,3 +76,4 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2, int Pesos
     };
     return result;
 };
+

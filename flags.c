@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "headers/types.h"
 
 #define ZERO_FLAG_MASK 0b01
 #define CARRY_FLAG_MASK 0b10 // 0b10
 #define OutraCoisa 0b11
-
-char flags = 0;
 
 void set_zero_flag(bool value) {
     if (value)
