@@ -126,87 +126,82 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
 
 
 void decodificacao(int posicao, bool newInstruction){ //posicao = posicao da primeira instrucao
+    //posicao n precisa, vai estar em MBR ja.
+    bool opcode_exit = false;
     int numero = 0;
     int end1 = 0;
     int end2 = 0;
+    int result = 0;
     int opcode = 0;
     int opcode2 = 0;
-    long long int linha = 0;
     if(newInstruction){
+        unsigned char temp;
         int segunda_instrucao = 0;
-        //busca foi realizada antes.
-        linha |= m[posicao];
-        opcode = linha;
-        printf("\nopcode1 = %i\n", opcode); //certo!
-        sprintf(BR.IR, "%d", opcode);
         
-        posicao++;
-        linha = 0; //resetei
-        linha |= m[posicao];
-        linha <<= 8;
-        posicao++;
-        linha |= m[posicao];
-        linha >>= 4;
-        end1 = linha;
+        //busca foi realizada antes.
+        
+        //Pegar o primeiro opcode e colocar em IR. 
+        BR.IR[4] = BR.MBR[0];
+        printf("%i - Opcode 1 em IR\n", BR.IR[4]);
+        opcode = BR.IR[4];
+        printf("opcodeeeee %i\n", opcode);
 
-        printf("endereco 1 = %i\n", end1);
-        sprintf(BR.MAR, "%d", end1);
-        //fará essa parte se houverem duas instrução, se houver só 1, não.
-        linha = 0;
-        linha |= m[posicao];
-        linha <<= 8;
-        posicao++;
-        linha |= m[posicao];
-        linha <<= 8;
-        posicao++;
-        linha |= m[posicao];
-        segunda_instrucao = linha & 1048575;
-        sprintf(BR.IBR, "%d", segunda_instrucao);
+        if(opcode == OPC_EXIT){
+            opcode_exit = true;
+        }
 
-    }else{ //else está tudo torto, ta qualquer coisa.
+        //Pegar o primeiro endereco e colocar em MAR.
+        BR.MAR[3] = BR.MBR[1];
+        BR.MAR[4] = BR.MBR[2];
 
+        BR.MAR[4] >>= 4;
 
-    linha |= m[posicao];
-    opcode = linha;
-    printf("\nopcode1 = %i\n", opcode); //certo!
-    sprintf(BR.IR, "%d", opcode);
-    
-    posicao++;
-    linha = 0; //resetei
-    linha |= m[posicao];
-    linha <<= 8;
-    posicao++;
-    linha |= m[posicao];
-    linha >>= 4;
-    end1 = linha;
+        temp = BR.MAR[3] << 4;
 
-    printf("endereco 1 = %i\n", end1);
-    
-    linha = 0;
-    linha |= m[posicao];
-    //printf("%i - posicao\n", posi);
-    //printf("linha agora - %lld\n", linha);
-    linha <<= 8;
-    //printf("linha agora entaummm - %lld\n", linha);
+        BR.MAR[3] >>= 4;
+        BR.MAR[4] |= temp;
 
-    posicao++;
-    linha |= m[posicao];
-    //printf("linha agora entaummm22 - %lld\n", linha);
+        printf("\n%i - Endereco 1 Parte 1", BR.MAR[3]);
+        printf("\n%i - Endereco 1 Parte 2\n", BR.MAR[4]);
 
-    opcode2 = linha & 4080;
-    opcode2 >>= 4;
+        printaEnderecoMar();
+        
+        if(!opcode_exit){ //precisa das duas instruções, não é um EXIT.
+            //colocar a segunda instrucao em IBR        
+            BR.IBR[2] = BR.MBR[2];
+            BR.IBR[3] = BR.MBR[3];
+            BR.IBR[4] = BR.MBR[4];
+            BR.IBR[2] &= 15;
 
-    printf("opcode2 = %i\n", opcode2);
-    linha = 0;
-    linha |= m[posicao];
-    linha <<= 8;
-    posicao++;
-    linha |= m[posicao];
-    end2 = linha & 4095;
+            printf("\n%i - Pedaco 1 da Instrucao 2", BR.IBR[2]);
+            printf("\n%i - Pedaco 2 da Instrucao 2", BR.IBR[3]);
+            printf("\n%i - Pedaco 3 da Instrucao 2", BR.IBR[4]);
+        }
 
-    printf("endereco 2 = %i\n", end2);
+    }else{ 
+        unsigned char temp2;
 
-    
+        //colocar o opcode da instrução 2 em IR.
+        BR.IR[4] = BR.IBR[2];
+
+        BR.IR[4] <<= 4;
+
+        temp2 = BR.IBR[3] & 240;
+        temp2 >>= 4;
+
+        BR.IR[4] |= temp2;
+
+        printf("\n%i - Opcode 2", BR.IR[4]);
+
+        //colocar o endereço da instrução 2 em MAR. 
+        BR.MAR[3] = BR.IBR[3];
+        BR.MAR[3] &= 15;
+        BR.MAR[4] = BR.IBR[4];
+        
+        printf("\n%i - Endereço segunda instrucao parte 1", BR.MAR[3]);
+        printf("\n%i - Endereço segunda instrucao parte 2\n", BR.MAR[4]);
+        
+        printaEnderecoMar();
     
     }
 

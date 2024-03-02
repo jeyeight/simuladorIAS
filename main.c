@@ -35,11 +35,48 @@ int main(int argc, char* argv[]){
     int num1 = 1;
     sprintf(BR.AC, "%i", num1);
     
-    printf("AC antes = %s", BR.AC);
+    printf("AC antes = %s\n", BR.AC);
     executaULA(ADD, 1, atoi(BR.AC));
 
-
+    long long int duas_instrucoes = 0;
+    int posicon = 2500;
+    duas_instrucoes |= m[posicon];
+    BR.MBR[0] = m[posicon];
+    duas_instrucoes <<= 8;
     
+    posicon++;
+    duas_instrucoes |= m[posicon];
+    BR.MBR[1] = m[posicon];
+    duas_instrucoes <<= 8;
+    posicon++;
+    duas_instrucoes |= m[posicon];
+    BR.MBR[2] = m[posicon];
+    duas_instrucoes <<= 8;
+    posicon++;
+    duas_instrucoes |= m[posicon];
+    BR.MBR[3] = m[posicon];
+    duas_instrucoes <<= 8;
+    posicon++;
+    duas_instrucoes |= m[posicon];
+    BR.MBR[4] = m[posicon];
+    posicon++;
+    printf("as duas instrucoes sao o valor - %lld\n", duas_instrucoes);
+    //printBits(duas_instrucoes);
+    //sprintf(BR.MBR, "%ld", duas_instrucoes);
+    //printf("%s - MBR\n", BR.MBR);
+
+    // printBitsChar(BR.MBR[0]);
+    // printBitsChar(BR.MBR[1]);
+    // printBitsChar(BR.MBR[2]);
+    // printBitsChar(BR.MBR[3]);
+    // printBitsChar(BR.MBR[4]);
+
+
+    decodificacao(0, true);    
+    //decodificacao(0, false);
+
+
+
 
     printf("AC depois = %s", BR.AC);
 

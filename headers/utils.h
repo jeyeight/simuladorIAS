@@ -6,5 +6,6 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
 void testarPesos();
 void verificaPesos(FILE * fdEntrada);
 void setar_peso(char* operacao, int peso);
-
+char* itoa(int value, char* result, int base);
+void printaEnderecoMar();
 #endif
