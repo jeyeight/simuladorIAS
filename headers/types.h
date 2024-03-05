@@ -108,17 +108,17 @@ const char *nomesOperacoes[] = {
     "EXIT"
 };
 typedef struct{
-    registrador IR;
-    registrador IBR;
-    registrador MAR;
-    registrador MBR;
-    registrador AC;
-    registrador PC;
-    registrador MQ;
-    registrador B_D;
-    registrador D_BO;
-    registrador BO_EX;
-    registrador EX_ER;
+    Registrador IR;
+    Registrador IBR;
+    Registrador MAR;
+    Registrador MBR;
+    Registrador AC;
+    Registrador PC;
+    Registrador MQ;
+    Registrador B_D;
+    Registrador D_BO;
+    Registrador BO_EX;
+    Registrador EX_ER;
 }banco_de_registradores;
 
 typedef struct{

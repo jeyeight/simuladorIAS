@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "memoria.c"
+#include "headers/memoria.h"
 #include "headers/utils.h"
 #include "headers/types.h"
 
@@ -189,7 +189,7 @@ void decodificacao(int posicao, bool newInstruction){ //posicao = posicao da pri
         printf("\n%i - Opcode 2", BR.IR[4]);
 
         //colocar o endereço da instrução 2 em MAR. 
-        BR.MAR[3] = BR.IBR[3];
+        BR.MAR[3] = BR.IBR[3]; //receba  =°3°=
         BR.MAR[3] &= 15;
         BR.MAR[4] = BR.IBR[4];
         

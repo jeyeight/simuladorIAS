@@ -73,7 +73,7 @@ int main(int argc, char* argv[]){
 
 
     decodificacao(0, true);    
-    //decodificacao(0, false);
+    decodificacao(0, false);
 
 
 
