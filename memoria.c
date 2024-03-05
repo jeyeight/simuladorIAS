@@ -140,7 +140,6 @@ opc verificaJump(char inputDir[]){
 
     while(inputDir[contador] != ','){
         contador++;
-
     }
 
     contador++;
@@ -381,20 +380,20 @@ void preencherZero(unsigned char* memoria){
     posicao_memoria = fim_entrada_dados;
 }
 
-void transferirRR(registrador reg1, registrador reg2){
+void transferirRR(registrador destino, registrador origem){
     for(int i = 0; i < 5; i++){
-        reg1[i] = reg2[i];
+        destino[i] = origem[i];
     }
 }
-void transferirRM(registrador reg, Memoria m, int PosicaoInicialMemoria){
+void transferirMR(registrador destino, Memoria m, int PosicaoInicialMemoria){
     for(int i = 0; i < 5; i++){
-        reg[i] = m[PosicaoInicialMemoria];
+        destino[i] = m[PosicaoInicialMemoria];
         PosicaoInicialMemoria++;
     }
 }
-void transferirMR(registrador reg, Memoria m, int PosicaoMemoria){
+void transferirRM(registrador origem, Memoria destino, int PosicaoMemoria){
     for(int i = 0; i < 5; i++){
-        m[PosicaoMemoria] =reg[i];
+        destino[PosicaoMemoria] = origem[i];
         PosicaoMemoria++;
     }
 }

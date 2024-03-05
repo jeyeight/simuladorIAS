@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include "memoria.c"
 #include "headers/utils.h"
 #include "headers/types.h"
 
 #define LIMITE_39_BITS 549755813888
-
+#define PRIMEIRO_BIT 0b10000000
 char executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
     char result = 0;
     int acumulador;
@@ -41,7 +43,8 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
             long int Acumulador = atoi(BR.MQ);
             Acumulador = Mq * Operando1;
             if(Acumulador > LIMITE_39_BITS){
-                
+                Mq = Acumulador - LIMITE_39_BITS;
+                Acumulador = LIMITE_39_BITS;
             }
             sprintf(BR.MQ, "%d", Mq);
             sprintf(BR.AC, "%d", Acumulador);
@@ -68,11 +71,7 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
             sprintf(BR.AC, "%d", acumulador);
             break;
         case STOR:
-            transferirRR(BR.AC, m);
-            int posicao = Operando1 * 5;
-            for(int i = posicao; i<posicao+5; i++){
-                
-            }
+            transferirRM(BR.AC, m, Operando1);
             break;
         case STOREsq:
             printf("Operação de Armazenamento Quadrado.\n");
@@ -81,21 +80,17 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
             printf("Operação de Armazenamento Direto.\n");
             break;
         case LOADMQ:
-            printf("Operação de Carregamento MQ.");
-            printf("Peso = %i", Pesos[LOADMQ]);
+            transferirRR(BR.AC, BR.MQ);
             break;
         case LOADMQM:
-            printf("Operação de Carregamento MQ Multiplicação.\n");
+            transferirRR(BR.AC, abs(BR.MQ));
             break;
         case LOAD:
             printf("Operação de Carregamento.\n");
-            //apenas testando, precisará passar pelo barramento.
-
-
-
+            transferirMR(BR.AC, m, Operando1);
             break;
         case LOADMenos:
-            printf("Operação de Carregamento Negativo.\n");
+
             break;
         case LOADModulo:
             printf("Operação de Carregamento com Módulo.\n");
