@@ -8,8 +8,7 @@
 
 #define LIMITE_39_BITS 549755813888
 #define PRIMEIRO_BIT 0b10000000
-char executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
-    char result = 0;
+void executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
     int acumulador;
     switch (Operacao){
         case ADD:
@@ -90,13 +89,16 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
             transferirMR(BR.AC, m, Operando1);
             break;
         case LOADMenos:
-
+            transferirMR(BR.AC, m, Operando1);
+            BR.AC[0] ^= BR.AC[0];
             break;
         case LOADModulo:
-            printf("Operação de Carregamento com Módulo.\n");
+            transferirMR(BR.AC, m, abs(Operando1));
             break;
         case LOADMenosModulo:
             printf("Operação de Carregamento Negativo com Módulo.\n");
+            transferirMR(BR.AC, m, abs(Operando1));
+            BR.AC[0] ^= BR.AC[0];
             break;
         case JUMPDir:
             printf("Operação de Salto Direto.\n");
@@ -111,12 +113,11 @@ char executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
             printf("Operação de Salto Positivo Indireto.\n");
             break;
         case EXIT:
-            printf("Operação de Saída.\n");
+            exit(1);
             break;
         default:
             printf("Operação não reconhecida.\n");
     };
-    return result;
 };
 
 
