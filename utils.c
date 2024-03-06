@@ -189,8 +189,6 @@ void inteiroParaRegistrador(long int numero, Registrador reg){
     printf("reg[4] = %i\n", reg[4]);
 
 }
-
-
 // bool isNegative(unsigned char* memoria, int number){
 //     long long int linha = 0;
 

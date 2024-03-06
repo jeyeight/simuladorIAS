@@ -88,9 +88,8 @@ void executaULA(enum Operacoes Operacao, int Operando1, Registrador reg){
             transferirRR(BR.AC, BR.MQ);
             break;
         case LOADMQM:
-            
-            transferirRR(BR.AC, abs(BR.MQ));
-            
+            transferirRR(BR.AC, BR.MQ);
+            BR.AC[0] ^= PRIMEIRO_BIT;
             break;
         case LOAD:
             printf("Operação de Carregamento.\n");
@@ -98,7 +97,7 @@ void executaULA(enum Operacoes Operacao, int Operando1, Registrador reg){
             break;
         case LOADMenos:
             transferirMR(BR.AC, m, Operando1);
-            BR.AC[0] ^= BR.AC[0];
+            BR.AC[0] ^= PRIMEIRO_BIT;
             break;
         case LOADModulo:
             transferirMR(BR.AC, m, abs(Operando1));
@@ -106,7 +105,7 @@ void executaULA(enum Operacoes Operacao, int Operando1, Registrador reg){
         case LOADMenosModulo:
             printf("Operação de Carregamento Negativo com Módulo.\n");
             transferirMR(BR.AC, m, abs(Operando1));
-            BR.AC[0] ^= BR.AC[0];
+            BR.AC[0] ^= PRIMEIRO_BIT;
             break;
         case JUMPDir:
             printf("Operação de Salto Direto.\n");

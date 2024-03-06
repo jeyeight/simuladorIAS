@@ -34,9 +34,8 @@ int main(int argc, char* argv[]){
 
     int num1 = 1;
     inteiroParaRegistrador(num1, BR.AC);
-    
     printf("AC antes = %i\n", BR.AC[4]);
-    executaULA(ADD, 10, atoi(BR.AC));
+    executaULA(ADD, 10, registradorParaInteiro(BR.AC)); //Tem que ver o argumento se é pra mandar um long ou o registrador mesmo
 
     exit(1);
 
