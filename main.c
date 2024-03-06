@@ -72,8 +72,8 @@ int main(int argc, char* argv[]){
     // printBitsChar(BR.MBR[3]);
     // printBitsChar(BR.MBR[4]);
 
-    decodificacao(0, true);    
-    decodificacao(0, false);
+    decodificacao(true);    
+    decodificacao(false);
 
     printf("AC depois = %s", BR.AC);
 

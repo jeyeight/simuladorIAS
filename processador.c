@@ -8,7 +8,7 @@
 
 #define LIMITE_39_BITS 549755813888
 #define PRIMEIRO_BIT 0b10000000
-void executaULA(enum Operacoes Operacao, int Operando1, Registrador reg){
+void executaULA(enum Operacoes Operacao, int Operando1, long int reg){
     long int acumulador;
     switch (Operacao){
         case ADD:
@@ -128,19 +128,12 @@ void executaULA(enum Operacoes Operacao, int Operando1, Registrador reg){
 };
 
 
-void decodificacao(int posicao, bool newInstruction){ //posicao = posicao da primeira instrucao
+void decodificacao(bool newInstruction){ //posicao = posicao da primeira instrucao
     //posicao n precisa, vai estar em MBR ja.
     bool opcode_exit = false;
-    int numero = 0;
-    int end1 = 0;
-    int end2 = 0;
-    int result = 0;
     int opcode = 0;
-    int opcode2 = 0;
     if(newInstruction){
         unsigned char temp;
-        int segunda_instrucao = 0;
-        
         //busca foi realizada antes.
         
         //Pegar o primeiro opcode e colocar em IR. 
@@ -204,8 +197,7 @@ void decodificacao(int posicao, bool newInstruction){ //posicao = posicao da pri
         printf("\n%i - Endereço segunda instrucao parte 1", BR.MAR[3]);
         printf("\n%i - Endereço segunda instrucao parte 2\n", BR.MAR[4]);
         
-        printaEnderecoMar();
-    
+        printaEnderecoMar();    
     }
 
     
