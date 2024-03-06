@@ -113,7 +113,7 @@ void setar_peso(char* operacao, int peso){
 
 void printBits(long long int num)
 {
-   for(int bit=0;bit<(sizeof(long long int) * 8); bit++)
+   for(int bit=0;bit<(int)(sizeof(long long int) * 8); bit++)
    {
       printf("%i ", num & 0x01);
       num = num >> 1;
@@ -123,7 +123,7 @@ void printBits(long long int num)
 
 void printBitsChar(char num)
 {
-   for(int bit=0;bit<(sizeof(unsigned char) * 8); bit++)
+   for(int bit=0;bit<(int)(sizeof(unsigned char) * 8); bit++)
    {
       printf("%i ", num & 0x01);
       num = num >> 1;
@@ -164,6 +164,30 @@ void printaEnderecoMar(){
     endereco |= BR.MAR[4];
 
     printf("endereco bumbumzinho %i\n", endereco);
+}
+
+long int registradorParaInteiro(Registrador reg){
+    int saidinha = 0;
+    saidinha |= reg[0];
+    saidinha <<= 8;
+    saidinha |= reg[1];
+    saidinha <<= 8;
+    saidinha |= reg[2];
+    saidinha <<= 8;
+    saidinha |= reg[3];
+    saidinha <<= 8;
+    saidinha |= reg[4];
+    return saidinha;
+}
+
+void inteiroParaRegistrador(long int numero, Registrador reg){
+    reg[0] = (numero & 0XFF00000000) >>32;
+    reg[1] = (numero & 0X00FF000000) >> 24;
+    reg[2] = (numero & 0X0000FF0000) >> 16;
+    reg[3] = (numero & 0X000000FF00) >> 8;
+    reg[4] = numero & 0X00000000FF;
+    printf("reg[4] = %i\n", reg[4]);
+
 }
 
 

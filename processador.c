@@ -8,66 +8,72 @@
 
 #define LIMITE_39_BITS 549755813888
 #define PRIMEIRO_BIT 0b10000000
-void executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
-    int acumulador;
+void executaULA(enum Operacoes Operacao, int Operando1, Registrador reg){
+    long int acumulador;
     switch (Operacao){
         case ADD:
             printf("%i - Peso ADD", Pesos[ADD]);
-            acumulador = atoi(BR.AC);
+            int nmr = 10;
+            BR.AC[4] |= nmr;
+            acumulador = registradorParaInteiro(BR.AC);
             acumulador += Operando1;
-            sprintf(BR.AC, "%d", acumulador);
+            printf("acumulador ficou com isso - %ld \n", acumulador);
+            inteiroParaRegistrador(acumulador, BR.AC);
+            for(int i = 0; i < 5; i++){
+                printf("Char - %i\n", BR.AC[i]);
+            }
             break;
         case ADDModulo:
             printf("Operação de Adição com Módulo.\n");
-            acumulador = atoi(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC);
             acumulador += abs(Operando1);
-            sprintf(BR.AC, "%d", acumulador);
+            inteiroParaRegistrador(acumulador, BR.AC);
             break;
         case SUB:
             printf("%i - Peso ADD", Pesos[ADD]);
-            acumulador = atoi(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC);
             acumulador -= Operando1;
-            sprintf(BR.AC, "%d", acumulador);
+            inteiroParaRegistrador(acumulador, BR.AC);
             break;
         case SUBModulo:
             printf("Operação de Subtração com Módulo.\n");
             printf("Operação de Adição com Módulo.\n");
-            acumulador = atoi(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC);
             acumulador -= abs(Operando1);
-            sprintf(BR.AC, "%d", acumulador);
+            inteiroParaRegistrador(acumulador, BR.AC);
             break;
         case MUL:
-            printf("Operação de Multiplicação.\n");
-            long int Mq = atoi(BR.MQ);
-            long int Acumulador = atoi(BR.MQ);
-            Acumulador = Mq * Operando1;
-            if(Acumulador > LIMITE_39_BITS){
-                Mq = Acumulador - LIMITE_39_BITS;
-                Acumulador = LIMITE_39_BITS;
+            printf("Operação de Multiplicação.\n"); 
+            long int Mq = registradorParaInteiro(BR.MQ);
+            acumulador = registradorParaInteiro(BR.AC);
+            acumulador = Mq * Operando1;
+            if(acumulador > LIMITE_39_BITS){
+                Mq = acumulador - LIMITE_39_BITS;
+                acumulador = LIMITE_39_BITS;
             }
-            sprintf(BR.MQ, "%d", Mq);
-            sprintf(BR.AC, "%d", Acumulador);
+            inteiroParaRegistrador(Mq, BR.MQ);
+            inteiroParaRegistrador(acumulador, BR.AC);
             break;
         case DIV:
             printf("Operação de Divisão.\n");
-            int mq = atoi(BR.MQ);
-            acumulador = atoi(BR.AC);
+            long int mq = registradorParaInteiro(BR.MQ);
+            acumulador = registradorParaInteiro(BR.AC);
             mq = (Operando1 / acumulador);
             acumulador = (Operando1 % acumulador);
-            sprintf(BR.MQ, "%d", mq);
-            sprintf(BR.AC, "%d", acumulador);
+            inteiroParaRegistrador(mq, BR.MQ);
+            inteiroParaRegistrador(acumulador, BR.AC);
             break;
         case LSH:
             printf("Operação de Deslocamento à Esquerda.\n");
-            acumulador = atoi(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC);
             acumulador <<= 1;
-            sprintf(BR.AC, "%d", acumulador);
+            inteiroParaRegistrador(acumulador, BR.AC);
             break;
         case RSH:
             printf("Operação de Deslocamento à Direita.\n");
-            acumulador = atoi(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC);
             acumulador >>= 1;
-            sprintf(BR.AC, "%d", acumulador);
+            inteiroParaRegistrador(acumulador, BR.AC);
             break;
         case STOR:
             transferirRM(BR.AC, m, Operando1);
@@ -82,7 +88,9 @@ void executaULA(enum Operacoes Operacao, int Operando1, int Operando2){
             transferirRR(BR.AC, BR.MQ);
             break;
         case LOADMQM:
+            
             transferirRR(BR.AC, abs(BR.MQ));
+            
             break;
         case LOAD:
             printf("Operação de Carregamento.\n");

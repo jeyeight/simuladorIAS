@@ -33,10 +33,12 @@ int main(int argc, char* argv[]){
     carregarMemoria(m, fdEntrada, fdSaida);
 
     int num1 = 1;
-    sprintf(BR.AC, "%i", num1);
+    inteiroParaRegistrador(num1, BR.AC);
     
-    printf("AC antes = %s\n", BR.AC);
-    executaULA(ADD, 1, atoi(BR.AC));
+    printf("AC antes = %i\n", BR.AC[4]);
+    executaULA(ADD, 10, atoi(BR.AC));
+
+    exit(1);
 
     long long int duas_instrucoes = 0;
     int posicon = 2500;
