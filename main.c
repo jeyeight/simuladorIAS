@@ -11,8 +11,6 @@
 Array com flags globais
 */
 int main(int argc, char* argv[]){
-    clock = 0;
-    flags = 0;
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
     m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
@@ -31,46 +29,8 @@ int main(int argc, char* argv[]){
     verificaPesos(fdEntrada);
 
     carregarMemoria(m, fdEntrada, fdSaida);
-
-    long long int duas_instrucoes = 0;
-    int posicon = 2500;
-    duas_instrucoes |= m[posicon];
-    BR.MBR[0] = m[posicon];
-    duas_instrucoes <<= 8;
-    
-    posicon++;
-    duas_instrucoes |= m[posicon];
-    BR.MBR[1] = m[posicon];
-    duas_instrucoes <<= 8;
-    posicon++;
-    duas_instrucoes |= m[posicon];
-    BR.MBR[2] = m[posicon];
-    duas_instrucoes <<= 8;
-    posicon++;
-    duas_instrucoes |= m[posicon];
-    BR.MBR[3] = m[posicon];
-    duas_instrucoes <<= 8;
-    posicon++;
-    duas_instrucoes |= m[posicon];
-    BR.MBR[4] = m[posicon];
-    posicon++;
-    printf("as duas instrucoes sao o valor - %lld\n", duas_instrucoes);
-    //printBits(duas_instrucoes);
-    //sprintf(BR.MBR, "%ld", duas_instrucoes);
-    //printf("%s - MBR\n", BR.MBR);
-
-    // printBitsChar(BR.MBR[0]);
-    // printBitsChar(BR.MBR[1]);
-    // printBitsChar(BR.MBR[2]);
-    // printBitsChar(BR.MBR[3]);
-    // printBitsChar(BR.MBR[4]);
-
-    //pipeline()
-
-    decodificacao(true);    
-    decodificacao(false);
-
-    printf("AC depois = %s", BR.AC);
+    //Clocks, Pipeline, PC e UC
+    pipeline();
 
     free(m);
     fclose(fdEntrada);

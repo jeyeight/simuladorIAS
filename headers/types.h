@@ -7,7 +7,7 @@ typedef unsigned char Endereco[2];
 typedef unsigned char* Memoria; 
 typedef unsigned char opc;
 typedef char FlagsDoSistema; 
-typedef int ClockDoSistema;
+typedef long long int ClockDoSistema;
 
 //Definições
 #define size_memory 4096
@@ -136,11 +136,35 @@ typedef struct{
     Dado dado;
 }BarramentoDados;
 
+
+typedef struct{
+    Registrador linha;
+}B_D;
+typedef struct{
+    opc opc_linha;
+    Endereco end;
+    Registrador novoIBR;
+}D_BO;
+typedef struct{
+    opc opc_linha;
+    Endereco endereco;
+    Dado dado;
+}BO_EX;
+typedef struct{
+    opc opc_linha;
+    Endereco endereco;
+}EX_ER;
+
+
 short enderecoLeft;
 int posicao_memoria = 0;
 int Pesos[23];
 char flags = 0;
 
+B_D     b_d;
+D_BO    d_bo;
+BO_EX   bo_ex;
+EX_ER   ex_er;
 BarramentoDados BD;
 BarramentoEndereco BE;
 opc opcodeLeft;
@@ -148,6 +172,6 @@ banco_de_registradores BR;
 UnidadeLogicaAritmetica ULA; 
 Memoria m;
 FlagsDoSistema flags;
-ClockDoSistema clock;
+ClockDoSistema cpu_clk;
 
 #endif

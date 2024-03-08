@@ -5,14 +5,7 @@
 #include "headers/memoria.h"
 #include "headers/utils.h"
 #include "headers/types.h"
-
-#define LIMITE_39_BITS 549755813888
-#define PRIMEIRO_BIT 0b10000000
-#define ENDERECO_ESQUERDO_ALTO 0XFFF00000
-#define LONG_INT_ULTIMOS12_BAIXOS 0xFFFFFFFFFFFFF000
-#define LONG_INT_ULTIMOS12_ALTOS 0xFFF
-#define LONG_INT_ULTIMOS12_BAIXOS_DIR 0xFFF00000
-#define LONG_INT_ULTIMOS12_ALTOS_DIR 0xFF00000000
+#include "headers/processador.h"
 
 void executaULA(enum Operacoes Operacao, int Operando1, long long int reg){
     long long int acumulador;
@@ -128,6 +121,9 @@ void executaULA(enum Operacoes Operacao, int Operando1, long long int reg){
     };
 };
 
+void busca(){
+
+}
 
 void decodificacao(bool newInstruction){ //posicao = posicao da primeira instrucao
     //posicao n precisa, vai estar em MBR ja.
@@ -200,8 +196,28 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
         
         printaEnderecoMar();    
     }
+    busca();
+}
+
+void buscaOperandos(){
+    decodificacao(true);
+}
+
+void execucao(){
+    buscaOperandos();
+}
+
+void escritaResultados(){
+    if (/* condition */)
+    {
+        /* code */
+    }else if(){
+
+    };
+    
+    execucao();
 }
 
 void pipeline(){
-
+    escritaResultados();
 }

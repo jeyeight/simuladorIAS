@@ -9,6 +9,8 @@
 #define LIMITE_39_BITS 549755813888
 #define PRIMEIRO_BIT 0b10000000
 
+enum classesEscritaResultados{EscritaRegistrador, EscritaMemoria, EscritaDoisRegistradores};
+
 void executaULA(enum Operacoes Operacao, int Operando1, long long int reg);
 void decodificacao(bool newInstruction);
 void pipeline();
