@@ -149,4 +149,5 @@ UnidadeLogicaAritmetica ULA;
 Memoria m;
 FlagsDoSistema flags;
 ClockDoSistema clock;
+
 #endif

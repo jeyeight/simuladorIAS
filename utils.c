@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <getopt.h>
-#include "headers/utils.h"
+#include <stdbool.h>
 #include "headers/types.h"
+#include "headers/utils.h"
 
 void zerarString(char string[], int tamanho){
     for(int i = 0; i < tamanho; i++){
@@ -20,7 +21,10 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
                 nomeArquivoEntrada = optarg;
                 break;
             case 'i':
-                strcpy((char*)BR.PC, optarg);
+                //strcpy((char*)BR.PC, optarg);
+                //printf("%s", optarg);
+                long long int optnovo = atoi(optarg);
+                inteiroParaRegistrador(optnovo, BR.PC, false, -1);
                 break;
             default:
                 fprintf(stderr, "Uso: %s -p nomedoarquivodeentrada.ias -i PC\n", argv[0]);
@@ -166,21 +170,37 @@ void printaEnderecoMar(){
     printf("endereco bumbumzinho %i\n", endereco);
 }
 
-long int registradorParaInteiro(Registrador reg){
-    int saidinha = 0;
-    saidinha |= reg[0];
-    saidinha <<= 8;
-    saidinha |= reg[1];
-    saidinha <<= 8;
-    saidinha |= reg[2];
-    saidinha <<= 8;
-    saidinha |= reg[3];
-    saidinha <<= 8;
-    saidinha |= reg[4];
-    return saidinha;
+long long int registradorParaInteiro(Registrador reg, bool isMemoria, int indiceMemoria){
+    long long int retorno = 0;
+    if(isMemoria){
+        retorno |= m[indiceMemoria];
+        indiceMemoria++;
+        retorno <<= 8;
+        retorno |= m[indiceMemoria];
+        indiceMemoria++;
+        retorno <<= 8;
+        retorno |= m[indiceMemoria];
+        indiceMemoria++;
+        retorno <<= 8;
+        retorno |= m[indiceMemoria];
+        indiceMemoria++;
+        retorno <<= 8;
+        retorno |= m[indiceMemoria];
+    }else{
+        retorno |= reg[0];
+        retorno <<= 8;
+        retorno |= reg[1];
+        retorno <<= 8;
+        retorno |= reg[2];
+        retorno <<= 8;
+        retorno |= reg[3];
+        retorno <<= 8;
+        retorno |= reg[4];
+    }
+    return retorno;
 }
 
-void inteiroParaRegistrador(long int numero, Registrador reg){
+void inteiroParaRegistrador(long long int numero, Registrador reg, bool isMemoria, int posMemoria){
     reg[0] = (numero & 0XFF00000000) >>32;
     reg[1] = (numero & 0X00FF000000) >> 24;
     reg[2] = (numero & 0X0000FF0000) >> 16;
@@ -188,6 +208,14 @@ void inteiroParaRegistrador(long int numero, Registrador reg){
     reg[4] = numero & 0X00000000FF;
     printf("reg[4] = %i\n", reg[4]);
 
+}
+
+bool isNegativeChar(char c) {
+    if (c & 0x80) {
+        return true;
+    } else {
+        return false;
+    }
 }
 // bool isNegative(unsigned char* memoria, int number){
 //     long long int linha = 0;

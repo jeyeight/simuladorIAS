@@ -8,81 +8,84 @@
 
 #define LIMITE_39_BITS 549755813888
 #define PRIMEIRO_BIT 0b10000000
-void executaULA(enum Operacoes Operacao, int Operando1, long int reg){
-    long int acumulador;
+#define ENDERECO_ESQUERDO_ALTO 0XFFF00000
+#define LONG_INT_ULTIMOS12_BAIXOS 0xFFFFFFFFFFFFF000
+#define LONG_INT_ULTIMOS12_ALTOS 0xFFF
+#define LONG_INT_ULTIMOS12_BAIXOS_DIR 0xFFF00000
+#define LONG_INT_ULTIMOS12_ALTOS_DIR 0xFF00000000
+
+void executaULA(enum Operacoes Operacao, int Operando1, long long int reg){
+    long long int acumulador;
+    long long int memoria;
     switch (Operacao){
         case ADD:
             printf("%i - Peso ADD", Pesos[ADD]);
             int nmr = 10;
             BR.AC[4] |= nmr;
-            acumulador = registradorParaInteiro(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
             acumulador += Operando1;
-            printf("acumulador ficou com isso - %ld \n", acumulador);
-            inteiroParaRegistrador(acumulador, BR.AC);
-            for(int i = 0; i < 5; i++){
-                printf("Char - %i\n", BR.AC[i]);
-            }
+            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
             break;
         case ADDModulo:
-            printf("Operação de Adição com Módulo.\n");
-            acumulador = registradorParaInteiro(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
             acumulador += abs(Operando1);
-            inteiroParaRegistrador(acumulador, BR.AC);
+            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
             break;
         case SUB:
-            printf("%i - Peso ADD", Pesos[ADD]);
-            acumulador = registradorParaInteiro(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
             acumulador -= Operando1;
-            inteiroParaRegistrador(acumulador, BR.AC);
+            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
             break;
         case SUBModulo:
-            printf("Operação de Subtração com Módulo.\n");
-            printf("Operação de Adição com Módulo.\n");
-            acumulador = registradorParaInteiro(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
             acumulador -= abs(Operando1);
-            inteiroParaRegistrador(acumulador, BR.AC);
+            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
             break;
         case MUL:
-            printf("Operação de Multiplicação.\n"); 
-            long int Mq = registradorParaInteiro(BR.MQ);
-            acumulador = registradorParaInteiro(BR.AC);
+            long long int Mq = registradorParaInteiro(BR.MQ, false, -1);
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
             acumulador = Mq * Operando1;
             if(acumulador > LIMITE_39_BITS){
                 Mq = acumulador - LIMITE_39_BITS;
                 acumulador = LIMITE_39_BITS;
             }
-            inteiroParaRegistrador(Mq, BR.MQ);
-            inteiroParaRegistrador(acumulador, BR.AC);
+            inteiroParaRegistrador(Mq, BR.MQ, false, -1);
+            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
             break;
         case DIV:
-            printf("Operação de Divisão.\n");
-            long int mq = registradorParaInteiro(BR.MQ);
-            acumulador = registradorParaInteiro(BR.AC);
+            long long int mq = registradorParaInteiro(BR.MQ, false, -1);
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
             mq = (Operando1 / acumulador);
             acumulador = (Operando1 % acumulador);
-            inteiroParaRegistrador(mq, BR.MQ);
-            inteiroParaRegistrador(acumulador, BR.AC);
+            inteiroParaRegistrador(mq, BR.MQ, false, -1);
+            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
             break;
         case LSH:
-            printf("Operação de Deslocamento à Esquerda.\n");
-            acumulador = registradorParaInteiro(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
             acumulador <<= 1;
-            inteiroParaRegistrador(acumulador, BR.AC);
+            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
             break;
         case RSH:
-            printf("Operação de Deslocamento à Direita.\n");
-            acumulador = registradorParaInteiro(BR.AC);
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
             acumulador >>= 1;
-            inteiroParaRegistrador(acumulador, BR.AC);
+            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
             break;
         case STOR:
             transferirRM(BR.AC, m, Operando1);
             break;
         case STOREsq:
-            printf("Operação de Armazenamento Quadrado.\n");
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
+            memoria = registradorParaInteiro(NULL, true, Operando1);
+            acumulador &= LONG_INT_ULTIMOS12_ALTOS_DIR;
+            memoria &= LONG_INT_ULTIMOS12_BAIXOS_DIR;
+            memoria |= acumulador;
             break;
-        case STORDir:
-            printf("Operação de Armazenamento Direto.\n");
+        case STORDir: 
+            acumulador = registradorParaInteiro(BR.AC, false, -1);
+            memoria = registradorParaInteiro(NULL, true, Operando1);
+            acumulador &= LONG_INT_ULTIMOS12_ALTOS;
+            memoria &= LONG_INT_ULTIMOS12_BAIXOS;
+            memoria |= acumulador;
             break;
         case LOADMQ:
             transferirRR(BR.AC, BR.MQ);
@@ -92,7 +95,6 @@ void executaULA(enum Operacoes Operacao, int Operando1, long int reg){
             BR.AC[0] ^= PRIMEIRO_BIT;
             break;
         case LOAD:
-            printf("Operação de Carregamento.\n");
             transferirMR(BR.AC, m, Operando1);
             break;
         case LOADMenos:
@@ -103,7 +105,6 @@ void executaULA(enum Operacoes Operacao, int Operando1, long int reg){
             transferirMR(BR.AC, m, abs(Operando1));
             break;
         case LOADMenosModulo:
-            printf("Operação de Carregamento Negativo com Módulo.\n");
             transferirMR(BR.AC, m, abs(Operando1));
             BR.AC[0] ^= PRIMEIRO_BIT;
             break;
@@ -199,9 +200,8 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
         
         printaEnderecoMar();    
     }
+}
 
-    
-    
-
+void pipeline(){
 
 }

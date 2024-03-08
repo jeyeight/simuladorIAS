@@ -18,12 +18,12 @@ int main(int argc, char* argv[]){
     m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
 
-    if(atoi((char*)BR.PC) > 4096 || atoi((char*)BR.PC) < 0){
+    if(registradorParaInteiro(BR.PC, false, -1) > 4096 || registradorParaInteiro(BR.PC, false, -1) < 0){
         perror("PC não pode ter um valor fora do alcance da memória");
         exit(EXIT_FAILURE);
     };
 
-    if (fdEntrada == NULL) {
+    if(fdEntrada == NULL){
         perror("Erro ao abrir o arquivo");
         exit(EXIT_FAILURE);
     }
@@ -31,13 +31,6 @@ int main(int argc, char* argv[]){
     verificaPesos(fdEntrada);
 
     carregarMemoria(m, fdEntrada, fdSaida);
-
-    int num1 = 1;
-    inteiroParaRegistrador(num1, BR.AC);
-    printf("AC antes = %i\n", BR.AC[4]);
-    executaULA(ADD, 10, registradorParaInteiro(BR.AC)); //Tem que ver o argumento se é pra mandar um long ou o registrador mesmo
-
-    exit(1);
 
     long long int duas_instrucoes = 0;
     int posicon = 2500;
@@ -71,6 +64,8 @@ int main(int argc, char* argv[]){
     // printBitsChar(BR.MBR[2]);
     // printBitsChar(BR.MBR[3]);
     // printBitsChar(BR.MBR[4]);
+
+    //pipeline()
 
     decodificacao(true);    
     decodificacao(false);

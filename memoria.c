@@ -99,7 +99,6 @@ opc converterInstrucao(char inputEsq[], char inputDir[], short* endereco){
         exit(1);
     }
 
-
     *endereco = determinarEndereco(opcode, inputDir);
 
     return opcode;
