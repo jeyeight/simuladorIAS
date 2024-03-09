@@ -208,12 +208,40 @@ void execucao(){
 }
 
 void escritaResultados(){
-    if (/* condition */)
+    if (EX_ER.classe == EscritaRegistrador)
     {
-        /* code */
-    }else if(){
+        //escrever no registrador
+        //ULA -> AC
+        transferirRR(EX_ER.reg1, EX_ER.Dado);
+    }
+    else if(EX_ER.classe == EscritaMemoria)
+    {
+        //escrever na memoria
+        //
+        if(EX_ER.opc == OPC_STOR){
+            //ULA -> MBR
+            //*Dado foi puxado do AC anteriormente.
+            transferirRR(EX_ER.Dado, BR.MBR);
+            
+            EX_ER.endereco[0] = BR.MAR[3];
+            EX_ER.endereco[1] = BR.MAR[4];
+            //verificação de apenas pegar os últimos dois bytes, 
+            BR.MAR[3] &= 0b00001111;
+            setBarramentoDados(BR.MBR);
+            setBarramentoEndereco();
 
-    };
+        }
+
+
+    }
+    else if(EX_ER.classe == EscritaDoisRegistradores){
+
+        //escrever nos dois registradores.
+    }
+    else{
+        printf("Classe inexistente, abortando.");
+        exit(1);
+    }
     
     execucao();
 }

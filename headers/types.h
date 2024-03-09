@@ -6,7 +6,7 @@ typedef unsigned char Dado[5];
 typedef unsigned char Endereco[2];
 typedef unsigned char* Memoria; 
 typedef unsigned char opc;
-typedef char FlagsDoSistema; 
+typedef short FlagsDoSistema; 
 typedef long long int ClockDoSistema;
 
 //Definições
@@ -53,10 +53,6 @@ typedef long long int ClockDoSistema;
     //Exit
     #define OPC_EXIT 0b11111111
 
-typedef struct{
-    char ExemploDeFlag;
-    char ExemploDeFLag2;
-}Flags;
 
 enum Operacoes {
     ADD,
@@ -129,6 +125,11 @@ typedef struct{
 }UnidadeLogicaAritmetica;
 
 typedef struct{
+    FlagsDoSistema flags;
+}UnidadeDeControle;
+
+
+typedef struct{
     Endereco end;
 }BarramentoEndereco;
 
@@ -140,26 +141,34 @@ typedef struct{
 typedef struct{
     Registrador linha;
 }B_D;
+
 typedef struct{
     opc opc_linha;
     Endereco end;
     Registrador novoIBR;
 }D_BO;
+
 typedef struct{
     opc opc_linha;
     Endereco endereco;
     Dado dado;
 }BO_EX;
+
 typedef struct{
     opc opc_linha;
     Endereco endereco;
+    Dado dado; //o que irá escrever. 
+    enum classesEscritaResultados classe;
+    Registrador reg1;
+    Registrador reg2; //será o AC nas operações de MUL e DIV.
 }EX_ER;
+
+
 
 
 short enderecoLeft;
 int posicao_memoria = 0;
 int Pesos[23];
-char flags = 0;
 
 B_D     b_d;
 D_BO    d_bo;
@@ -171,7 +180,6 @@ opc opcodeLeft;
 banco_de_registradores BR;
 UnidadeLogicaAritmetica ULA; 
 Memoria m;
-FlagsDoSistema flags;
 ClockDoSistema cpu_clk;
 
 #endif
