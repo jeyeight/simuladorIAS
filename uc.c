@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "headers/types.h"
+#include "headers/barramento.h"
 #include "headers/flags.h"
 #include "headers/uc.h"
 #include "headers/processador.h"
@@ -43,10 +44,11 @@ void verificaAcao(){
     }
 }
 
-void buscar_na_memoria(){
+void buscarMemoria(){
     Endereco *ponteiro;
     printf("cheguei aq");
+    Endereco ende = "23";
+    setBarramentoEndereco(ende);
     ponteiro = getBarramentoEndereco();
-    printf("%s - endereco", ponteiro);
-
+    printf("%s\n", ponteiro);
 }

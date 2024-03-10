@@ -2,5 +2,6 @@
 #define UC_H
 
 void verificaAcao();
-void buscar_na_memoria();
+void buscarMemoria();
+
 #endif

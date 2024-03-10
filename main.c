@@ -52,11 +52,10 @@ const char *nomesOperacoes[] = {
 int main(int argc, char* argv[]){
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
-    m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
     printf("to aq");
+    m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
 
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
-    printf("to aq2");
 
 
     if(registradorParaInteiro(BR.PC, false, -1) > 4096 || registradorParaInteiro(BR.PC, false, -1) < 0){

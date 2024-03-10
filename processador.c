@@ -142,7 +142,7 @@ void busca(){
         mar[0] = BR.MAR[3];
         setBarramentoEndereco(mar); 
         //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
-        buscar_na_memoria();
+        buscarMemoria();
 
         //buscar
 
@@ -242,13 +242,10 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
             
             printaEnderecoMar();    
         }
-
         statusD = 1;
-
     }
     set_flag_b(true);
     verificaAcao();
-
 }
 
 void buscaOperandos(){

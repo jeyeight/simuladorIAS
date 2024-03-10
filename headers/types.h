@@ -1,13 +1,13 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-typedef unsigned char Registrador[6];
+typedef unsigned char Registrador[5];
 typedef unsigned char Dado[5];
 typedef unsigned char Endereco[2];
 typedef unsigned char* Memoria; 
 typedef unsigned char opc;
-typedef short FlagsDoSistema; 
-typedef long long int ClockDoSistema;
+typedef unsigned short FlagsDoSistema; 
+typedef unsigned long long int ClockDoSistema;
 
 //Definições
 #define size_memory 4096

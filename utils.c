@@ -204,10 +204,15 @@ long long int registradorParaInteiro(Registrador reg, bool isMemoria, int indice
 
 void inteiroParaRegistrador(long long int numero, Registrador reg, bool isMemoria, int posMemoria){
     reg[0] = (numero & 0XFF00000000) >>32;
+    printf("cuzinho;1");
     reg[1] = (numero & 0X00FF000000) >> 24;
+    printf("cuzinho;2");
     reg[2] = (numero & 0X0000FF0000) >> 16;
+    printf("cuzinho;3");
     reg[3] = (numero & 0X000000FF00) >> 8;
+    printf("cuzinho;4");
     reg[4] = numero & 0X00000000FF;
+    printf("cuzinho;5");
     //printf("reg[4] = %i\n", reg[4]);
 
 
