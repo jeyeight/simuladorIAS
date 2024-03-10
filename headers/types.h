@@ -1,7 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-typedef unsigned char Registrador[5];
+typedef unsigned char Registrador[6];
 typedef unsigned char Dado[5];
 typedef unsigned char Endereco[2];
 typedef unsigned char* Memoria; 

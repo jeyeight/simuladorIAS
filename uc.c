@@ -1,4 +1,8 @@
 #include <stdio.h>
+#include "headers/types.h"
+#include "headers/flags.h"
+#include "headers/uc.h"
+#include "headers/processador.h"
 
 // 0 0 0 0 0 0 0 0    0 0 0 0 0 0 0 0 
 //primeiro - chamar pipeline
@@ -16,6 +20,33 @@
 //(a busca as vezes é feita) ou não, depende se na instrução passada ele buscou já na memória, ou se só puxou de IBR.
 // 
 //talvez mexer nas flags?
-void chamar_pipeline(){
-    //pipeline();
+
+void verificaAcao(){
+    if(get_flag_pipe()){
+        zerarEstagiosPipe();
+        pipeline();
+    }else if(get_flag_er()){
+        zerarEstagiosPipe();
+        escritaResultados();
+    }else if(get_flag_ex()){
+        zerarEstagiosPipe();
+        execucao();
+    }else if(get_flag_bo()){
+        zerarEstagiosPipe();
+        buscaOperandos();
+    }else if(get_flag_d()){
+        zerarEstagiosPipe();
+        decodificacao(true);
+    }else if(get_flag_b()){
+        zerarEstagiosPipe();
+        busca();
+    }
+}
+
+void buscar_na_memoria(){
+    Endereco *ponteiro;
+    printf("cheguei aq");
+    ponteiro = getBarramentoEndereco();
+    printf("%s - endereco", ponteiro);
+
 }

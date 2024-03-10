@@ -9,16 +9,21 @@
 #define LIMITE_39_BITS 549755813888
 #define PRIMEIRO_BIT 0b10000000
 
-enum statusFasePipeline{Vazio, Processando, Finalizado};
+enum statusFasePipeline{Vazio, Pronto, Processando, Finalizado};
 
 void executaULA(enum Operacoes Operacao, int Operando1, long long int reg);
 void decodificacao(bool newInstruction);
+void buscaOperandos();
+void escritaResultados();
+void busca();
+void execucao();
+
 void pipeline();
 
 extern int statusB; // tem q ter 3, vazio, finalizado, fazendo. 
 extern int statusD; //tecnicamente, o fazendo estaria apenas no
 extern int statusBO;
 extern int statusEX;
-extern int statusER ;
+extern int statusER;
 
 #endif

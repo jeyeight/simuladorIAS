@@ -55,3 +55,18 @@ void set_flag_er(bool value) {
 bool get_flag_er() {
     return flags & FLAG_ER;
 }
+
+void set_flag_pipe(bool value) {
+    if (value)
+        flags |= FLAG_PIPE; 
+    else
+        flags &= ~FLAG_PIPE;
+}
+
+bool get_flag_pipe() {
+    return flags & FLAG_PIPE;
+}
+
+void zerarEstagiosPipe(){
+    flags &= ZERAR_ESTAGIOS;
+}

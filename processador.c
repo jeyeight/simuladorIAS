@@ -6,12 +6,15 @@
 #include "headers/barramento.h"
 #include "headers/memoria.h"
 #include "headers/processador.h"
+#include "headers/flags.h"
+#include "headers/uc.h"
 
-int statusB = 0; // tem q ter 3, vazio, finalizado, fazendo. 
-int statusD = 0; //tecnicamente, o fazendo estaria apenas no
-int statusBO = 0;
-int statusEX = 0;
-int statusER = 0;
+
+int statusB = Vazio; // tem q ter 3, vazio, finalizado, fazendo. 
+int statusD = Vazio; //tecnicamente, o fazendo estaria apenas no
+int statusBO = Vazio;
+int statusEX = Vazio;
+int statusER = Vazio;
 
 void executaULA(enum Operacoes Operacao, int Operando1, long long int reg){
     long long int acumulador;
@@ -130,7 +133,7 @@ void executaULA(enum Operacoes Operacao, int Operando1, long long int reg){
 void busca(){
     //primeiro, verifica se na busca está disponível pra usar, se tiver, vai realizar a busca.
     // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.    
-    if(statusB == 0){ // ta liberado para fazer la.
+    if(statusB == Vazio){ // ta liberado para fazer la.
         //fazer mais uma verificação, se precisa buscar ou n.
         transferirRR(BR.MAR, BR.PC);
         //próxima etapa, buscar na memória. usar UC e barramento.
@@ -139,6 +142,7 @@ void busca(){
         mar[0] = BR.MAR[3];
         setBarramentoEndereco(mar); 
         //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
+        buscar_na_memoria();
 
         //buscar
 
@@ -153,99 +157,108 @@ void busca(){
 
 void decodificacao(bool newInstruction){ //posicao = posicao da primeira instrucao
     //posicao n precisa, vai estar em MBR ja.
-    bool opcode_exit = false;
-    int opcode = 0;
-    if(newInstruction){
-        unsigned char temp;
-        //busca foi realizada antes.
-        
-        //Pegar o primeiro opcode e colocar em IR. 
-        BR.IR[4] = BR.MBR[0];
-        printf("%i - Opcode 1 em IR\n", BR.IR[4]);
-        opcode = BR.IR[4];
-        printf("opcodeeeee %i\n", opcode);
+    if(statusD == Pronto){
+        bool opcode_exit = false;
+        int opcode = 0;
+        if(newInstruction){
+            unsigned char temp;
+            //busca foi realizada antes.
+            
+            //Pegar o primeiro opcode e colocar em IR. 
+            BR.IR[4] = BR.MBR[0];
+            printf("%i - Opcode 1 em IR\n", BR.IR[4]);
+            opcode = BR.IR[4];
+            printf("opcodeeeee %i\n", opcode);
 
-        if(opcode == OPC_EXIT){
-            opcode_exit = true;
+            if(opcode == OPC_EXIT){
+                opcode_exit = true;
+            }
+
+            //Pegar o primeiro endereco e colocar em MAR.
+            BR.MAR[3] = BR.MBR[1];
+            BR.MAR[4] = BR.MBR[2];
+
+            BR.MAR[4] >>= 4;
+
+            temp = BR.MAR[3] << 4;
+
+            BR.MAR[3] >>= 4;
+            BR.MAR[4] |= temp;
+
+            printf("\n%i - Endereco 1 Parte 1", BR.MAR[3]);
+            printf("\n%i - Endereco 1 Parte 2\n", BR.MAR[4]);
+
+            printaEnderecoMar();
+            
+            if(!opcode_exit){ //precisa das duas instruções, não é um EXIT.
+                //colocar a segunda instrucao em IBR        
+                BR.IBR[2] = BR.MBR[2];
+                BR.IBR[3] = BR.MBR[3];
+                BR.IBR[4] = BR.MBR[4];
+                printf("%i - IBR 4\n", BR.IBR[4]);
+                BR.IBR[2] &= 15;
+
+                printf("\n%i - Pedaco 1 da Instrucao 2", BR.IBR[2]);
+                printf("\n%i - Pedaco 2 da Instrucao 2", BR.IBR[3]);
+                printf("oi");
+                printf("%i - Pedaco 3 da Instrucao 2", BR.IBR[4]);
+                printf("tchau");
+
+                //jogar informações no entre.
+
+                d_bo.novoIBR[2] = BR.IBR[2];
+                d_bo.novoIBR[3] = BR.IBR[3];
+                d_bo.novoIBR[4] = BR.IBR[4];
+            }
+
+            //jogar informações no D_BO.
+            d_bo.opc_linha = BR.IR[4];
+            d_bo.end[0] = BR.MAR[3];
+            d_bo.end[1] = BR.MAR[4]; 
+
+
+        }else{ 
+            unsigned char temp2;
+
+            //colocar o opcode da instrução 2 em IR.
+            BR.IR[4] = BR.IBR[2];
+
+            BR.IR[4] <<= 4;
+
+            temp2 = BR.IBR[3] & 240;
+            temp2 >>= 4;
+
+            BR.IR[4] |= temp2;
+
+            printf("\n%i - Opcode 2", BR.IR[4]);
+
+            //colocar o endereço da instrução 2 em MAR. 
+            BR.MAR[3] = BR.IBR[3]; //receba  =°3°=
+            BR.MAR[3] &= 15;
+            BR.MAR[4] = BR.IBR[4];
+            
+            printf("\n%i - Endereço segunda instrucao parte 1", BR.MAR[3]);
+            printf("\n%i - Endereço segunda instrucao parte 2\n", BR.MAR[4]);
+            
+            printaEnderecoMar();    
         }
 
-        //Pegar o primeiro endereco e colocar em MAR.
-        BR.MAR[3] = BR.MBR[1];
-        BR.MAR[4] = BR.MBR[2];
+        statusD = 1;
 
-        BR.MAR[4] >>= 4;
-
-        temp = BR.MAR[3] << 4;
-
-        BR.MAR[3] >>= 4;
-        BR.MAR[4] |= temp;
-
-        printf("\n%i - Endereco 1 Parte 1", BR.MAR[3]);
-        printf("\n%i - Endereco 1 Parte 2\n", BR.MAR[4]);
-
-        printaEnderecoMar();
-        
-        if(!opcode_exit){ //precisa das duas instruções, não é um EXIT.
-            //colocar a segunda instrucao em IBR        
-            BR.IBR[2] = BR.MBR[2];
-            BR.IBR[3] = BR.MBR[3];
-            BR.IBR[4] = BR.MBR[4];
-            BR.IBR[2] &= 15;
-
-            printf("\n%i - Pedaco 1 da Instrucao 2", BR.IBR[2]);
-            printf("\n%i - Pedaco 2 da Instrucao 2", BR.IBR[3]);
-            printf("\n%i - Pedaco 3 da Instrucao 2", BR.IBR[4]);
-
-            //jogar informações no entre.
-
-            d_bo.novoIBR[2] = BR.IBR[2];
-            d_bo.novoIBR[3] = BR.IBR[3];
-            d_bo.novoIBR[4] = BR.IBR[4];
-        }
-
-        //jogar informações no D_BO.
-        d_bo.opc_linha = BR.IR[4];
-        d_bo.end[0] = BR.MAR[3];
-        d_bo.end[1] = BR.MAR[4]; 
-
-
-    }else{ 
-        unsigned char temp2;
-
-        //colocar o opcode da instrução 2 em IR.
-        BR.IR[4] = BR.IBR[2];
-
-        BR.IR[4] <<= 4;
-
-        temp2 = BR.IBR[3] & 240;
-        temp2 >>= 4;
-
-        BR.IR[4] |= temp2;
-
-        printf("\n%i - Opcode 2", BR.IR[4]);
-
-        //colocar o endereço da instrução 2 em MAR. 
-        BR.MAR[3] = BR.IBR[3]; //receba  =°3°=
-        BR.MAR[3] &= 15;
-        BR.MAR[4] = BR.IBR[4];
-        
-        printf("\n%i - Endereço segunda instrucao parte 1", BR.MAR[3]);
-        printf("\n%i - Endereço segunda instrucao parte 2\n", BR.MAR[4]);
-        
-        printaEnderecoMar();    
     }
+    set_flag_b(true);
+    verificaAcao();
 
-    statusD = 1;
-
-    busca();
 }
 
 void buscaOperandos(){
-    decodificacao(true);
+    set_flag_d(true);
+    verificaAcao();
 }
 
 void execucao(){
-    buscaOperandos();
+    set_flag_bo(true);
+    verificaAcao();
 }
 
 void escritaResultados(){
@@ -281,9 +294,12 @@ void escritaResultados(){
         exit(1);
     }
     
-    execucao();
+    set_flag_ex(true);
+    verificaAcao();
 }
 
 void pipeline(){
-    escritaResultados();
+    set_flag_er(true);
+    verificaAcao();
+
 }

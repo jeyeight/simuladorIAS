@@ -53,12 +53,18 @@ int main(int argc, char* argv[]){
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
     m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
+    printf("to aq");
+
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
+    printf("to aq2");
+
 
     if(registradorParaInteiro(BR.PC, false, -1) > 4096 || registradorParaInteiro(BR.PC, false, -1) < 0){
         perror("PC não pode ter um valor fora do alcance da memória");
         exit(EXIT_FAILURE);
     };
+    printf("to aq3");
+
 
     if(fdEntrada == NULL){
         perror("Erro ao abrir o arquivo");
@@ -69,7 +75,9 @@ int main(int argc, char* argv[]){
 
     carregarMemoria(m, fdEntrada, fdSaida);
     //Clocks, Pipeline, PC e UC
-    chamar_pipeline(); // uc
+    set_flag_pipe(true);
+    verificaAcao();
+    exit(1);
     
 
     free(m);

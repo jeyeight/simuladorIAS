@@ -17,6 +17,7 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
     char *nomeArquivoEntrada = NULL;
 
     while ((opt = getopt(argc, argv, "p:i:")) != -1) {
+        printf("receba");
         switch (opt) {
             case 'p':
                 nomeArquivoEntrada = optarg;
@@ -207,7 +208,8 @@ void inteiroParaRegistrador(long long int numero, Registrador reg, bool isMemori
     reg[2] = (numero & 0X0000FF0000) >> 16;
     reg[3] = (numero & 0X000000FF00) >> 8;
     reg[4] = numero & 0X00000000FF;
-    printf("reg[4] = %i\n", reg[4]);
+    //printf("reg[4] = %i\n", reg[4]);
+
 
 }
 
