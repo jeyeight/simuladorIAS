@@ -4,6 +4,8 @@
 #include "headers/flags.h"
 #include "headers/uc.h"
 #include "headers/processador.h"
+#include "headers/memoria.h"
+
 
 // 0 0 0 0 0 0 0 0    0 0 0 0 0 0 0 0 
 //primeiro - chamar pipeline
@@ -45,10 +47,24 @@ void verificaAcao(){
 }
 
 void buscarMemoria(){
-    Endereco *ponteiro;
-    printf("cheguei aq");
+    Endereco* ponteiro;
+    Dado * linha;
+    printf("cheguei aq\n");
     Endereco ende = "23";
-    setBarramentoEndereco(ende);
+    //setBarramentoEndereco(ende);
     ponteiro = getBarramentoEndereco();
-    printf("%s\n", ponteiro);
+    printf("%i\n", *ponteiro[0]);
+    printf("%i\n", *ponteiro[1]);
+    
+    unsigned long long int posicao = converteEndereco(ponteiro);
+    printf("%lld - posicao finall \n", posicao);
+    transferirMR(BR.MBR, m, posicao); //joga no barramento.
+
+    getBarramentoDados(); //MBR recebe dado
+
+    for(int i = 0; i< 5; i++){
+        printf("%i\n", BR.MBR[i]);
+    }
+
 }
+

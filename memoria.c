@@ -8,6 +8,8 @@
 #include "headers/types.h"
 #include "headers/utils.h"
 #include "headers/memoria.h" 
+#include "headers/barramento.h"
+
 //Arquivo responsável por fazer a tradução do arquivo de entrada e carregar a memória da máquina 
 void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
     char inputEsq[30];
@@ -384,17 +386,22 @@ void transferirRR(Registrador destino, Registrador origem){
         destino[i] = origem[i];
     }
 }
-void transferirMR(Registrador destino, Memoria m, int PosicaoInicialMemoria){
+
+void transferirMR(Registrador destino, Memoria m, unsigned long long int PosicaoInicialMemoria){
+    Dado linha;
+
     for(int i = 0; i < 5; i++){
-        destino[i] = m[PosicaoInicialMemoria];
+        linha[i] = m[PosicaoInicialMemoria];
         PosicaoInicialMemoria++;
     }
+    setBarramentoDados(linha);
 }
 void transferirRM(Registrador origem, Memoria destino, int PosicaoMemoria){
     for(int i = 0; i < 5; i++){
         destino[PosicaoMemoria] = origem[i];
         PosicaoMemoria++;
     }
+    
 }
 void transferirMM(Memoria m, int PosicaoMemoriaSrc, int PosicaoMemoriaDest){
     for(int i = 0; i < 5; i++){
@@ -402,4 +409,17 @@ void transferirMM(Memoria m, int PosicaoMemoriaSrc, int PosicaoMemoriaDest){
         PosicaoMemoriaSrc++;
         PosicaoMemoriaDest++;
     }
+}
+
+unsigned long long int converteEndereco(Endereco * ender){
+    unsigned long long int posicao = 0;
+    posicao |= *ender[0];
+    posicao <<= 8;
+    posicao |= *ender[1];
+
+    printf("%lld posicao\n", posicao);
+    posicao *= 5;
+    printf("%lld posicao\n", posicao);
+
+    return posicao;
 }

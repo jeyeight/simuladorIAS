@@ -7,7 +7,7 @@
 #include "types.h"
 
 void setBarramentoDados(Dado dado);
-Dado* getBarramentoDados();
+void getBarramentoDados();
 void setBarramentoEndereco(Endereco ende);
 Endereco* getBarramentoEndereco();
 

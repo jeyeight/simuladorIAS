@@ -22,8 +22,9 @@ void escreverArquivo(unsigned char* memoria, FILE* fdSaida);
 void preencherZero(unsigned char* memoria);
 
 void transferirRR(Registrador reg1, Registrador reg2);
-void transferirRM(Registrador reg, Memoria m, int PosicaoInicialMemoria);
-void transferirMR(Registrador reg, Memoria m, int PosicaoMemoria);
+void transferirRM(Registrador origem, Memoria m, int PosicaoInicialMemoria);
+void transferirMR(Registrador destino, Memoria m, unsigned long long int PosicaoMemoria);
 void transferirMM(Memoria m, int PosicaoMemoriaSrc, int PosicaoMemoriaDest);
+unsigned long long int converteEndereco(Endereco * ender);
 
 #endif

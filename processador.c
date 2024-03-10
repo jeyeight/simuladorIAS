@@ -140,11 +140,18 @@ void busca(){
         Endereco mar;
         mar[1] = BR.MAR[4];
         mar[0] = BR.MAR[3];
+        printf("%i - mar1 ", mar[1]);
+        printf("%i - mar0 ", mar[0]);
         setBarramentoEndereco(mar); 
         //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
         buscarMemoria();
 
         //buscar
+
+        for(int i = 0; i<5; i++){
+            b_d.linha[i] = BR.MBR[i];
+            printf("LINHA %i = %i\n", i, b_d.linha[i]);
+        }
 
         //colocar dados obtidos no registrador entre.
         //status 1 = finalizado.
