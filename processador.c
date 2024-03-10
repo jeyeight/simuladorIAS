@@ -124,13 +124,25 @@ void executaULA(enum Operacoes Operacao, int Operando1, long long int reg){
 void busca(){
     //primeiro, verifica se na busca está disponível pra usar, se tiver, vai realizar a busca.
     // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.    
-    transferirRR(BR.MAR, BR.PC);
-    //próxima etapa, buscar na memória. usar UC e barramento.
-    Endereco mar;
-    mar[1] = BR.MAR[4];
-    mar[0] = BR.MAR[3];
-    setBarramentoEndereco(mar); 
-    //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
+    if(statusB == 0){ // ta liberado para fazer la.
+
+        //fazer mais uma verificação, se precisa buscar ou n.
+        transferirRR(BR.MAR, BR.PC);
+        //próxima etapa, buscar na memória. usar UC e barramento.
+        Endereco mar;
+        mar[1] = BR.MAR[4];
+        mar[0] = BR.MAR[3];
+        setBarramentoEndereco(mar); 
+        //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
+
+        //buscar
+
+        //colocar dados obtidos no registrador entre.
+        //status 1 = finalizado.
+        statusB = 1; //uma função passará dps pelo pipeline, e jogará cada um pro próximo
+    }
+    
+    
 
 }
 
@@ -178,7 +190,19 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
             printf("\n%i - Pedaco 1 da Instrucao 2", BR.IBR[2]);
             printf("\n%i - Pedaco 2 da Instrucao 2", BR.IBR[3]);
             printf("\n%i - Pedaco 3 da Instrucao 2", BR.IBR[4]);
+
+            //jogar informações no entre.
+
+            D_BO.novoIBR[2] = BR.IBR[2];
+            D_BO.novoIBR[3] = BR.IBR[3];
+            D_BO.novoIBR[4] = BR.IBR[4];
         }
+
+        //jogar informações no D_BO.
+        D_BO.opc = BR.IR[4];
+        D_BO.end[0] = BR.MAR[3];
+        D_BO.end[1] = BR.MAR[4]; 
+
 
     }else{ 
         unsigned char temp2;
@@ -205,6 +229,9 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
         
         printaEnderecoMar();    
     }
+
+    statusD = 1;
+
     busca();
 }
 

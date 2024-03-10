@@ -15,4 +15,13 @@ void executaULA(enum Operacoes Operacao, int Operando1, long long int reg);
 void decodificacao(bool newInstruction);
 void pipeline();
 
+int statusB = 0; // tem q ter 3, vazio, finalizado, fazendo. 
+int statusD = 0; //tecnicamente, o fazendo estaria apenas no
+int statusBO = 0;
+int statusEX = 0;
+int statusER = 0;
+
+
+
+
 #endif
