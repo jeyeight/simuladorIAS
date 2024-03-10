@@ -1,0 +1,31 @@
+Memória:
+M(0) -> Número 1
+M(1) -> Número 2 -> Contador
+M(2) -> N
+M(3) -> Começa com 1 Valor de Retorno
+
+0
+LOAD M(2)
+SUB M(1)
+JUMP + M (2, 0:19)
+EXIT
+
+2
+LOAD  M(1)
+MUL M(3)
+
+3
+STOR M(3)
+LOAD M(1)
+
+4
+ADD M(0)
+STOR M(1)
+
+5
+LOAD M(2)
+SUB M(1)
+
+6
+JUMP + M (2 , 0 : 19)
+EXIT

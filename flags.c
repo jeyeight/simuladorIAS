@@ -3,6 +3,8 @@
 #include "headers/types.h"
 #include "headers/flags.h"
 
+short flags = 0;
+
 void set_flag_b(bool value) {
     if (value)
         flags |= FLAG_B;

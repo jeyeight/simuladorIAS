@@ -17,5 +17,5 @@
 // 
 //talvez mexer nas flags?
 void chamar_pipeline(){
-    pipeline();
+    //pipeline();
 }

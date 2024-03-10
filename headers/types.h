@@ -53,7 +53,6 @@ typedef long long int ClockDoSistema;
     //Exit
     #define OPC_EXIT 0b11111111
 
-
 enum Operacoes {
     ADD,
     ADDModulo,
@@ -79,30 +78,8 @@ enum Operacoes {
     EXIT
 };
 
-const char *nomesOperacoes[] = {
-    "ADD",
-    "ADD|",
-    "SUB", 
-    "SUB|",
-    "MUL",
-    "DIV",
-    "LSH",
-    "RSH",
-    "STOR",
-    "STORM",
-    "STORM",
-    "LOADM",
-    "LOADMM",
-    "LOAD",
-    "LOAD-M",
-    "LOAD|M", 
-    "LOAD-|M",
-    "JUMP",
-    "JUMP",
-    "JUMP+",
-    "JUMP+",
-    "EXIT"
-};
+enum classesEscritaResultados{EscritaRegistrador, EscritaMemoria, EscritaDoisRegistradores};
+
 typedef struct{
     Registrador IR;
     Registrador IBR;
@@ -137,7 +114,6 @@ typedef struct{
     Dado dado;
 }BarramentoDados;
 
-
 typedef struct{
     Registrador linha;
 }B_D;
@@ -163,23 +139,21 @@ typedef struct{
     Registrador reg2; //será o AC nas operações de MUL e DIV.
 }EX_ER;
 
+extern const char *nomesOperacoes[];
+extern short enderecoLeft;
+extern int posicao_memoria;
+extern int Pesos[23];
 
-
-
-short enderecoLeft;
-int posicao_memoria = 0;
-int Pesos[23];
-
-B_D     b_d;
-D_BO    d_bo;
-BO_EX   bo_ex;
-EX_ER   ex_er;
-BarramentoDados BD;
-BarramentoEndereco BE;
-opc opcodeLeft;
-banco_de_registradores BR;
-UnidadeLogicaAritmetica ULA; 
-Memoria m;
-ClockDoSistema cpu_clk;
+extern B_D     b_d;
+extern D_BO    d_bo;
+extern BO_EX   bo_ex;
+extern EX_ER   ex_er;
+extern BarramentoDados BD;
+extern BarramentoEndereco BE;
+extern opc opcodeLeft;
+extern banco_de_registradores BR;
+extern UnidadeLogicaAritmetica ULA; 
+extern Memoria m;
+extern ClockDoSistema cpu_clk;
 
 #endif

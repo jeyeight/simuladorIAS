@@ -1,0 +1,25 @@
+M(0) - valor do primeiro termo da pa (a1)
+M(1) - valor do enésimo termo da pa (an)
+M(2) - quantidade de termos (n)
+M(3) - valor 2
+M(4) - valor da soma dos n termos da pa (Sn)
+
+Sn = (n * (a1 + an)) / 2
+
+00  2  #a1
+01  40 #an
+02  20 #n 
+03  2  #valor 2
+04  0  #Sn
+
+05 LOAD M(0) #AC = a1
+05 ADD M(1) #AC += an
+06 STOR M(4) #Sn = AC
+06 LOAD MQ, M(2) #MQ = n
+06 MUL M(4) #AC = n * Sn
+07 STOR M(4) #Sn = AC
+07 LOAD M(4) #AC = Sn
+08 DIV M(3) #MQ = AC/2
+08 LOAD MQ #AC = MQ
+09 STOR M(4) #Sn = AC
+09 EXIT

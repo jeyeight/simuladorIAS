@@ -1,11 +1,17 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <stdbool.h>
-#include "headers/memoria.h"
-#include "headers/utils.h"
+#include <stdlib.h>
 #include "headers/types.h"
+#include "headers/utils.h"
+#include "headers/barramento.h"
+#include "headers/memoria.h"
 #include "headers/processador.h"
+
+int statusB = 0; // tem q ter 3, vazio, finalizado, fazendo. 
+int statusD = 0; //tecnicamente, o fazendo estaria apenas no
+int statusBO = 0;
+int statusEX = 0;
+int statusER = 0;
 
 void executaULA(enum Operacoes Operacao, int Operando1, long long int reg){
     long long int acumulador;
@@ -125,7 +131,6 @@ void busca(){
     //primeiro, verifica se na busca está disponível pra usar, se tiver, vai realizar a busca.
     // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.    
     if(statusB == 0){ // ta liberado para fazer la.
-
         //fazer mais uma verificação, se precisa buscar ou n.
         transferirRR(BR.MAR, BR.PC);
         //próxima etapa, buscar na memória. usar UC e barramento.
@@ -193,15 +198,15 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
 
             //jogar informações no entre.
 
-            D_BO.novoIBR[2] = BR.IBR[2];
-            D_BO.novoIBR[3] = BR.IBR[3];
-            D_BO.novoIBR[4] = BR.IBR[4];
+            d_bo.novoIBR[2] = BR.IBR[2];
+            d_bo.novoIBR[3] = BR.IBR[3];
+            d_bo.novoIBR[4] = BR.IBR[4];
         }
 
         //jogar informações no D_BO.
-        D_BO.opc = BR.IR[4];
-        D_BO.end[0] = BR.MAR[3];
-        D_BO.end[1] = BR.MAR[4]; 
+        d_bo.opc_linha = BR.IR[4];
+        d_bo.end[0] = BR.MAR[3];
+        d_bo.end[1] = BR.MAR[4]; 
 
 
     }else{ 
@@ -244,34 +249,31 @@ void execucao(){
 }
 
 void escritaResultados(){
-    if (EX_ER.classe == EscritaRegistrador)
+    if (ex_er.classe == EscritaRegistrador)
     {
         //escrever no registrador
         //ULA -> AC
-        transferirRR(EX_ER.reg1, EX_ER.Dado);
+        transferirRR(ex_er.reg1, ex_er.dado);
     }
-    else if(EX_ER.classe == EscritaMemoria)
+    else if(ex_er.classe == EscritaMemoria)
     {
         //escrever na memoria
         //
-        if(EX_ER.opc == OPC_STOR){
+        if(ex_er.opc_linha == OPC_STOR){
             //ULA -> MBR
             //*Dado foi puxado do AC anteriormente.
-            transferirRR(EX_ER.Dado, BR.MBR);
+            transferirRR(ex_er.dado, BR.MBR);
             
-            EX_ER.endereco[0] = BR.MAR[3];
-            EX_ER.endereco[1] = BR.MAR[4];
+            ex_er.endereco[0] = BR.MAR[3];
+            ex_er.endereco[1] = BR.MAR[4];
             //verificação de apenas pegar os últimos dois bytes, 
             BR.MAR[3] &= 0b00001111;
             setBarramentoDados(BR.MBR);
-            setBarramentoEndereco();
-
         }
 
 
     }
-    else if(EX_ER.classe == EscritaDoisRegistradores){
-
+    else if(ex_er.classe == EscritaDoisRegistradores){
         //escrever nos dois registradores.
     }
     else{

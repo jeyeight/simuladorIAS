@@ -1,15 +1,19 @@
 CC = gcc
 CFLAGS = -Wall -Wextra 
-SRC = main.c   
-OBJ = $(SRC:.c=.o)
-TARGET = main
+SRC = main.c utils.c memoria.c processador.c barramento.c flags.c uc.c
+OBJ_DIR = obj
+OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
+TARGET_DIR = bin
+TARGET = $(TARGET_DIR)/main
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
+	mkdir -p $(TARGET_DIR)
 	$(CC) $(CFLAGS) -o $@ $^
 
-%.o: %.c
+$(OBJ_DIR)/%.o: %.c
+	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:

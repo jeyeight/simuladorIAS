@@ -1,6 +1,7 @@
-#include "headers/types.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include "headers/types.h"
 
 void setBarramentoDados(Dado dado){
     strcpy((char*)BD.dado,(char*)dado); 

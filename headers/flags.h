@@ -7,6 +7,8 @@
 #define FLAG_EX 0b00001000
 #define FLAG_ER 0b00010000
 
+extern short flags;
+
 void set_flag_b(bool value);
 
 bool get_flag_b();
