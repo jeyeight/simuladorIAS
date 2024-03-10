@@ -122,6 +122,15 @@ void executaULA(enum Operacoes Operacao, int Operando1, long long int reg){
 };
 
 void busca(){
+    //primeiro, verifica se na busca está disponível pra usar, se tiver, vai realizar a busca.
+    // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.    
+    transferirRR(BR.MAR, BR.PC);
+    //próxima etapa, buscar na memória. usar UC e barramento.
+    Endereco mar;
+    mar[1] = BR.MAR[4];
+    mar[0] = BR.MAR[3];
+    setBarramentoEndereco(mar); 
+    //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
 
 }
 

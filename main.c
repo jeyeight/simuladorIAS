@@ -6,6 +6,7 @@
 #include "barramento.c"
 #include "flags.c"
 #include "utils.c"
+#include "uc.c"
 
 /*
 Array com flags globais
@@ -30,7 +31,8 @@ int main(int argc, char* argv[]){
 
     carregarMemoria(m, fdEntrada, fdSaida);
     //Clocks, Pipeline, PC e UC
-    pipeline();
+    chamar_pipeline(); // uc
+    
 
     free(m);
     fclose(fdEntrada);
