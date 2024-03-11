@@ -256,11 +256,37 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
 }
 
 void buscaOperandos(){
+    //em Stor e StorM(addres modify), a busca será no AC.
+    //na maioria a busca é lá na memória
+    //pra alguns não há busca, como EXIT, LSH, RSH, LOAD MQ, (Talvez os Jump também, né?)
+    //
+
+    //Endereco address;
+    unsigned long long int enderecoo = 0;
+    enderecoo |= d_bo.end[0];
+    enderecoo <<= 8;
+    enderecoo |= d_bo.end[1];
+
+    //address[0]= d_bo.end[0];
+    //address[1]= d_bo.end[1];
+    //puxando da struct q fica entre.
+
+
+    if(enderecoo == 0){ //acrescentar os jumps provavelmente tb.
+        //n precisa fazer busca de operandos.
+    }
+    
+
     set_flag_d(true);
     verificaAcao();
 }
 
 void execucao(){
+    e
+
+
+
+
     set_flag_bo(true);
     verificaAcao();
 }
