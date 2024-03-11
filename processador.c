@@ -16,7 +16,7 @@ int statusBO = Vazio;
 int statusEX = Vazio;
 int statusER = Vazio;
 
-void executaULA(enum Operacoes Operacao, int Operando1, long long int reg){
+void executaULA(enum Operacoes Operacao, int Operando1){
     long long int acumulador;
     long long int memoria;
     switch (Operacao){
@@ -282,7 +282,7 @@ void buscaOperandos(){
 }
 
 void execucao(){
-    e
+    
 
 
 

@@ -11,7 +11,7 @@
 
 enum statusFasePipeline{Vazio, Pronto, Processando, Finalizado};
 
-void executaULA(enum Operacoes Operacao, int Operando1, long long int reg);
+void executaULA(enum Operacoes Operacao, int Operando1);
 void decodificacao(bool newInstruction);
 void buscaOperandos();
 void escritaResultados();
