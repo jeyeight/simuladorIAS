@@ -7,7 +7,7 @@
 #include "types.h"
 
 void setBarramentoDados(Dado dado);
-void getBarramentoDados();
+void getBarramentoDados(boolean MBR);
 void setBarramentoEndereco(Endereco ende);
 Endereco* getBarramentoEndereco();
 

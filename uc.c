@@ -14,7 +14,7 @@
 //quarto - chamar bo
 //quinto - chamar decodificao
 //sexto - chamar busca
-//setimo
+//setimo - leftinstructionrequired
 //oitavo
 
 //nono - mostra se multiplicacao sobrou pro AC
@@ -60,11 +60,55 @@ void buscarMemoria(){
     printf("%lld - posicao finall \n", posicao);
     transferirMR(BR.MBR, m, posicao); //joga no barramento.
 
-    getBarramentoDados(); //MBR recebe dado
+    getBarramentoDados(true); //MBR recebe dado
 
     for(int i = 0; i< 5; i++){
         printf("%i\n", BR.MBR[i]);
     }
 
+}
+
+void escreverMemoria(enum escritaMemoria tipo){
+    Endereco* ponteiro;
+    int index = 0;
+    ponteiro = getBarramentoEndereco();
+    unsigned long long int posicao = converteEndereco(ponteiro);
+    if(tipo == Tudo){
+        memoria[posicao] = BD.dado[index];
+        posicao++;
+        index++;
+        memoria[posicao] = BD.dado[index];
+        posicao++;
+        index++;
+        memoria[posicao] = BD.dado[index];
+        posicao++;
+        index++;
+        memoria[posicao] = BD.dado[index];
+        posicao++;
+        index++;
+        memoria[posicao] = BD.dado[index];
+    }
+    else if (tipo == Esquerda){ //apenas trocar endereço da esquerda.
+        posicao++;
+        BD.dado[3] <<= 4;
+        temp = BD.dado[4];
+        temp >>= 4;
+        BD.dado[3] |= temp;
+        memoria[posicao] = BD.dado[3];
+        posicao++;
+        BD.dado[4] <<= 4;
+        memoria[posicao] &= 0b00001111;
+        memoria[posicao] |= BD.dadp[4];
+    }
+    else if(tipo == Direita){
+        posicao++;
+        posicao++;
+        posicao++; //alterar dps
+        memoria[posicao] &= 0b11110000;
+        memoria[posicao] |= BD.dado[3];
+        posicao++;
+        memoria[posicao] = BD.dado[4];
+    }
+    
 }
 

@@ -18,6 +18,7 @@ typedef unsigned long long int ClockDoSistema;
 #define tam_max_byte 255
 #define negativo_byte 128
 #define fim_entrada_dados 2500
+
 //Opcodes
     //Data transfer
     #define OPC_LOADMQ 0b00001010
@@ -54,31 +55,31 @@ typedef unsigned long long int ClockDoSistema;
     #define OPC_EXIT 0b11111111
 
 enum Operacoes {
-    ADD,
-    ADDModulo,
-    SUB, 
-    SUBModulo,
-    MUL,
-    DIV,
-    LSH,
-    RSH,
-    STOR,
-    STOREsq,
-    STORDir,
-    LOADMQ,
-    LOADMQM,
-    LOAD,
-    LOADMenos,
-    LOADModulo, 
-    LOADMenosModulo,
-    JUMPDir,
-    JUMPEsq,
-    JUMPPDir,
-    JUMPPEsq,
-    EXIT
+    ADD = 5,
+    ADDModulo = 7,
+    SUB = 6, 
+    SUBModulo = 8,
+    MUL = 11,
+    DIV = 12,
+    LSH = 20,
+    RSH = 21,
+    STOR = 33,
+    STOREsq = 18,
+    STORDir = 19,
+    LOADMQ = 10,
+    LOADMQM = 9,
+    LOAD = 1,
+    LOADMenos = 2,
+    LOADModulo = 3, 
+    LOADMenosModulo = 4,
+    JUMPDir = 14,
+    JUMPEsq = 13,
+    JUMPPDir = 16,
+    JUMPPEsq = 15,
+    EXIT = 255
 };
 
-enum classesEscritaResultados{EscritaRegistrador, EscritaMemoria, EscritaDoisRegistradores};
+enum classesEscritaResultados{EscritaRegistrador, EscritaMemoria, EscritaDoisRegistradores, EscritaVazia};
 
 typedef struct{
     Registrador IR;

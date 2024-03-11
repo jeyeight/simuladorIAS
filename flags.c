@@ -67,6 +67,18 @@ bool get_flag_pipe() {
     return flags & FLAG_PIPE;
 }
 
+void set_flag_lir(bool value) { //left instruction requiredd
+    if (value)
+        flags |= FLAG_LIR; 
+    else
+        flags &= ~FLAG_LIR;
+}
+
+bool get_flag_lir() {
+    return flags & FLAG_LIR;
+}
+
+
 void zerarEstagiosPipe(){
     flags &= ZERAR_ESTAGIOS;
 }

@@ -9,6 +9,7 @@
 #define FLAG_EX 0b00001000
 #define FLAG_ER 0b00010000
 #define FLAG_PIPE 0b00100000
+#define FLAG_LIR 0b01000000
 
 #define ZERAR_ESTAGIOS 0b1111111111000000
 
@@ -39,6 +40,10 @@ bool get_flag_er();
 void set_flag_pipe(bool value);
 
 bool get_flag_pipe();
+
+void set_flag_lir(bool value);
+
+bool get_flag_lir();
 
 void zerarEstagiosPipe();
 

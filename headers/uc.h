@@ -3,5 +3,6 @@
 
 void verificaAcao();
 void buscarMemoria();
+void escreverMemoria(enum escritaMemoria tipo);
 
 #endif

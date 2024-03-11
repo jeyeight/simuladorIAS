@@ -7,7 +7,7 @@ void setBarramentoDados(Dado dado){
     }
 };
 
-void getBarramentoDados(){
+void getBarramentoDados(boolean MBR){
     // Dado *ptrBD = (Dado*)malloc(sizeof(Dado)); 
     // if (ptrBD != NULL) {
     //     for (int i = 0; i < 5; i++)
@@ -15,9 +15,14 @@ void getBarramentoDados(){
     //         *ptrBD[i] = BD.dado[i];
     //     }
     // }
-    for(int i = 0; i<5; i++){
-        BR.MBR[i] = BD.dado[i];
+    if(MBR){
+        for(int i = 0; i<5; i++){
+            BR.MBR[i] = BD.dado[i];
 
+        }
+    }
+    else{
+        
     }
     //return ptrBD;
 }

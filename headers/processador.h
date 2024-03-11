@@ -9,9 +9,14 @@
 #define LIMITE_39_BITS 549755813888
 #define PRIMEIRO_BIT 0b10000000
 
+bool newInstruction = true;
+
 enum statusFasePipeline{Vazio, Pronto, Processando, Finalizado};
 
-void executaULA(enum Operacoes Operacao, int Operando1);
+enum escritaMemoria{Tudo, Esquerda, Direita};
+
+
+void executaULA(enum Operacoes Operacao, unsigned long long int Operando1);
 void decodificacao(bool newInstruction);
 void buscaOperandos();
 void escritaResultados();

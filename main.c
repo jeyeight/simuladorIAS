@@ -57,6 +57,10 @@ int main(int argc, char* argv[]){
 
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
 
+    int bossta = (int) OPC_ADD;
+    printf("printando boxta - %i \n", bossta);
+    printf("%i - LOAD ADD\n", OPC_ADD);
+
 
     if(registradorParaInteiro(BR.PC, false, -1) > 4096 || registradorParaInteiro(BR.PC, false, -1) < 0){
         perror("PC não pode ter um valor fora do alcance da memória");

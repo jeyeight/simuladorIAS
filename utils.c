@@ -6,6 +6,9 @@
 #include "headers/types.h"
 #include "headers/utils.h"
 
+
+
+
 void zerarString(char string[], int tamanho){
     for(int i = 0; i < tamanho; i++){
         string[i] = '\0';
@@ -172,8 +175,8 @@ void printaEnderecoMar(){
     printf("endereco bumbumzinho %i\n", endereco);
 }
 
-long long int registradorParaInteiro(Registrador reg, bool isMemoria, int indiceMemoria){
-    long long int retorno = 0;
+unsigned long long int registradorParaInteiro(unsigned char valor[5], bool isMemoria, int indiceMemoria){
+    unsigned long long int retorno = 0;
     if(isMemoria){
         retorno |= m[indiceMemoria];
         indiceMemoria++;
@@ -189,42 +192,47 @@ long long int registradorParaInteiro(Registrador reg, bool isMemoria, int indice
         retorno <<= 8;
         retorno |= m[indiceMemoria];
     }else{
-        retorno |= reg[0];
+        retorno |= valor[0];
         retorno <<= 8;
-        retorno |= reg[1];
+        retorno |= valor[1];
         retorno <<= 8;
-        retorno |= reg[2];
+        retorno |= valor[2];
         retorno <<= 8;
-        retorno |= reg[3];
+        retorno |= valor[3];
         retorno <<= 8;
-        retorno |= reg[4];
+        retorno |= valor[4];
     }
     return retorno;
 }
 
-void inteiroParaRegistrador(long long int numero, Registrador reg, bool isMemoria, int posMemoria){
-    reg[0] = (numero & 0XFF00000000) >>32;
-    printf("cuzinho;1");
-    reg[1] = (numero & 0X00FF000000) >> 24;
-    printf("cuzinho;2");
-    reg[2] = (numero & 0X0000FF0000) >> 16;
-    printf("cuzinho;3");
-    reg[3] = (numero & 0X000000FF00) >> 8;
-    printf("cuzinho;4");
-    reg[4] = numero & 0X00000000FF;
-    printf("cuzinho;5");
-    //printf("reg[4] = %i\n", reg[4]);
+void inteiroParaRegistrador(unsigned long long int numero, unsigned char dado[5], bool isMemoria, int posMemoria){
+    //dado = reg ou dado mesmo! anderson tem dado em casa? :0
+    dado[0] = (numero & 0XFF00000000) >>32;
+
+    dado[1] = (numero & 0X00FF000000) >> 24;
+
+    dado[2] = (numero & 0X0000FF0000) >> 16;
+
+    dado[3] = (numero & 0X000000FF00) >> 8;
+
+    dado[4] = numero & 0X00000000FF;
 
 
 }
 
-bool isNegativeChar(char c) {
+bool isNegativeChar(unsigned char c) {
     if (c & 0x80) {
         return true;
     } else {
         return false;
     }
 }
+
+unsigned long long int modulo(unsigned long long int n){
+
+    return n &= QUADRAGESIMO_BIT;
+}
+
 // bool isNegative(unsigned char* memoria, int number){
 //     long long int linha = 0;
 
