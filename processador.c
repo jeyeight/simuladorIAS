@@ -244,8 +244,18 @@ void busca(){
     //primeiro, verifica se na busca está disponível pra usar, se tiver, vai realizar a busca.
     // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.  
 
+    bool temDependencia = false;
+    if (get_flag_dependencia_address()){
+        Endereco pc;
+        pc[1] = BR.PC[4];
+        pc[0] = BR.PC[3];
+        
+        temDependencia = elementoNaFila(dependencia_address, enderecoParaShort(pc));
+        printf("Veficando dependencia, PC é : %hd\n", enderecoParaShort(pc));
+    }    
+
     if (!get_flag_flush()){
-        if(statusB == Vazio && newInstruction){ // ta liberado para fazer la.
+        if(statusB == Vazio && newInstruction && !temDependencia){ // ta liberado para fazer la.
             //fazer mais uma verificação, se precisa buscar ou n.
             transferirRR(BR.MAR, BR.PC);
             //próxima etapa, buscar na memória. usar UC e barramento.
@@ -274,7 +284,7 @@ void busca(){
             //colocar dados obtidos no registrador entre.
             
             // uma função passará dps pelo pipeline, e jogará cada um pro próximo
-        }else if(!newInstruction){ 
+        }else if(!newInstruction && !temDependencia){ 
             if(statusD == Finalizado  ||statusD == Vazio){
                 statusB = Finalizado; // se atentar a essa condição em específico, mas acho q tá deboa
             }
@@ -718,14 +728,14 @@ void escritaResultados(){
                 setBarramentoEndereco(ex_er.endereco);
                 escreverMemoria(tipo);
 
-                if(get_flag_dependencia_address()){
-                    if(elementoNaFila(dependencia_address, enderecoParaShort(ex_er.endereco))){
-                        desenfileirar(dependencia_address);
-                    }
-                    if(estaVazia(dependencia_address)){
-                        set_flag_dependencia_address(false);
-                    }
+                
+                if(elementoNaFila(dependencia_address, enderecoParaShort(ex_er.endereco))){
+                    desenfileirar(dependencia_address);
                 }
+                if(estaVazia(dependencia_address)){
+                    set_flag_dependencia_address(false);
+                }
+                
             }
             else if(ex_er.opc_linha == OPC_STORDir){
                 transferirRR(BR.MBR, ex_er.dado);
@@ -742,14 +752,14 @@ void escritaResultados(){
                 setBarramentoEndereco(ex_er.endereco);
                 escreverMemoria(tipo);
 
-                if(get_flag_dependencia_address()){
-                    if(elementoNaFila(dependencia_address, enderecoParaShort(ex_er.endereco))){
-                        desenfileirar(dependencia_address);
-                    }
-                    if(estaVazia(dependencia_address)){
-                        set_flag_dependencia_address(false);
-                    }
+                
+                if(elementoNaFila(dependencia_address, enderecoParaShort(ex_er.endereco))){
+                    desenfileirar(dependencia_address);
                 }
+                if(estaVazia(dependencia_address)){
+                    set_flag_dependencia_address(false);
+                }
+                
             }
         }
         else if(ex_er.classe == EscritaDoisRegistradores){
