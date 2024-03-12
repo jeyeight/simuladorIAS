@@ -276,6 +276,8 @@ void busca(){
                 }
                 printf("Decodificação Finalizada.");
                 statusB = Finalizado;
+                b_d.pc[0] = mar[0];
+                b_d.pc[1] = mar[1];
 
             }else{
 
@@ -379,6 +381,20 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
                     }else if(d_bo.opc_linha == OPC_STORDir || d_bo.opc_linha == OPC_STOREsq){
                         set_flag_dependencia_address(true);
                         enfileirar(dependencia_address, enderecoParaShort(d_bo.end));
+                        //verificar se a instrução que peguei já tem o endereco, alterar.
+                        if(d_bo.opc_linha == OPC_STORDir){
+                            //verificar
+                            Endereco prox;
+                            prox[0] = b_d.pc[0];
+                            prox[1] = b_d.pc[1];
+                            // prox[0] = d_bo.novoIBR[3]; //receba  =°3°=
+                            // prox[0] &= 15;
+                            // prox[1] = d_bo.novoIBR[4];
+                            if(enderecoParaShort(d_bo.end) == enderecoParaShort(prox)){
+                                //alterar em execução.
+                            }
+
+                        }
                     }
 
                     //printf("peguei o endereco %i \n", d_bo.end[0]);
@@ -421,6 +437,7 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
                         mostrarFila(dependencia_stor);
                     }else if(d_bo.opc_linha == OPC_STORDir || d_bo.opc_linha == OPC_STOREsq){
                         set_flag_dependencia_address(true);
+                        //verificar se a instrução que peguei ja tem o endereco.
                         enfileirar(dependencia_address, enderecoParaShort(d_bo.end));
                     }
 
@@ -468,6 +485,8 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
                     enfileirar(dependencia_stor, enderecoParaShort(d_bo.end));
                 }else if(d_bo.opc_linha == OPC_STORDir || d_bo.opc_linha == OPC_STOREsq){
                     set_flag_dependencia_address(true);
+                    //verificar se a instrucao que eu peguei ja tem o endereco.
+                    
                     enfileirar(dependencia_address, enderecoParaShort(d_bo.end));
                 }
                 unsigned long long int pc2 = registradorParaInteiro(BR.PC, false, -1);

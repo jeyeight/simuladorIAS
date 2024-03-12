@@ -119,6 +119,7 @@ typedef struct{
 
 typedef struct{
     Registrador linha;
+    Endereco pc;
 }B_D;
 
 typedef struct{
