@@ -32,5 +32,7 @@ extern int statusBO;
 extern int statusEX;
 extern int statusER;
 extern bool newInstruction;
+extern bool isExit;
+
 
 #endif

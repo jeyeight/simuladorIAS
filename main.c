@@ -75,13 +75,15 @@ int main(int argc, char* argv[]){
     set_flag_lir(true);
     //Clocks, Pipeline, PC e UC
     int cont = 0;
-    while (cont < 8)
+    while (!isExit)
     {
         set_flag_pipe(true);
         verificaAcao();
         cont++;
+        
     }
     escreverArquivo(m, fdSaida);
+    printf("fiquei no laço %i vezes", cont);
 
     free(m);
     fclose(fdEntrada);
