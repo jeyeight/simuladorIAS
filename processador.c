@@ -3,12 +3,12 @@
 #include <stdlib.h>
 #include "headers/types.h"
 #include "headers/utils.h"
+#include "headers/fila.h"
 #include "headers/barramento.h"
 #include "headers/memoria.h"
-#include "headers/processador.h"
 #include "headers/flags.h"
 #include "headers/uc.h"
-
+#include "headers/processador.h"
 
 int statusB = Vazio; // tem q ter 3, vazio, finalizado, fazendo. 
 int statusD = Vazio; //tecnicamente, o fazendo estaria apenas no
@@ -17,7 +17,13 @@ int statusEX = Vazio;
 int statusER = Vazio;
 bool newInstruction = true;
 bool isExit = false;
+Fila* dependencia_address;
+Fila* dependencia_stor;
 
+void inicializarProcessador(){
+    dependencia_address = criarFila();
+    dependencia_stor = criarFila();
+}
 void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
     unsigned long long int acumulador;
     unsigned long long int memoria;
@@ -64,7 +70,7 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
             if(acumulador > LIMITE_39_BITS){
                 unsigned long long int temporario = acumulador >> 40;
                 inteiroParaRegistrador(temporario,ex_er.reg1, false, -1);
-                acumulador &= (QUADRAGESIMO_BIT - 1);
+                acumulador &= FULL_BYTE;
                 // Mq = acumulador - LIMITE_39_BITS;
                 // acumulador = LIMITE_39_BITS;
             }else{
@@ -206,7 +212,6 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
             else{
                 ex_er.classe = EscritaVazia;
             }
-
             break;
         case JUMPPEsq:
             printf("Operação de Salto Positivo Indireto.\n");
@@ -230,16 +235,13 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
             printf("%i - Opcode\n", bo_ex.opc_linha);
             exit(1);
     };
-
-    
 };
 
 void busca(){
     printf("\nentrei na busc\n");
     //primeiro, verifica se na busca está disponível pra usar, se tiver, vai realizar a busca.
     // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.  
-    if (!get_flag_flush())
-    {
+    if (!get_flag_flush()){
         if(statusB == Vazio && newInstruction){ // ta liberado para fazer la.
             //fazer mais uma verificação, se precisa buscar ou n.
             transferirRR(BR.MAR, BR.PC);
@@ -269,13 +271,16 @@ void busca(){
         }else if(!newInstruction){ 
             if(statusD == Finalizado  ||statusD == Vazio){
                 statusB = Finalizado; // se atentar a essa condição em específico, mas acho q tá deboa
-                
             }
-
         }
     }else{
         set_flag_flush(false);
     }
+    printf("B - %i\n", statusB);
+    printf("D - %i\n", statusD);
+    printf("BO - %i\n", statusBO);
+    printf("EX - %i\n", statusEX);
+    printf("ER - %i\n", statusER);
     avancarPipeline();
 }
 
@@ -283,15 +288,10 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
     unsigned char temp;
     //posicao n precisa, vai estar em MBR ja.
     if(statusD == Pronto){
-        printf("\nentrei na dec\n");
         bool opcode_exit = false;
         int opcode = 0;
         if(newInstruction){
             if(get_flag_lir()){
-                
-                //busca foi realizada antes.
-                
-                //Pegar o primeiro opcode e colocar em IR. 
                 BR.IR[4] = b_d.linha[0];
                 printf("%i - Opcode 1 em IR\n", BR.IR[4]);
                 opcode = BR.IR[4];
@@ -336,7 +336,6 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
                         d_bo.novoIBR[2] = BR.IBR[2];
                         d_bo.novoIBR[3] = BR.IBR[3];
                         d_bo.novoIBR[4] = BR.IBR[4];
-
                     }
                 }else{
                     //isExit = true;
@@ -344,6 +343,15 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
 
                 if(statusBO == Finalizado || statusBO == Vazio){
                     d_bo.opc_linha = BR.IR[4];
+
+                    if(d_bo.opc_linha == OPC_STOR){
+                        set_flag_dependencia_stor(true);
+                        enfileirar(dependencia_stor, enderecoParaShort(d_bo.end));
+                    }else if(d_bo.opc_linha == OPC_STORDir || d_bo.opc_linha == OPC_STOREsq){
+                        set_flag_dependencia_address(true);
+                        enfileirar(dependencia_address, enderecoParaShort(d_bo.end));
+                    }
+
                     d_bo.end[0] = BR.MAR[3];
                     printf("peguei o endereco %i \n", d_bo.end[0]);
                     d_bo.end[1] = BR.MAR[4]; 
@@ -379,6 +387,13 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
                         d_bo.novoIBR[i] = 0;
                     }
 
+                    if(d_bo.opc_linha == OPC_STOR){
+                        set_flag_dependencia_stor(true);
+                        enfileirar(dependencia_stor, enderecoParaShort(d_bo.end));
+                    }else if(d_bo.opc_linha == OPC_STORDir || d_bo.opc_linha == OPC_STOREsq){
+                        set_flag_dependencia_address(true);
+                        enfileirar(dependencia_address, enderecoParaShort(d_bo.end));
+                    }
 
                     newInstruction = true; //n tenho certeza disso tb, acho qé
                 }
@@ -415,8 +430,15 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
             if(statusBO == Finalizado || statusBO == Vazio){
                 d_bo.opc_linha = BR.IR[4];
                 d_bo.end[0] = BR.MAR[3];
-                d_bo.end[1] = BR.MAR[4]; 
+                d_bo.end[1] = BR.MAR[4];
 
+                if(d_bo.opc_linha == OPC_STOR){
+                    set_flag_dependencia_stor(true);
+                    enfileirar(dependencia_stor, enderecoParaShort(d_bo.end));
+                }else if(d_bo.opc_linha == OPC_STORDir || d_bo.opc_linha == OPC_STOREsq){
+                    set_flag_dependencia_address(true);
+                    enfileirar(dependencia_address, enderecoParaShort(d_bo.end));
+                }
             }
 
             printf("\n%i - Endereço segunda instrucao parte 1", BR.MAR[3]);
@@ -432,7 +454,6 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
 
         if(statusBO == Finalizado || statusBO == Vazio){
             statusD = Finalizado;
-
         }
     }
 
@@ -445,9 +466,13 @@ void buscaOperandos(){
     //na maioria a busca é lá na memória
     //pra alguns não há busca, como EXIT,, (Talvez os Jump também, né?)
     //
-
+    bool temDependencia = false;
+    if (get_flag_dependencia_stor()){
+        temDependencia = elementoNaFila(dependencia_stor, enderecoParaShort(d_bo.end));
+    }
+    
     //Endereco address;
-    if(statusBO == Pronto){
+    if(statusBO == Pronto && !temDependencia){
         printf("\nentrei bo\n");
         unsigned long long int enderecoo = 0;
         unsigned long long int valor = 0;
@@ -622,6 +647,17 @@ void escritaResultados(){
                 setBarramentoDados(valor);
                 setBarramentoEndereco(temp);
                 escreverMemoria(tipo);
+
+                if(get_flag_dependencia_stor()){
+                    if(elementoNaFila(dependencia_stor, enderecoParaShort(temp))){
+                        desenfileirar(dependencia_stor);
+                    }
+                    if(estaVazia(dependencia_stor)){
+                        set_flag_dependencia_stor(false);
+                    }
+                }
+
+
             }
             else if(ex_er.opc_linha == OPC_STOREsq){
                 transferirRR(BR.MBR, ex_er.dado);
@@ -637,6 +673,15 @@ void escritaResultados(){
                 setBarramentoDados(valor);
                 setBarramentoEndereco(ex_er.endereco);
                 escreverMemoria(tipo);
+
+                if(get_flag_dependencia_address()){
+                    if(elementoNaFila(dependencia_address, enderecoParaShort(ex_er.endereco))){
+                        desenfileirar(dependencia_address);
+                    }
+                    if(estaVazia(dependencia_address)){
+                        set_flag_dependencia_address(false);
+                    }
+                }
             }
             else if(ex_er.opc_linha == OPC_STORDir){
                 transferirRR(BR.MBR, ex_er.dado);
@@ -652,6 +697,15 @@ void escritaResultados(){
                 setBarramentoDados(valor);
                 setBarramentoEndereco(ex_er.endereco);
                 escreverMemoria(tipo);
+
+                if(get_flag_dependencia_address()){
+                    if(elementoNaFila(dependencia_address, enderecoParaShort(ex_er.endereco))){
+                        desenfileirar(dependencia_address);
+                    }
+                    if(estaVazia(dependencia_address)){
+                        set_flag_dependencia_address(false);
+                    }
+                }
             }
         }
         else if(ex_er.classe == EscritaDoisRegistradores){
@@ -666,7 +720,6 @@ void escritaResultados(){
         }
         statusER = Finalizado;
     }
-    
     set_flag_ex(true);
     verificaAcao();
 }

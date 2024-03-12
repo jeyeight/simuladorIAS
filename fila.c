@@ -8,17 +8,17 @@ Fila* criarFila() {
 }
 
 // Função para verificar se a fila está vazia
-int estaVazia(Fila* fila) {
+short estaVazia(Fila* fila) {
     return fila->frente == -1;
 }
 
 // Função para verificar se a fila está cheia
-int estaCheia(Fila* fila) {
+short estaCheia(Fila* fila) {
     return (fila->tras + 1) % TAMANHO_MAX_FILA == fila->frente;
 }
 
 // Função para enfileirar um elemento
-void enfileirar(Fila* fila, int item) {
+void enfileirar(Fila* fila, short item) {
     if (estaCheia(fila)) {
         printf("A fila está cheia!\n");
         return;
@@ -31,8 +31,8 @@ void enfileirar(Fila* fila, int item) {
 }
 
 // Função para desenfileirar um elemento
-int desenfileirar(Fila* fila) {
-    int item;
+short desenfileirar(Fila* fila) {
+    short item;
     if (estaVazia(fila)) {
         printf("A fila está vazia!\n");
         return -1;
@@ -48,7 +48,7 @@ int desenfileirar(Fila* fila) {
 }
 
 // Função para obter o primeiro elemento da fila sem removê-lo
-int primeiroElemento(Fila* fila) {
+short primeiroElemento(Fila* fila) {
     if (estaVazia(fila)) {
         printf("A fila está vazia!\n");
         return -1;
@@ -57,7 +57,7 @@ int primeiroElemento(Fila* fila) {
 }
 
 void mostrarFila(Fila* fila) {
-    int i;
+    short i;
     if (estaVazia(fila)) {
         printf("A fila está vazia\n");
         return;
@@ -67,4 +67,20 @@ void mostrarFila(Fila* fila) {
         printf("%d ", fila->itens[i]);
     }
     printf("%d\n", fila->itens[i]);
+}
+
+bool elementoNaFila(Fila* fila, short elemento) {
+    if (estaVazia(fila)) {
+        return false;
+    }
+    
+    short i = fila->frente;
+    do {
+        if (fila->itens[i] == elemento) {
+            return true;
+        }
+        i = (i + 1) % TAMANHO_MAX_FILA;
+    } while (i != (fila->tras + 1) % TAMANHO_MAX_FILA);
+
+    return false;
 }

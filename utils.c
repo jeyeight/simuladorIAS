@@ -6,9 +6,6 @@
 #include "headers/types.h"
 #include "headers/utils.h"
 
-
-
-
 void zerarString(char string[], int tamanho){
     for(int i = 0; i < tamanho; i++){
         string[i] = '\0';
@@ -230,6 +227,15 @@ bool isNegativeChar(unsigned char c) {
 
 unsigned long long int modulo(unsigned long long int n){
     return n &= QUADRAGESIMO_BIT;
+}
+
+unsigned short enderecoParaShort(char endereco[]){
+    unsigned short retorno = 0;
+    retorno |= endereco[0];
+    retorno <<= 8;
+    retorno |= endereco[1];
+    
+    return retorno;
 }
 
 // bool isNegative(unsigned char* memoria, int number){

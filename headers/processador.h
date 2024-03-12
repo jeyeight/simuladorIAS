@@ -2,6 +2,7 @@
 #define PROCESSADOR_H
 
 #include <stdio.h>
+#include "fila.h"
 
 #define ENDERECO_ESQUERDO_ALTO 0xFFF00000
 #define LONG_INT_ULTIMOS12_BAIXOS 0xFFFFFFFFFFFFF000
@@ -25,7 +26,7 @@ void busca();
 void execucao();
 void pipeline();
 void avancarPipeline();
-
+void inicializarProcessador();
 extern int statusB; // tem q ter 3, vazio, finalizado, fazendo. 
 extern int statusD; //tecnicamente, o fazendo estaria apenas no
 extern int statusBO;
@@ -33,6 +34,5 @@ extern int statusEX;
 extern int statusER;
 extern bool newInstruction;
 extern bool isExit;
-
 
 #endif

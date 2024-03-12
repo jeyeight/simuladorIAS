@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra 
-SRC = main.c utils.c memoria.c processador.c barramento.c flags.c uc.c
+SRC = main.c utils.c memoria.c fila.c processador.c barramento.c flags.c uc.c
 OBJ_DIR = obj
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 TARGET_DIR = bin

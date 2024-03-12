@@ -3,14 +3,16 @@
 
 #include <stdbool.h>
 
-#define FLAG_B  0b00000001
-#define FLAG_D  0b00000010
-#define FLAG_BO 0b00000100
-#define FLAG_EX 0b00001000
-#define FLAG_ER 0b00010000
-#define FLAG_PIPE 0b00100000
-#define FLAG_LIR 0b01000000
-#define FLAG_FLUSH 0b10000000
+#define FLAG_B      0b0000000000000001
+#define FLAG_D      0b0000000000000010
+#define FLAG_BO     0b0000000000000100
+#define FLAG_EX     0b0000000000001000
+#define FLAG_ER     0b0000000000010000
+#define FLAG_PIPE   0b0000000000100000
+#define FLAG_LIR    0b0000000001000000
+#define FLAG_FLUSH  0b0000000010000000
+#define FLAG_DPS    0b0000000100000000
+#define FLAG_DPA    0b0000001000000000
 
 #define ZERAR_ESTAGIOS 0b1111111111000000
 
@@ -45,6 +47,14 @@ bool get_flag_pipe();
 void set_flag_lir(bool value);
 
 bool get_flag_lir();
+
+void set_flag_dependencia_stor(bool value);
+
+bool get_flag_dependencia_stor();
+
+void set_flag_dependencia_address(bool value);
+
+bool get_flag_dependencia_address();
 
 void set_flag_flush(bool value);
 

@@ -5,6 +5,7 @@
 #include "headers/types.h"
 #include "headers/utils.h"
 #include "headers/memoria.h"
+#include "headers/fila.h"
 #include "headers/processador.h"
 #include "headers/barramento.h"
 #include "headers/flags.h"
@@ -24,6 +25,7 @@ banco_de_registradores BR;
 UnidadeLogicaAritmetica ULA;
 Memoria m;
 ClockDoSistema cpu_clk;
+
 const char *nomesOperacoes[] = {
     "ADD",
     "ADD|",
@@ -50,16 +52,18 @@ const char *nomesOperacoes[] = {
 };
 
 int main(int argc, char* argv[]){
+    inicializarProcessador();
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
     m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
     long long int PC = (long long int)registradorParaInteiro(BR.PC, false, -1);
     // setFlagsIniciais();
+
     set_flag_flush(false);
+    set_flag_dependencia_address(false);
+    set_flag_dependencia_stor(false);
     set_flag_lir(true);
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
-
-    int bossta = (int) OPC_ADD;
 
     if(PC > 4096 || PC < 0){
         perror("PC não pode ter um valor fora do alcance da memória");

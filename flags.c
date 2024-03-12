@@ -103,6 +103,37 @@ bool get_flag_lir() {
     return flags & FLAG_LIR;
 }
 
+void set_flag_dependencia_stor(bool value){
+    if (value)
+    {
+        flags |= FLAG_DPS; 
+    }
+    else
+    {
+        flags &= ~FLAG_DPS;
+    }
+}
+
+bool get_flag_dependencia_stor(){
+    return flags & FLAG_DPS;
+
+}
+
+void set_flag_dependencia_address(bool value){
+    if (value)
+    {
+        flags |= FLAG_DPA; 
+    }
+    else
+    {
+        flags &= ~FLAG_DPA;
+    }
+}
+
+bool get_flag_dependencia_address(){
+    return flags & FLAG_DPA;
+}
+
 void set_flag_flush(bool value){
     if (value)
     {
