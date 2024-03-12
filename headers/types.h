@@ -95,6 +95,8 @@ typedef struct{
     Registrador EX_ER;
 }banco_de_registradores;
 
+
+
 typedef struct{
     int A;
     int B;
