@@ -229,7 +229,6 @@ bool isNegativeChar(unsigned char c) {
 }
 
 unsigned long long int modulo(unsigned long long int n){
-
     return n &= QUADRAGESIMO_BIT;
 }
 

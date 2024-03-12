@@ -15,6 +15,7 @@ int statusD = Vazio; //tecnicamente, o fazendo estaria apenas no
 int statusBO = Vazio;
 int statusEX = Vazio;
 int statusER = Vazio;
+bool newInstruction = true;
 
 void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
     unsigned long long int acumulador;
@@ -213,9 +214,10 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
 };
 
 void busca(){
+    printf("\nentrei na busc\n");
     //primeiro, verifica se na busca está disponível pra usar, se tiver, vai realizar a busca.
     // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.    
-    if(statusB == Vazio){ // ta liberado para fazer la.
+    if(statusB == Vazio && newInstruction){ // ta liberado para fazer la.
         //fazer mais uma verificação, se precisa buscar ou n.
         transferirRR(BR.MAR, BR.PC);
         //próxima etapa, buscar na memória. usar UC e barramento.
@@ -236,18 +238,17 @@ void busca(){
         }
 
         //colocar dados obtidos no registrador entre.
-        //status 1 = finalizado.
-        statusB = 1; //uma função passará dps pelo pipeline, e jogará cada um pro próximo
+        statusB = Finalizado;
+        // uma função passará dps pelo pipeline, e jogará cada um pro próximo
     }
-    
-    
-
+    avancarPipeline();
 }
 
-void decodificacao(bool newInstruction){ //posicao = posicao da primeira instrucao
+void decodificacao(){ //posicao = posicao da primeira instrucao
     unsigned char temp;
     //posicao n precisa, vai estar em MBR ja.
     if(statusD == Pronto){
+        printf("\nentrei na dec\n");
         bool opcode_exit = false;
         int opcode = 0;
         if(newInstruction){
@@ -332,7 +333,7 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
                 pc++;
                 inteiroParaRegistrador(pc, BR.PC, false, -1);
 
-                
+                newInstruction = true;
             }
 
 
@@ -340,11 +341,11 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
             unsigned char temp2;
 
             //colocar o opcode da instrução 2 em IR.
-            BR.IR[4] = BR.IBR[2];
+            BR.IR[4] = d_bo.novoIBR[2];
 
             BR.IR[4] <<= 4;
 
-            temp2 = BR.IBR[3] & 240;
+            temp2 = d_bo.novoIBR[3] & 240;
             temp2 >>= 4;
 
             BR.IR[4] |= temp2;
@@ -353,9 +354,9 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
             d_bo.opc_linha = BR.IR[4];
 
             //colocar o endereço da instrução 2 em MAR. 
-            BR.MAR[3] = BR.IBR[3]; //receba  =°3°=
+            BR.MAR[3] = d_bo.novoIBR[3]; //receba  =°3°=
             BR.MAR[3] &= 15;
-            BR.MAR[4] = BR.IBR[4];
+            BR.MAR[4] = d_bo.novoIBR[4];
             
             d_bo.end[0] = BR.MAR[3];
             d_bo.end[1] = BR.MAR[4]; 
@@ -370,7 +371,7 @@ void decodificacao(bool newInstruction){ //posicao = posicao da primeira instruc
             inteiroParaRegistrador(pc2, BR.PC, false, -1);
             newInstruction = true;
         }
-        statusD = 1;
+        statusD = Finalizado;
     }
 
     set_flag_b(true);
@@ -455,9 +456,7 @@ void buscaOperandos(){
         bo_ex.opc_linha = opc_instrucao;
         bo_ex.endereco[0] = buscar[0];
         bo_ex.endereco[1] = buscar[1];
-
-
-    
+        statusBO = Finalizado;
     }
 
     set_flag_d(true);
@@ -466,7 +465,6 @@ void buscaOperandos(){
 
 void execucao(){
     if(statusEX == Pronto){
-
         unsigned long long int operando = 0;
         
         operando = registradorParaInteiro(bo_ex.dado, false, -1);
@@ -477,6 +475,7 @@ void execucao(){
         ex_er.opc_linha = bo_ex.opc_linha;
         ex_er.endereco[0] = bo_ex.endereco[0];
         ex_er.endereco[1] = bo_ex.endereco[1];
+        statusEX = Finalizado;
     }
 
 
@@ -507,7 +506,7 @@ void escritaResultados(){
             if(ex_er.opc_linha == OPC_STOR){
                 //ULA -> MBR
                 //*Dado foi puxado do AC anteriormente.
-                transferirRR(ex_er.dado, BR.MBR);
+                transferirRR(BR.MBR, ex_er.dado);
                 Dado valor;
                 for (int i = 0; i<5; i++){
                     valor[i] = BR.MBR[i];
@@ -519,11 +518,11 @@ void escritaResultados(){
                 //verificação de apenas pegar os últimos dois bytes, 
                 BR.MAR[3] &= 0b00001111;
                 setBarramentoDados(valor);
-                setBarramentoEndereco(ex_endereco);
+                setBarramentoEndereco(ex_er.endereco);
                 escreverMemoria(tipo);
             }
             else if(ex_er.opc_linha == OPC_STOREsq){
-                transferirRR(ex_er.dado, BR.MBR);
+                transferirRR(BR.MBR, ex_er.dado);
                 Dado valor;
                 for (int i = 0; i<5; i++){
                     valor[i] = BR.MBR[i];
@@ -534,12 +533,11 @@ void escritaResultados(){
                 //verificação de apenas pegar os últimos dois bytes, 
                 BR.MAR[3] &= 0b00001111;
                 setBarramentoDados(valor);
-                setBarramentoEndereco(ex_endereco);
+                setBarramentoEndereco(ex_er.endereco);
                 escreverMemoria(tipo);
-                
             }
             else if(ex_er.opc_linha == OPC_STORDir){
-                transferirRR(ex_er.dado, BR.MBR);
+                transferirRR(BR.MBR, ex_er.dado);
                 Dado valor;
                 for (int i = 0; i<5; i++){
                     valor[i] = BR.MBR[i];
@@ -550,22 +548,20 @@ void escritaResultados(){
                 //verificação de apenas pegar os últimos dois bytes, 
                 BR.MAR[3] &= 0b00001111;
                 setBarramentoDados(valor);
-                setBarramentoEndereco(ex_endereco);
+                setBarramentoEndereco(ex_er.endereco);
                 escreverMemoria(tipo);
             }
-
-
         }
         else if(ex_er.classe == EscritaDoisRegistradores){
             //escrever nos dois registradores.
         }
         else if(ex_er.classe == EscritaVazia){ //jump condiiconal que n vai pular
-
         }
         else{
             printf("Classe inexistente, abortando.");
             exit(1);
         }
+        statusER = Finalizado;
     }
     
     set_flag_ex(true);
@@ -575,7 +571,28 @@ void escritaResultados(){
 void pipeline(){
     set_flag_er(true);
     verificaAcao();
+}
 
+void avancarPipeline(){
+    if(statusER == Finalizado){
+        statusER = Vazio;
+    }
+    if(statusEX == Finalizado && statusER == Vazio){
+        statusER = Pronto;
+        statusEX = Vazio;
+    }
+    if(statusBO == Finalizado && statusEX == Vazio){
+        statusEX = Pronto;
+        statusBO = Vazio;
+    }
+    if(statusD == Finalizado && statusBO == Vazio){
+        statusBO = Pronto;
+        statusD = Vazio;
+    }
+    if(statusB == Finalizado && statusD == Vazio){
+        statusD = Pronto;
+        statusB = Vazio;
+    }
 }
 
 

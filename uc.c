@@ -49,7 +49,6 @@ void verificaAcao(){
 void buscarMemoria(){
     Endereco* ponteiro;
     Dado * linha;
-    printf("cheguei aq\n");
     Endereco ende = "23";
     //setBarramentoEndereco(ende);
     ponteiro = getBarramentoEndereco();
@@ -57,7 +56,6 @@ void buscarMemoria(){
     printf("%i\n", *ponteiro[1]);
     
     unsigned long long int posicao = converteEndereco(ponteiro);
-    printf("%lld - posicao finall \n", posicao);
     transferirMR(BR.MBR, m, posicao); //joga no barramento.
 
     getBarramentoDados(true); //MBR recebe dado
@@ -71,22 +69,30 @@ void buscarMemoria(){
 void escreverMemoria(enum escritaMemoria tipo){
     Endereco* ponteiro;
     int index = 0;
+    unsigned char temp;
     ponteiro = getBarramentoEndereco();
     unsigned long long int posicao = converteEndereco(ponteiro);
     if(tipo == Tudo){
-        memoria[posicao] = BD.dado[index];
+        printf("\nOLHA EU COMEÇANDO A BRINCAR:\n");
+        m[posicao] = BD.dado[index];
+        printf("\n%i", m[posicao]);
         posicao++;
         index++;
-        memoria[posicao] = BD.dado[index];
+        m[posicao] = BD.dado[index];
+        printf("\n%i", m[posicao]);
         posicao++;
         index++;
-        memoria[posicao] = BD.dado[index];
+        m[posicao] = BD.dado[index];
+        printf("\n%i", m[posicao]);
         posicao++;
         index++;
-        memoria[posicao] = BD.dado[index];
+        m[posicao] = BD.dado[index];
+        printf("\n%i", m[posicao]);
         posicao++;
         index++;
-        memoria[posicao] = BD.dado[index];
+        m[posicao] = BD.dado[index];
+        printf("\n%i", m[posicao]);
+        printf("\nOLHA EU TERMINANDO DE BRINCAR:\n");
     }
     else if (tipo == Esquerda){ //apenas trocar endereço da esquerda.
         posicao++;
@@ -94,20 +100,20 @@ void escreverMemoria(enum escritaMemoria tipo){
         temp = BD.dado[4];
         temp >>= 4;
         BD.dado[3] |= temp;
-        memoria[posicao] = BD.dado[3];
+        m[posicao] = BD.dado[3];
         posicao++;
         BD.dado[4] <<= 4;
-        memoria[posicao] &= 0b00001111;
-        memoria[posicao] |= BD.dadp[4];
+        m[posicao] &= 0b00001111;
+        m[posicao] |= BD.dado[4];
     }
     else if(tipo == Direita){
         posicao++;
         posicao++;
         posicao++; //alterar dps
-        memoria[posicao] &= 0b11110000;
-        memoria[posicao] |= BD.dado[3];
+        m[posicao] &= 0b11110000;
+        m[posicao] |= BD.dado[3];
         posicao++;
-        memoria[posicao] = BD.dado[4];
+        m[posicao] = BD.dado[4];
     }
     
 }

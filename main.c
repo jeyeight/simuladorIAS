@@ -52,22 +52,17 @@ const char *nomesOperacoes[] = {
 int main(int argc, char* argv[]){
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
-    printf("to aq");
     m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
+    long long int PC = (long long int)registradorParaInteiro(BR.PC, false, -1);
 
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
 
     int bossta = (int) OPC_ADD;
-    printf("printando boxta - %i \n", bossta);
-    printf("%i - LOAD ADD\n", OPC_ADD);
 
-
-    if(registradorParaInteiro(BR.PC, false, -1) > 4096 || registradorParaInteiro(BR.PC, false, -1) < 0){
+    if(PC > 4096 || PC < 0){
         perror("PC não pode ter um valor fora do alcance da memória");
         exit(EXIT_FAILURE);
     };
-    printf("to aq3");
-
 
     if(fdEntrada == NULL){
         perror("Erro ao abrir o arquivo");
@@ -77,11 +72,16 @@ int main(int argc, char* argv[]){
     verificaPesos(fdEntrada);
 
     carregarMemoria(m, fdEntrada, fdSaida);
+    set_flag_lir(true);
     //Clocks, Pipeline, PC e UC
-    set_flag_pipe(true);
-    verificaAcao();
-    exit(1);
-    
+    int cont = 0;
+    while (cont < 8)
+    {
+        set_flag_pipe(true);
+        verificaAcao();
+        cont++;
+    }
+    escreverArquivo(m, fdSaida);
 
     free(m);
     fclose(fdEntrada);

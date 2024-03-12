@@ -66,7 +66,7 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
         inputDir[0] = '\0';
         inputEsqORDir++;
     }
-    escreverArquivo(memoria, fdSaida);
+    //escreverArquivo(memoria, fdSaida);
 }
 
 opc converterInstrucao(char inputEsq[], char inputDir[], short* endereco){
@@ -97,6 +97,7 @@ opc converterInstrucao(char inputEsq[], char inputDir[], short* endereco){
     }else if(strcmp(inputEsq, "EXIT") == 0){
         opcode = (opc)OPC_EXIT;
     }else{
+        printf("%i", (int)opcode);
         perror("Operação não suportada");
         exit(1);
     }
