@@ -118,3 +118,9 @@ void escreverMemoria(enum escritaMemoria tipo){
     
 }
 
+void flushPipeline(){
+    statusB = Vazio;
+    statusD = Vazio;
+    statusBO = Vazio;
+}
+

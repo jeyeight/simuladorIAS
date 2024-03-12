@@ -64,6 +64,8 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
 
         inputEsq[0] = '\0';
         inputDir[0] = '\0';
+        zerarString(inputDir,30);
+
         inputEsqORDir++;
     }
     //escreverArquivo(memoria, fdSaida);
@@ -202,12 +204,13 @@ opc verificaLoad(char inputDir[]){
 opc verificaStor(char inputDir[]){
     opc opcode;
     int contador = 0;
-
-    while((inputDir[contador] != ',') && (contador <= 8)){ 
+    printf("VERONA: %s\n", inputDir);
+    while((inputDir[contador] != ',') && (contador <= 8) && (inputDir[contador] != "\n")){ 
         contador++;
+        printf("%c - caracter\n", inputDir[contador]);  
     }
-
-    if(contador >8){
+    printf("CONTADORPORRA - %i", contador);
+    if(contador > 8){
         opcode = (opc)OPC_STOR; 
     }else{
         if(inputDir[contador] == ','){

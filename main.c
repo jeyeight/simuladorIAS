@@ -54,7 +54,9 @@ int main(int argc, char* argv[]){
     FILE* fdSaida = NULL;
     m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
     long long int PC = (long long int)registradorParaInteiro(BR.PC, false, -1);
-
+    // setFlagsIniciais();
+    set_flag_flush(false);
+    set_flag_lir(true);
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
 
     int bossta = (int) OPC_ADD;
@@ -72,18 +74,13 @@ int main(int argc, char* argv[]){
     verificaPesos(fdEntrada);
 
     carregarMemoria(m, fdEntrada, fdSaida);
-    set_flag_lir(true);
     //Clocks, Pipeline, PC e UC
-    int cont = 0;
     while (!isExit)
     {
         set_flag_pipe(true);
         verificaAcao();
-        cont++;
-        
     }
     escreverArquivo(m, fdSaida);
-    printf("fiquei no laço %i vezes", cont);
 
     free(m);
     fclose(fdEntrada);

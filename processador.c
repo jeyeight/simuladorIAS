@@ -58,24 +58,30 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
             ex_er.classe = EscritaRegistrador;
             break;
         case MUL:
-            long long int Mq = registradorParaInteiro(BR.MQ, false, -1);
+            unsigned long long int Mq = registradorParaInteiro(BR.MQ, false, -1);
             acumulador = registradorParaInteiro(BR.AC, false, -1);
             acumulador = Mq * Operando1;
             if(acumulador > LIMITE_39_BITS){
-                Mq = acumulador - LIMITE_39_BITS;
-                acumulador = LIMITE_39_BITS;
+                unsigned long long int temporario = acumulador >> 40;
+                inteiroParaRegistrador(temporario,ex_er.reg1, false, -1);
+                acumulador &= (QUADRAGESIMO_BIT - 1);
+                // Mq = acumulador - LIMITE_39_BITS;
+                // acumulador = LIMITE_39_BITS;
+            }else{
+                inteiroParaRegistrador(0, ex_er.reg1, false, -1);
             }
-            inteiroParaRegistrador(Mq, BR.MQ, false, -1);
-            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+            inteiroParaRegistrador(acumulador,ex_er.reg2, false, -1);
+            //inteiroParaRegistrador(Mq, BR.MQ, false, -1);
+            //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
             ex_er.classe = EscritaDoisRegistradores;
             break;
         case DIV:
             long long int mq = registradorParaInteiro(BR.MQ, false, -1);
             acumulador = registradorParaInteiro(BR.AC, false, -1);
-            mq = (Operando1 / acumulador);
-            acumulador = (Operando1 % acumulador);
-            inteiroParaRegistrador(mq, BR.MQ, false, -1);
-            inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+            mq = (acumulador / Operando1);
+            acumulador = (acumulador % Operando1);
+            inteiroParaRegistrador(mq, ex_er.reg2, false, -1);
+            inteiroParaRegistrador(acumulador, ex_er.reg1, false, -1);
             ex_er.classe = EscritaDoisRegistradores;
             break;
         case LSH:
@@ -173,13 +179,18 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
             ex_er.classe = EscritaRegistrador;
             transferirRR(ex_er.reg1, BR.PC);
             inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+            printf("OPERANDO1 - %i", Operando1);
             set_flag_lir(false);
+            flushPipeline();
+            set_flag_flush(true);
             break;
         case JUMPEsq:
             printf("Operação de Salto Indireto.\n");
             transferirRR(ex_er.reg1, BR.PC);
             inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
             ex_er.classe = EscritaRegistrador;
+            flushPipeline();
+            set_flag_flush(true);
             break;
         case JUMPPDir:
             printf("Operação de Salto Positivo Direto.\n");
@@ -189,7 +200,8 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 transferirRR(ex_er.reg1, BR.PC);
                 inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
                 ex_er.classe = EscritaRegistrador;
-
+                flushPipeline();
+                set_flag_flush(true);
             }
             else{
                 ex_er.classe = EscritaVazia;
@@ -202,7 +214,8 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 ex_er.classe = EscritaRegistrador;
                 transferirRR(ex_er.reg1, BR.PC);
                 inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
-
+                flushPipeline();
+                set_flag_flush(true);
             }
             else{
                 ex_er.classe = EscritaVazia;
@@ -224,39 +237,44 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
 void busca(){
     printf("\nentrei na busc\n");
     //primeiro, verifica se na busca está disponível pra usar, se tiver, vai realizar a busca.
-    // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.    
-    if(statusB == Vazio && newInstruction){ // ta liberado para fazer la.
-        //fazer mais uma verificação, se precisa buscar ou n.
-        transferirRR(BR.MAR, BR.PC);
-        //próxima etapa, buscar na memória. usar UC e barramento.
-        Endereco mar;
-        mar[1] = BR.MAR[4];
-        mar[0] = BR.MAR[3];
-        printf("%i - mar1 ", mar[1]);
-        printf("%i - mar0 ", mar[0]);
-        setBarramentoEndereco(mar); 
-        //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
-        buscarMemoria();
+    // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.  
+    if (!get_flag_flush())
+    {
+        if(statusB == Vazio && newInstruction){ // ta liberado para fazer la.
+            //fazer mais uma verificação, se precisa buscar ou n.
+            transferirRR(BR.MAR, BR.PC);
+            //próxima etapa, buscar na memória. usar UC e barramento.
+            Endereco mar;
+            mar[1] = BR.MAR[4];
+            mar[0] = BR.MAR[3];
+            printf("%i - mar1 ", mar[1]);
+            printf("%i - mar0 ", mar[0]);
+            setBarramentoEndereco(mar); 
+            //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
+            buscarMemoria();
 
-        //buscar
-        if(statusD == Finalizado || statusD == Vazio){
-            for(int i = 0; i<5; i++){
-                b_d.linha[i] = BR.MBR[i];
-                printf("LINHA %i = %i\n", i, b_d.linha[i]);
+            //buscar
+            if(statusD == Finalizado || statusD == Vazio){
+                for(int i = 0; i<5; i++){
+                    b_d.linha[i] = BR.MBR[i];
+                    printf("LINHA %i = %i\n", i, b_d.linha[i]);
+                }
+                statusB = Finalizado;
+
             }
-            statusB = Finalizado;
 
-        }
-
-        //colocar dados obtidos no registrador entre.
-        
-        // uma função passará dps pelo pipeline, e jogará cada um pro próximo
-    }else if(!newInstruction){ 
-        if(statusD == Finalizado  ||statusD == Vazio){
-            statusB = Finalizado; // se atentar a essa condição em específico, mas acho q tá deboa
+            //colocar dados obtidos no registrador entre.
             
-        }
+            // uma função passará dps pelo pipeline, e jogará cada um pro próximo
+        }else if(!newInstruction){ 
+            if(statusD == Finalizado  ||statusD == Vazio){
+                statusB = Finalizado; // se atentar a essa condição em específico, mas acho q tá deboa
+                
+            }
 
+        }
+    }else{
+        set_flag_flush(false);
     }
     avancarPipeline();
 }
@@ -330,8 +348,6 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
                     printf("peguei o endereco %i \n", d_bo.end[0]);
                     d_bo.end[1] = BR.MAR[4]; 
                     printf("peguei o endereco %i \n", d_bo.end[1]);
-
-                    
                     newInstruction = false; // n tenho certexaaa
                 }
 
@@ -551,13 +567,10 @@ void escritaResultados(){
     opc opc_instrucao = ex_er.opc_linha;
     if(statusER == Pronto){
         printf("entrei na er\n");
-
-
-        if (ex_er.classe == EscritaRegistrador)
-        {
+        if (ex_er.classe == EscritaRegistrador){
             printf("escreverei em reg\n");
             if(opc_instrucao == OPC_JUMPEsq || opc_instrucao == OPC_JUMPPEsq || opc_instrucao == OPC_JUMPDir || opc_instrucao == OPC_JUMPPDir){
-                //apagar pipe,
+                transferirRR(BR.PC, ex_er.dado);    
                 newInstruction = true;
 
             }
@@ -642,7 +655,8 @@ void escritaResultados(){
             }
         }
         else if(ex_er.classe == EscritaDoisRegistradores){
-            //escrever nos dois registradores.
+            transferirRR(BR.AC, ex_er.reg1);
+            transferirRR(BR.MQ, ex_er.reg2);
         }
         else if(ex_er.classe == EscritaVazia){ //jump condiiconal que n vai pular
         }

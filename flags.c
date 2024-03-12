@@ -6,10 +6,13 @@
 short flags = 0;
 
 void set_flag_b(bool value) {
-    if (value)
+    if (value){
         flags |= FLAG_B;
+    }
     else
+    {
         flags &= ~FLAG_B;
+    }
 }
 
 bool get_flag_b() {
@@ -17,9 +20,13 @@ bool get_flag_b() {
 }
 void set_flag_d(bool value) {
     if (value)
+    {
         flags |= FLAG_D; 
+    }
     else
+    {
         flags &= ~FLAG_D;
+    }
 }
 
 bool get_flag_d() {
@@ -27,9 +34,13 @@ bool get_flag_d() {
 }
 void set_flag_bo(bool value) {
     if (value)
+    {
         flags |= FLAG_BO; 
+    }
     else
+    {
         flags &= ~FLAG_BO;
+    }
 }
 
 bool get_flag_bo() {
@@ -37,9 +48,13 @@ bool get_flag_bo() {
 }
 void set_flag_ex(bool value) {
     if (value)
+    {
         flags |= FLAG_EX;
+    }
     else
+    {
         flags &= ~FLAG_EX;
+    }
 }
 
 bool get_flag_ex() {
@@ -47,9 +62,13 @@ bool get_flag_ex() {
 }
 void set_flag_er(bool value) {
     if (value)
+    {
         flags |= FLAG_ER; 
+    }
     else
+    {
         flags &= ~FLAG_ER;
+    }
 }
 
 bool get_flag_er() {
@@ -57,10 +76,12 @@ bool get_flag_er() {
 }
 
 void set_flag_pipe(bool value) {
-    if (value)
+    if (value){
         flags |= FLAG_PIPE; 
-    else
+    }
+    else{
         flags &= ~FLAG_PIPE;
+    }
 }
 
 bool get_flag_pipe() {
@@ -69,15 +90,31 @@ bool get_flag_pipe() {
 
 void set_flag_lir(bool value) { //left instruction requiredd
     if (value)
+    {
         flags |= FLAG_LIR; 
+    }
     else
+    {
         flags &= ~FLAG_LIR;
+    }
 }
 
 bool get_flag_lir() {
     return flags & FLAG_LIR;
 }
 
+void set_flag_flush(bool value){
+    if (value)
+    {
+        flags |= FLAG_FLUSH; 
+    }
+    else
+        flags &= ~FLAG_FLUSH;
+}
+
+bool get_flag_flush(){
+    return flags & FLAG_FLUSH;
+}
 
 void zerarEstagiosPipe(){
     flags &= ZERAR_ESTAGIOS;

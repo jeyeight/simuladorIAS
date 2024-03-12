@@ -6,5 +6,6 @@
 void verificaAcao();
 void buscarMemoria();
 void escreverMemoria(enum escritaMemoria tipo);
+void flushPipeline();
 
 #endif
