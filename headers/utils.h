@@ -17,5 +17,6 @@ bool isNegativeChar(unsigned char c);
 unsigned long long int modulo(unsigned long long int n);
 unsigned short enderecoParaShort(unsigned char endereco[]);
 int fornecerPeso(enum Operacoes Operacao);
+bool isNegativeULL(unsigned long long int n);
 
 #endif

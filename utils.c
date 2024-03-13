@@ -312,6 +312,17 @@ int fornecerPeso(enum Operacoes Operacao){
     };
 };
 
+bool isNegativeULL(unsigned long long int n){
+    
+    if((n & QUADRAGESIMO_BIT) == QUADRAGESIMO_BIT){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
+
 // bool isNegative(unsigned char* memoria, int number){
 //     long long int linha = 0;
 

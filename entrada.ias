@@ -20,7 +20,7 @@ STORM: 100
 EXIT: 1
 */
 10
-2
+-2
 3
 4
 10
@@ -31,7 +31,8 @@ EXIT: 1
 6
 10
 LOAD M(0)
-STOR M(501,28:39)
-ADD M(1)  
-STOR M(0) 
+ADD M(1)
+STOR M(20)
+ADD M(2)
+STOR M(15)
 EXIT

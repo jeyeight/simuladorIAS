@@ -26,8 +26,12 @@ void inicializarProcessador(){
     dependencia_stor = criarFila();
 }
 void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
+    bool negativeOP1;
+    bool negativeOP2;
     unsigned long long int acumulador;
     unsigned long long int memoria;
+    long long int negOP1 = 0;
+    long long int negOP2 = 0;
     if(!get_flag_clk()) {
         clkTemp = cpu_clk;
         set_flag_clk(true);
@@ -38,6 +42,7 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
     printf("Peso = %i, clkTemp = %i, cpu_clock = %i\n", Peso, clkTemp, cpu_clk);
     if((cpu_clk - clkTemp) >= (Peso-1)){
         clkTemp = 0;
+        
         printf("Entramos para Executar! \ncpu_clock = %i e clkTemp = %i\n", cpu_clk, clkTemp);
         set_flag_clk(false);
         switch (Operacao){
@@ -47,7 +52,36 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 //exit(1);
 
                 acumulador = registradorParaInteiro(BR.AC, false, -1);
-                acumulador += Operando1;
+                
+                if(isNegativeULL(acumulador)){
+                    negativeOP1 = true;
+                    acumulador &= (QUADRAGESIMO_BIT-1);
+                    negOP1 = acumulador;
+                    negOP1 = -negOP1;
+                }else{
+                    negOP1 = acumulador;
+                }
+
+                if(isNegativeULL(Operando1)){
+                    negativeOP2 = true;
+                    Operando1 &= (QUADRAGESIMO_BIT-1);
+                    negOP2 = Operando1;
+                    negOP2 = -negOP2;
+                }
+                else{
+                    negOP2 = Operando1;
+                }
+                
+                negOP1 += negOP2;
+                if(negOP1 < 0){
+                    negOP1 = -negOP1;
+                    acumulador = negOP1;
+                    acumulador |= QUADRAGESIMO_BIT;
+                }
+                else{
+                    acumulador = negOP1;
+                }
+
                 //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
                 if(statusER == Finalizado || statusER == Vazio)  transferirRR(ex_er.reg1, BR.AC);
                 if(statusER == Finalizado || statusER == Vazio) inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
