@@ -65,6 +65,8 @@ void set_flag_clk(bool value);
 
 bool get_flag_clk();
 
+void setFlagsIniciais();
+
 void zerarEstagiosPipe();
 
 #endif

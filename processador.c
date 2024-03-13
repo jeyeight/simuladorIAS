@@ -635,10 +635,10 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
 
 
     set_flag_b(true);
-    verificaAcao();
+    verificarAcao();
 }
 
-void buscaOperandos(){
+void buscarOperandos(){
     //em Stor e StorM(addres modify), LSH, RSH, a busca será no AC.  *LOAD MQ busca no MQ.
     //na maioria a busca é lá na memória
     //pra alguns não há busca, como EXIT,, (Talvez os Jump também, né?)
@@ -743,7 +743,7 @@ void buscaOperandos(){
     }
 
     set_flag_d(true);
-    verificaAcao();
+    verificarAcao();
 }
 
 void execucao(){
@@ -766,7 +766,7 @@ void execucao(){
         }
     }
     set_flag_bo(true);
-    verificaAcao();
+    verificarAcao();
 }
 
 void escritaResultados(){
@@ -933,12 +933,12 @@ void escritaResultados(){
         statusER = Finalizado;
     }
     set_flag_ex(true);
-    verificaAcao();
+    verificarAcao();
 }
 
 void pipeline(){
     set_flag_er(true);
-    verificaAcao();
+    verificarAcao();
 }
 
 void avancarPipeline(){

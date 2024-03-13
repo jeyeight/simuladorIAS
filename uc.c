@@ -24,7 +24,7 @@
 // 
 //talvez mexer nas flags?
 
-void verificaAcao(){
+void verificarAcao(){
     if(get_flag_pipe()){
         zerarEstagiosPipe();
         pipeline();
@@ -36,7 +36,7 @@ void verificaAcao(){
         execucao();
     }else if(get_flag_bo()){
         zerarEstagiosPipe();
-        buscaOperandos();
+        buscarOperandos();
     }else if(get_flag_d()){
         zerarEstagiosPipe();
         decodificacao(true);
@@ -47,15 +47,15 @@ void verificaAcao(){
 }
 
 void buscarMemoria(){
-    Endereco* ponteiro;
+    Endereco* ptrBD;
     Dado * linha;
     Endereco ende = "23";
     //setBarramentoEndereco(ende);
-    ponteiro = getBarramentoEndereco();
-    printf("%i\n", *ponteiro[0]);
-    printf("%i\n", *ponteiro[1]);
+    ptrBD = getBarramentoEndereco();
+    printf("%i\n", *ptrBD[0]);
+    printf("%i\n", *ptrBD[1]);
     
-    unsigned long long int posicao = converteEndereco(ponteiro);
+    unsigned long long int posicao = converteEndereco(ptrBD);
     transferirMR(BR.MBR, m, posicao); //joga no barramento.
 
     getBarramentoDados(true); //MBR recebe dado
@@ -67,12 +67,69 @@ void buscarMemoria(){
 }
 
 void escreverMemoria(enum escritaMemoria tipo){
-    Endereco* ponteiro;
-    int index = 0;
-    unsigned char temp;
-    ponteiro = getBarramentoEndereco();
-    unsigned long long int posicao = converteEndereco(ponteiro);
+    Endereco* ptrBE;
+    ptrBE = getBarramentoEndereco();
+    unsigned long long int posicao = converteEndereco(ptrBE);
     if(tipo == Tudo){
+        escreverTudo(posicao);
+        // printf("\nOLHA EU COMEÇANDO A BRINCAR:\n");
+        // m[posicao] = BD.dado[index];
+        // printf("\n%i", m[posicao]);
+        // posicao++;
+        // index++;
+        // m[posicao] = BD.dado[index];
+        // printf("\n%i", m[posicao]);
+        // posicao++;
+        // index++;
+        // m[posicao] = BD.dado[index];
+        // printf("\n%i", m[posicao]);
+        // posicao++;
+        // index++;
+        // m[posicao] = BD.dado[index];
+        // printf("\n%i", m[posicao]);
+        // posicao++;
+        // index++;
+        // m[posicao] = BD.dado[index];
+        // printf("\n%i", m[posicao]);
+        // printf("\nOLHA EU TERMINANDO DE BRINCAR:\n");
+    }
+    else if (tipo == Esquerda){ //apenas trocar endereço da esquerda.
+        escreverEsquerda(posicao);
+        // posicao++;
+        // BD.dado[3] <<= 4;
+        // temp = BD.dado[4];
+        // temp >>= 4;
+        // BD.dado[3] |= temp;
+        // m[posicao] = BD.dado[3];
+        // posicao++;
+        // BD.dado[4] <<= 4;
+        // m[posicao] &= 0b00001111;
+        // m[posicao] |= BD.dado[4];
+    }
+    else if(tipo == Direita){
+        escreverDireita(posicao);
+        // posicao++;
+        // posicao++;
+        // posicao++; //alterar dps
+        // m[posicao] &= 0b11110000;
+        // m[posicao] |= BD.dado[3];
+        // posicao++;
+        // m[posicao] = BD.dado[4];
+    }
+    
+}
+
+void flushPipeline(){
+    statusB = Vazio;
+    statusD = Vazio;
+    statusBO = Vazio;
+    //statusEX = Vazio;
+    printf("Flushamos");
+    //exit(1);
+}
+
+void escreverTudo(unsigned long long int posicao){
+        int index = 0;
         printf("\nOLHA EU COMEÇANDO A BRINCAR:\n");
         m[posicao] = BD.dado[index];
         printf("\n%i", m[posicao]);
@@ -93,36 +150,30 @@ void escreverMemoria(enum escritaMemoria tipo){
         m[posicao] = BD.dado[index];
         printf("\n%i", m[posicao]);
         printf("\nOLHA EU TERMINANDO DE BRINCAR:\n");
-    }
-    else if (tipo == Esquerda){ //apenas trocar endereço da esquerda.
-        posicao++;
-        BD.dado[3] <<= 4;
-        temp = BD.dado[4];
-        temp >>= 4;
-        BD.dado[3] |= temp;
-        m[posicao] = BD.dado[3];
-        posicao++;
-        BD.dado[4] <<= 4;
-        m[posicao] &= 0b00001111;
-        m[posicao] |= BD.dado[4];
-    }
-    else if(tipo == Direita){
-        posicao++;
-        posicao++;
-        posicao++; //alterar dps
+}
+
+void escreverEsquerda(unsigned long long int posicao){
+    unsigned char temp;
+
+    posicao++;
+    BD.dado[3] <<= 4;
+    temp = BD.dado[4];
+    temp >>= 4;
+    BD.dado[3] |= temp;
+    m[posicao] = BD.dado[3];
+    posicao++;
+    BD.dado[4] <<= 4;
+    m[posicao] &= 0b00001111;
+    m[posicao] |= BD.dado[4];
+}
+
+void escreverDireita(unsigned long long int posicao){
+        // posicao++;
+        // posicao++;
+        // posicao++; alterar dps
+        posicao += 3;
         m[posicao] &= 0b11110000;
         m[posicao] |= BD.dado[3];
         posicao++;
         m[posicao] = BD.dado[4];
-    }
-    
 }
-
-void flushPipeline(){
-    statusB = Vazio;
-    statusD = Vazio;
-    statusBO = Vazio;
-    printf("Flushamos");
-    //exit(1);
-}
-

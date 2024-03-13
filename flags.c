@@ -163,3 +163,11 @@ bool get_flag_clk(){
 void zerarEstagiosPipe(){
     flags &= ZERAR_ESTAGIOS;
 }
+
+void setFlagsIniciais(){
+    set_flag_flush(false);
+    set_flag_dependencia_address(false);
+    set_flag_dependencia_stor(false);
+    set_flag_lir(true);
+    set_flag_clk(false);
+}

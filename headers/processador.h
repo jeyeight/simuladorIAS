@@ -20,7 +20,7 @@ enum escritaMemoria{Tudo, Esquerda, Direita};
 void clockTick();
 void executaULA(enum Operacoes Operacao, unsigned long long int Operando1);
 void decodificacao();
-void buscaOperandos();
+void buscarOperandos();
 void escritaResultados();
 void busca();
 void execucao();

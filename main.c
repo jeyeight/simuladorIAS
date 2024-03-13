@@ -57,18 +57,13 @@ int main(int argc, char* argv[]){
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
     m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
-    long long int PC = (long long int)registradorParaInteiro(BR.PC, false, -1);
-    // setFlagsIniciais();
+    unsigned long long int PC = (unsigned long long int)registradorParaInteiro(BR.PC, false, -1);
 
-    set_flag_flush(false);
-    set_flag_dependencia_address(false);
-    set_flag_dependencia_stor(false);
-    set_flag_lir(true);
-    set_flag_clk(false);
+    setFlagsIniciais();
 
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
 
-    if(PC > 4096 || PC < 0){
+    if(PC > 4096){
         perror("PC não pode ter um valor fora do alcance da memória");
         exit(EXIT_FAILURE);
     };
@@ -85,7 +80,7 @@ int main(int argc, char* argv[]){
     while (!isExit)
     {
         set_flag_pipe(true);
-        verificaAcao();
+        verificarAcao();
         clockTick();
     }
     escreverArquivo(m, fdSaida);
