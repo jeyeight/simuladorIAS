@@ -13,7 +13,7 @@
 #define PRIMEIRO_BIT 0b10000000
 
 
-enum statusFasePipeline{Vazio, Pronto, Processando, Finalizado};
+enum statusFasePipeline{Vazio, Pronto, Travado, Finalizado};
 
 enum escritaMemoria{Tudo, Esquerda, Direita};
 

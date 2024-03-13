@@ -229,7 +229,7 @@ unsigned long long int modulo(unsigned long long int n){
     return n &= QUADRAGESIMO_BIT;
 }
 
-unsigned short enderecoParaShort(char endereco[]){
+unsigned short enderecoParaShort(unsigned char endereco[]){
     unsigned short retorno = 0;
     retorno |= endereco[0];
     retorno <<= 8;

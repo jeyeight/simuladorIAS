@@ -31,6 +31,7 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
         case ADD:
             printf("Entrando no add!\n");
             printf("%i - Peso ADD", Pesos[ADD]);
+            //exit(1);
             
             acumulador = registradorParaInteiro(BR.AC, false, -1);
             acumulador += Operando1;
@@ -116,6 +117,9 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
 
             break;
         case STOREsq:
+            printf("Entrei para storesq");
+            mostrarFila(dependencia_address);
+            //exit(1);
             acumulador = registradorParaInteiro(BR.AC, false, -1);
             // memoria = registradorParaInteiro(NULL, true, Operando1);
             // acumulador &= LONG_INT_ULTIMOS12_ALTOS_DIR;
@@ -126,6 +130,8 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
 
             break;
         case STORDir: 
+            printf("Entrei na Execução do STORDir\n");
+            //exit(1);
             acumulador = registradorParaInteiro(BR.AC, false, -1);
             //inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
             // memoria = registradorParaInteiro(NULL, true, Operando1);
@@ -243,74 +249,91 @@ void busca(){
     printf("\nEntramos na busca.\n");
     //primeiro, verifica se na busca está disponível pra usar, se tiver, vai realizar a busca.
     // ele verifica na decodificação anterior se ele precisa mesmo realizar a busca, ou se vai apenas puxar de IBR na próxima decodificação.  
-
+    mostrarFila(dependencia_address);
     bool temDependencia = false;
     if (get_flag_dependencia_address()){
         Endereco pc;
         pc[1] = BR.PC[4];
-        pc[0] = BR.PC[3];
+        pc[0] = BR.PC[3] & 0b00001111;
+
         
         temDependencia = elementoNaFila(dependencia_address, enderecoParaShort(pc));
         printf("Veficando dependencia, PC é : %hd\n", enderecoParaShort(pc));
-    }    
+        
+    } 
 
-    if (!get_flag_flush()){
-        if(statusB == Vazio && newInstruction && !temDependencia){ // ta liberado para fazer la.
-            //fazer mais uma verificação, se precisa buscar ou n.
-            transferirRR(BR.MAR, BR.PC);
-            //próxima etapa, buscar na memória. usar UC e barramento.
-            Endereco mar;
-            mar[1] = BR.MAR[4];
-            mar[0] = BR.MAR[3];
-            printf("Endereco onde buscaremos instrucao parte 1 - %i\n", mar[0]);
-            printf("Endereco onde buscaremos instrucao parte 2 - %i\n", mar[1]);
-            setBarramentoEndereco(mar); 
-            //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
-            buscarMemoria();
+    // Endereco pc;
+    // pc[1] = BR.PC[4];
+    // pc[0] = BR.PC[3] & 0b00001111;   
 
-            //buscar
-            if(statusD == Finalizado || statusD == Vazio){
-                for(int i = 0; i<5; i++){
-                    b_d.linha[i] = BR.MBR[i];
-                    //printf("LINHA %i = %i\n", i, b_d.linha[i]);
+    // temDependencia = elementoNaFila(dependencia_address, enderecoParaShort(pc));
+    // printf("PC - 3 = %i\n", BR.PC[3]);
+    // printf("PC - 4 = %i\n", BR.PC[4]);
+    // printf("Veficando dependencia, PC é : %i\n", enderecoParaShort(pc));
+    if(statusB != Travado){
+        printf("nÃO TA TRAVADOO\n");
+
+        if (!get_flag_flush()){
+            //printf("nao flush");
+            if(statusB == Vazio && newInstruction && !temDependencia){ // ta liberado para fazer la.
+                //fazer mais uma verificação, se precisa buscar ou n.
+                transferirRR(BR.MAR, BR.PC);
+                //próxima etapa, buscar na memória. usar UC e barramento.
+                Endereco mar;
+                mar[1] = BR.MAR[4];
+                mar[0] = BR.MAR[3]; // & 0b00001111;
+                printf("Endereco onde buscaremos instrucao parte 1 - %i\n", mar[0]);
+                printf("Endereco onde buscaremos instrucao parte 2 - %i\n", mar[1]);
+                setBarramentoEndereco(mar); 
+                //por comando da UC, vai ter que dar getBarramentoEndereco, e aí realizar a busca.
+                buscarMemoria();
+
+                //buscar
+                if((statusD == Finalizado || statusD == Vazio) && statusB != Travado){
+                    for(int i = 0; i<5; i++){
+                        b_d.linha[i] = BR.MBR[i];
+                        //printf("LINHA %i = %i\n", i, b_d.linha[i]);
+                    }
+                    printf("Busca Finalizada.");
+                    statusB = Finalizado;
+                    b_d.pc[0] = mar[0];
+                    b_d.pc[1] = mar[1];
+
+                }else{
+
                 }
-                printf("Decodificação Finalizada.");
-                statusB = Finalizado;
-                b_d.pc[0] = mar[0];
-                b_d.pc[1] = mar[1];
 
-            }else{
-
+                //colocar dados obtidos no registrador entre.
+                
+                // uma função passará dps pelo pipeline, e jogará cada um pro próximo
+            }else if(!newInstruction && !temDependencia){ 
+                if((statusD == Finalizado  ||statusD == Vazio) && (statusB != Travado)){
+                    statusB = Finalizado; // se atentar a essa condição em específico, mas acho q tá deboa
+                }
             }
-
-            //colocar dados obtidos no registrador entre.
-            
-            // uma função passará dps pelo pipeline, e jogará cada um pro próximo
-        }else if(!newInstruction && !temDependencia){ 
-            if(statusD == Finalizado  ||statusD == Vazio){
-                statusB = Finalizado; // se atentar a essa condição em específico, mas acho q tá deboa
-            }
+        }else{
+            set_flag_flush(false);
+            //exit(1);
         }
-    }else{
-        set_flag_flush(false);
+        // printf("B - %i\n", statusB);
+        // printf("D - %i\n", statusD);
+        // printf("BO - %i\n", statusBO);
+        // printf("EX - %i\n", statusEX);
+        // printf("ER - %i\n", statusER);
+        //mostrarFila(dependencia_stor);
     }
-    // printf("B - %i\n", statusB);
-    // printf("D - %i\n", statusD);
-    // printf("BO - %i\n", statusBO);
-    // printf("EX - %i\n", statusEX);
-    // printf("ER - %i\n", statusER);
-    //mostrarFila(dependencia_stor);
     avancarPipeline();
 }
 
 void decodificacao(){ //posicao = posicao da primeira instrucao
-    unsigned char temp;
+    unsigned char temp; 
     //posicao n precisa, vai estar em MBR ja.
     if(statusD == Pronto){
         printf("Entrando na Decodificação\n");
         bool opcode_exit = false;
         int opcode = 0;
         if(newInstruction){
+            printf("Entrei NEW INSTRUCTION\n");
             if(get_flag_lir()){
                 BR.IR[4] = b_d.linha[0];
                 printf("%i - Opcode 1 em IR\n", BR.IR[4]);
@@ -319,6 +342,8 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
 
                 if(opcode == OPC_EXIT){
                     opcode_exit = true;
+                    printf("tem um exit");
+                    //exit(1);
                 }
 
                 //Pegar o primeiro endereco e colocar em MAR.
@@ -392,6 +417,16 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
                             // prox[1] = d_bo.novoIBR[4];
                             if(enderecoParaShort(d_bo.end) == enderecoParaShort(prox)){
                                 //alterar em execução.
+                                // ou na vdd, parar tudo aqui atrás, e dps dar flush.
+                                // manter o mesmo PC e só setar LIR.
+                                set_flag_lir(false);
+                                // statusD = Travado;
+                                statusB = Travado;
+                                printf("setei travado");
+                                statusD = Finalizado;
+                                //exit(1);
+                                //travar_pipe();
+
                             }
 
                         }
@@ -400,6 +435,11 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
                     //printf("peguei o endereco %i \n", d_bo.end[0]);
                     //printf("peguei o endereco %i \n", d_bo.end[1]);
                     newInstruction = false; // n tenho certexaaa
+                    if(statusB == Travado){
+                        newInstruction = true;
+                        printf("\nCom statusD travado, newInstruction = true\n");
+                        // exit(1);
+                    }
                 }
 
                 //jogar informações no D_BO.
@@ -439,6 +479,7 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
                         set_flag_dependencia_address(true);
                         //verificar se a instrução que peguei ja tem o endereco.
                         enfileirar(dependencia_address, enderecoParaShort(d_bo.end));
+                        mostrarFila(dependencia_stor);
                     }
 
                     newInstruction = true; //n tenho certeza disso tb, acho qé
@@ -502,8 +543,9 @@ void decodificacao(){ //posicao = posicao da primeira instrucao
 
         }
 
-        if(statusBO == Finalizado || statusBO == Vazio){
+        if((statusBO == Finalizado || statusBO == Vazio) && (statusB != Travado)){
             printf("Decodificação Finalizada.\n");
+            printf("Status B = % i \n", statusB);
             //exit(1);
 
             statusD = Finalizado;
@@ -674,6 +716,10 @@ void escritaResultados(){
             opc_instrucao == OPC_LOADModulo || opc_instrucao == OPC_LOADMenosModulo || opc_instrucao == OPC_ADD ||
             opc_instrucao == OPC_ADDM || opc_instrucao == OPC_SUB ||opc_instrucao == OPC_SUBM ||
             opc_instrucao == OPC_LSH ||opc_instrucao == OPC_RSH){
+                if(opc_instrucao == OPC_ADD){
+                    printf("Instrucao ADD\n");
+                    //exit(1);
+                }
                 transferirRR(BR.AC, ex_er.dado);    
             }else if(opc_instrucao == OPC_LOADMQM){
                 transferirRR(BR.MQ, ex_er.dado);
@@ -735,10 +781,15 @@ void escritaResultados(){
             else if(ex_er.opc_linha == OPC_STOREsq){
                 transferirRR(BR.MBR, ex_er.dado);
                 Dado valor;
+                printf("opc stores esq escrita");
+                //exit(1);
                 for (int i = 0; i<5; i++){
                     valor[i] = BR.MBR[i];
                 }
                 tipo = Esquerda;
+                BR.MAR[3] = ex_er.endereco[0];
+                BR.MAR[4] = ex_er.endereco[1];
+
                 ex_er.endereco[0] = BR.MAR[3];
                 ex_er.endereco[1] = BR.MAR[4];
                 //verificação de apenas pegar os últimos dois bytes, 
@@ -747,9 +798,14 @@ void escritaResultados(){
                 setBarramentoEndereco(ex_er.endereco);
                 escreverMemoria(tipo);
 
-                
+                mostrarFila(dependencia_address);
+                printf("endereco - %hd\n", enderecoParaShort(ex_er.endereco));
+
+                //exit(1);
                 if(elementoNaFila(dependencia_address, enderecoParaShort(ex_er.endereco))){
+                    printf("ESTA AQIO! VOU DESENFILEIREAS");
                     desenfileirar(dependencia_address);
+                    //exit(1);
                 }
                 if(estaVazia(dependencia_address)){
                     set_flag_dependencia_address(false);
@@ -757,12 +813,17 @@ void escritaResultados(){
                 
             }
             else if(ex_er.opc_linha == OPC_STORDir){
+                printf("Escrevendo STOR-DIR\n");
                 transferirRR(BR.MBR, ex_er.dado);
                 Dado valor;
+                //exit(1);
                 for (int i = 0; i<5; i++){
                     valor[i] = BR.MBR[i];
                 }
                 tipo = Direita;
+                BR.MAR[3] = ex_er.endereco[0];
+                BR.MAR[4] = ex_er.endereco[1];
+
                 ex_er.endereco[0] = BR.MAR[3];
                 ex_er.endereco[1] = BR.MAR[4];
                 //verificação de apenas pegar os últimos dois bytes, 
@@ -777,6 +838,10 @@ void escritaResultados(){
                 }
                 if(estaVazia(dependencia_address)){
                     set_flag_dependencia_address(false);
+                }
+
+                if(statusB == Travado){
+                    flushPipeline();
                 }
                 
             }
@@ -825,6 +890,9 @@ void avancarPipeline(){
     if(statusD == Finalizado && statusBO == Vazio){
         statusBO = Pronto;
         statusD = Vazio;
+        if(statusB == Travado){
+            //statusD = Travado;
+        }
     }
     if(statusB == Finalizado && statusD == Vazio){
         statusD = Pronto;

@@ -122,5 +122,7 @@ void flushPipeline(){
     statusB = Vazio;
     statusD = Vazio;
     statusBO = Vazio;
+    printf("Flushamos");
+    //exit(1);
 }
 
