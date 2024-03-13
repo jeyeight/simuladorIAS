@@ -147,6 +147,19 @@ bool get_flag_flush(){
     return flags & FLAG_FLUSH;
 }
 
+void set_flag_clk(bool value){
+    if (value)
+    {
+        flags |= FLAG_CLK; 
+    }
+    else
+        flags &= ~FLAG_CLK;
+}
+
+bool get_flag_clk(){
+    return flags & FLAG_CLK;
+}
+
 void zerarEstagiosPipe(){
     flags &= ZERAR_ESTAGIOS;
 }

@@ -16,5 +16,6 @@ void inteiroParaRegistrador(unsigned long long int numero, unsigned char dado[5]
 bool isNegativeChar(unsigned char c);
 unsigned long long int modulo(unsigned long long int n);
 unsigned short enderecoParaShort(unsigned char endereco[]);
+int fornecerPeso(enum Operacoes Operacao);
 
 #endif

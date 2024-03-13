@@ -27,222 +27,238 @@ void inicializarProcessador(){
 void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
     unsigned long long int acumulador;
     unsigned long long int memoria;
-    switch (Operacao){
-        case ADD:
-            printf("Entrando no add!\n");
-            printf("%i - Peso ADD", Pesos[ADD]);
-            //exit(1);
-            
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            acumulador += Operando1;
-            //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
-            if(statusER == Finalizado || statusER == Vazio)  transferirRR(ex_er.reg1, BR.AC);
-            if(statusER == Finalizado || statusER == Vazio) inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
-            if(statusER == Finalizado || statusER == Vazio) ex_er.classe = EscritaRegistrador;
-            break;
-        case ADDModulo:
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            acumulador += modulo(Operando1);
-            //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
-            if(statusER == Finalizado || statusER == Vazio) transferirRR(ex_er.reg1, BR.AC);
-            if(statusER == Finalizado || statusER == Vazio) inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
-            if(statusER == Finalizado || statusER == Vazio) ex_er.classe = EscritaRegistrador;
-            break;
-        case SUB:
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            acumulador -= Operando1;
-            //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
-            transferirRR(ex_er.reg1, BR.AC);
-            inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case SUBModulo:
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            acumulador -= modulo(Operando1);
-            //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
-            transferirRR(ex_er.reg1, BR.AC);
-            inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case MUL:
-            unsigned long long int Mq = registradorParaInteiro(BR.MQ, false, -1);
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            acumulador = Mq * Operando1;
-            if(acumulador > LIMITE_39_BITS){
-                unsigned long long int temporario = acumulador >> 40;
-                inteiroParaRegistrador(temporario,ex_er.reg1, false, -1);
-                acumulador &= FULL_BYTE;
-                // Mq = acumulador - LIMITE_39_BITS;
-                // acumulador = LIMITE_39_BITS;
-            }else{
-                inteiroParaRegistrador(0, ex_er.reg1, false, -1);
-            }
-            inteiroParaRegistrador(acumulador,ex_er.reg2, false, -1);
-            //inteiroParaRegistrador(Mq, BR.MQ, false, -1);
-            //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
-            ex_er.classe = EscritaDoisRegistradores;
-            break;
-        case DIV:
-            long long int mq = registradorParaInteiro(BR.MQ, false, -1);
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            mq = (acumulador / Operando1);
-            acumulador = (acumulador % Operando1);
-            inteiroParaRegistrador(mq, ex_er.reg2, false, -1);
-            inteiroParaRegistrador(acumulador, ex_er.reg1, false, -1);
-            ex_er.classe = EscritaDoisRegistradores;
-            break;
-        case LSH:
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            acumulador <<= 1;
-            //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
-            transferirRR(ex_er.reg1, BR.AC);
-            inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case RSH:
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            acumulador >>= 1;
-            //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
-            transferirRR(ex_er.reg1, BR.AC);
-            inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case STOR:
-            printf("Executando Stor!\n");
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            printf("Pegando o valor: %lld no Stor\n", acumulador);
-            //transferirRM(BR.AC, m, Operando1);
-            inteiroParaRegistrador(acumulador, ex_er.dado, false, -1); //valor que estava em AC.
-            ex_er.classe = EscritaMemoria;
+    int clkTemp;
+    if(!get_flag_clk()) {
+        clkTemp = cpu_clk;
+        set_flag_clk(true);
+    }
 
-            break;
-        case STOREsq:
-            printf("Entrei para storesq");
-            mostrarFila(dependencia_address);
-            //exit(1);
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            // memoria = registradorParaInteiro(NULL, true, Operando1);
-            // acumulador &= LONG_INT_ULTIMOS12_ALTOS_DIR;
-            // memoria &= LONG_INT_ULTIMOS12_BAIXOS_DIR;
-            // memoria |= acumulador;
-            inteiroParaRegistrador(acumulador, ex_er.dado, false, -1); //valor que estava em AC
-            ex_er.classe = EscritaMemoria;
+    int Peso = fornecerPeso(Operacao);
 
-            break;
-        case STORDir: 
-            printf("Entrei na Execução do STORDir\n");
-            //exit(1);
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            //inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
-            // memoria = registradorParaInteiro(NULL, true, Operando1);
-            // acumulador &= LONG_INT_ULTIMOS12_ALTOS;
-            // memoria &= LONG_INT_ULTIMOS12_BAIXOS;
-            // memoria |= acumulador;
-            inteiroParaRegistrador(acumulador, ex_er.dado, false, -1); //valor que estava em AC
-            ex_er.classe = EscritaMemoria;
-            break;
-        case LOADMQ:
-            //transferirRR(BR.AC, BR.MQ);
-            transferirRR(ex_er.reg1, BR.AC);
-            Operando1 = registradorParaInteiro(BR.MQ, false, -1);
-            inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case LOADMQM:
-            //transferirRR(BR.AC, BR.MQ);
-            //BR.AC[0] ^= PRIMEIRO_BIT;
-            transferirRR(ex_er.reg1, BR.MQ);
-            inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case LOAD:
-            printf("Fazendo o load!\n");
-            //transferirMR(BR.AC, m, Operando1);
-            transferirRR(ex_er.reg1, BR.AC);
-            inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case LOADMenos:
-            //transferirMR(BR.AC, m, Operando1);
-            //BR.AC[0] ^= PRIMEIRO_BIT;
-            Operando1 ^= QUADRAGESIMO_BIT;
-            transferirRR(ex_er.reg1, BR.AC);
-            inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case LOADModulo:
-            //transferirMR(BR.AC, m, modulo(Operando1));
-            transferirRR(ex_er.reg1, BR.AC);
-            inteiroParaRegistrador(modulo(Operando1), ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case LOADMenosModulo:
-            //transferirMR(BR.AC, m, modulo(Operando1));
-            //BR.AC[0] ^= PRIMEIRO_BIT;
-            Operando1 = modulo(Operando1);
-            Operando1 ^= QUADRAGESIMO_BIT;
-            transferirRR(ex_er.reg1, BR.AC);
-            inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+    if((cpu_clk - clkTemp) >= Peso){
+        set_flag_clk(false);
+        switch (Operacao){
+            case ADD:
+                printf("Entrando no add!\n");
+                printf("%i - Peso ADD", Pesos[ADD]);
+                //exit(1);
 
-            ex_er.classe = EscritaRegistrador;
-            break;
-        case JUMPDir:
-            printf("Operação de Salto Direto.\n");
-            ex_er.classe = EscritaRegistrador;
-            transferirRR(ex_er.reg1, BR.PC);
-            inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
-            printf("OPERANDO1 no JUMPDIR - %i", Operando1);
-            set_flag_lir(false);
-            flushPipeline();
-            set_flag_flush(true);
-            break;
-        case JUMPEsq:
-            printf("Operação de Salto Indireto.\n");
-            transferirRR(ex_er.reg1, BR.PC);
-            inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
-            ex_er.classe = EscritaRegistrador;
-            flushPipeline();
-            set_flag_flush(true);
-            break;
-        case JUMPPDir:
-            printf("Operação de Salto Positivo Direto.\n");
-            acumulador = registradorParaInteiro(BR.AC, false, -1);
-            if(!isNegativeChar(BR.AC[0])){
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                acumulador += Operando1;
+                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+                if(statusER == Finalizado || statusER == Vazio)  transferirRR(ex_er.reg1, BR.AC);
+                if(statusER == Finalizado || statusER == Vazio) inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
+                if(statusER == Finalizado || statusER == Vazio) ex_er.classe = EscritaRegistrador;
+                break;
+            case ADDModulo:
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                acumulador += modulo(Operando1);
+                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+                if(statusER == Finalizado || statusER == Vazio) transferirRR(ex_er.reg1, BR.AC);
+                if(statusER == Finalizado || statusER == Vazio) inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
+                if(statusER == Finalizado || statusER == Vazio) ex_er.classe = EscritaRegistrador;
+                break;
+            case SUB:
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                acumulador -= Operando1;
+                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+                transferirRR(ex_er.reg1, BR.AC);
+                inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case SUBModulo:
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                acumulador -= modulo(Operando1);
+                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+                transferirRR(ex_er.reg1, BR.AC);
+                inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case MUL:
+                unsigned long long int Mq = registradorParaInteiro(BR.MQ, false, -1);
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                acumulador = Mq * Operando1;
+                if(acumulador > LIMITE_39_BITS){
+                    unsigned long long int temporario = acumulador >> 40;
+                    inteiroParaRegistrador(temporario,ex_er.reg1, false, -1);
+                    acumulador &= FULL_BYTE;
+                    // Mq = acumulador - LIMITE_39_BITS;
+                    // acumulador = LIMITE_39_BITS;
+                }else{
+                    inteiroParaRegistrador(0, ex_er.reg1, false, -1);
+                }
+                inteiroParaRegistrador(acumulador,ex_er.reg2, false, -1);
+                //inteiroParaRegistrador(Mq, BR.MQ, false, -1);
+                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+                ex_er.classe = EscritaDoisRegistradores;
+                break;
+            case DIV:
+                long long int mq = registradorParaInteiro(BR.MQ, false, -1);
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                mq = (acumulador / Operando1);
+                acumulador = (acumulador % Operando1);
+                inteiroParaRegistrador(mq, ex_er.reg2, false, -1);
+                inteiroParaRegistrador(acumulador, ex_er.reg1, false, -1);
+                ex_er.classe = EscritaDoisRegistradores;
+                break;
+            case LSH:
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                acumulador <<= 1;
+                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+                transferirRR(ex_er.reg1, BR.AC);
+                inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case RSH:
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                acumulador >>= 1;
+                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+                transferirRR(ex_er.reg1, BR.AC);
+                inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case STOR:
+                printf("Executando Stor!\n");
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                printf("Pegando o valor: %lld no Stor\n", acumulador);
+                //transferirRM(BR.AC, m, Operando1);
+                inteiroParaRegistrador(acumulador, ex_er.dado, false, -1); //valor que estava em AC.
+                ex_er.classe = EscritaMemoria;
+
+                break;
+            case STOREsq:
+                printf("Entrei para storesq");
+                mostrarFila(dependencia_address);
+                //exit(1);
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                // memoria = registradorParaInteiro(NULL, true, Operando1);
+                // acumulador &= LONG_INT_ULTIMOS12_ALTOS_DIR;
+                // memoria &= LONG_INT_ULTIMOS12_BAIXOS_DIR;
+                // memoria |= acumulador;
+                inteiroParaRegistrador(acumulador, ex_er.dado, false, -1); //valor que estava em AC
+                ex_er.classe = EscritaMemoria;
+
+                break;
+            case STORDir: 
+                printf("Entrei na Execução do STORDir\n");
+                //exit(1);
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                //inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
+                // memoria = registradorParaInteiro(NULL, true, Operando1);
+                // acumulador &= LONG_INT_ULTIMOS12_ALTOS;
+                // memoria &= LONG_INT_ULTIMOS12_BAIXOS;
+                // memoria |= acumulador;
+                inteiroParaRegistrador(acumulador, ex_er.dado, false, -1); //valor que estava em AC
+                ex_er.classe = EscritaMemoria;
+                break;
+            case LOADMQ:
+                //transferirRR(BR.AC, BR.MQ);
+                transferirRR(ex_er.reg1, BR.AC);
+                Operando1 = registradorParaInteiro(BR.MQ, false, -1);
+                inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case LOADMQM:
+                //transferirRR(BR.AC, BR.MQ);
+                //BR.AC[0] ^= PRIMEIRO_BIT;
+                transferirRR(ex_er.reg1, BR.MQ);
+                inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case LOAD:
+                printf("Fazendo o load!\n");
+                //transferirMR(BR.AC, m, Operando1);
+                transferirRR(ex_er.reg1, BR.AC);
+                inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case LOADMenos:
+                //transferirMR(BR.AC, m, Operando1);
+                //BR.AC[0] ^= PRIMEIRO_BIT;
+                Operando1 ^= QUADRAGESIMO_BIT;
+                transferirRR(ex_er.reg1, BR.AC);
+                inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case LOADModulo:
+                //transferirMR(BR.AC, m, modulo(Operando1));
+                transferirRR(ex_er.reg1, BR.AC);
+                inteiroParaRegistrador(modulo(Operando1), ex_er.dado, false, -1);
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case LOADMenosModulo:
+                //transferirMR(BR.AC, m, modulo(Operando1));
+                //BR.AC[0] ^= PRIMEIRO_BIT;
+                Operando1 = modulo(Operando1);
+                Operando1 ^= QUADRAGESIMO_BIT;
+                transferirRR(ex_er.reg1, BR.AC);
+                inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+
+                ex_er.classe = EscritaRegistrador;
+                break;
+            case JUMPDir:
+                printf("Operação de Salto Direto.\n");
+                ex_er.classe = EscritaRegistrador;
+                transferirRR(ex_er.reg1, BR.PC);
+                inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+                printf("OPERANDO1 no JUMPDIR - %i", Operando1);
                 set_flag_lir(false);
+                flushPipeline();
+                set_flag_flush(true);
+                break;
+            case JUMPEsq:
+                printf("Operação de Salto Indireto.\n");
                 transferirRR(ex_er.reg1, BR.PC);
                 inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
                 ex_er.classe = EscritaRegistrador;
                 flushPipeline();
                 set_flag_flush(true);
-            }
-            else{
-                ex_er.classe = EscritaVazia;
-            }
-            break;
-        case JUMPPEsq:
-            printf("Operação de Salto Positivo Indireto.\n");
-            if(!isNegativeChar(BR.AC[0])){
-                ex_er.classe = EscritaRegistrador;
-                transferirRR(ex_er.reg1, BR.PC);
-                inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
-                flushPipeline();
-                set_flag_flush(true);
-            }
-            else{
-                ex_er.classe = EscritaVazia;
-            }
-            break;
-        case EXIT:
-            printf("Cheguei Final\n");
-            //exit(1);
-            isExit = true;
-            break;
-        default:
-            printf("Operação não reconhecida.\n");
-            printf("%i - Operação \n", Operacao);
-            printf("%i - Opcode\n", bo_ex.opc_linha);
-            exit(1);
-    };
+                break;
+            case JUMPPDir:
+                printf("Operação de Salto Positivo Direto.\n");
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                if(!isNegativeChar(BR.AC[0])){
+                    set_flag_lir(false);
+                    transferirRR(ex_er.reg1, BR.PC);
+                    inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+                    ex_er.classe = EscritaRegistrador;
+                    flushPipeline();
+                    set_flag_flush(true);
+                }
+                else{
+                    ex_er.classe = EscritaVazia;
+                }
+                break;
+            case JUMPPEsq:
+                printf("Operação de Salto Positivo Indireto.\n");
+                if(!isNegativeChar(BR.AC[0])){
+                    ex_er.classe = EscritaRegistrador;
+                    transferirRR(ex_er.reg1, BR.PC);
+                    inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
+                    flushPipeline();
+                    set_flag_flush(true);
+                }
+                else{
+                    ex_er.classe = EscritaVazia;
+                }
+                break;
+            case EXIT:
+                printf("Cheguei Final\n");
+                //exit(1);
+                isExit = true;
+                break;
+            default:
+                printf("Operação não reconhecida.\n");
+                printf("%i - Operação \n", Operacao);
+                printf("%i - Opcode\n", bo_ex.opc_linha);
+                exit(1);
+
+        };
+        ex_er.opc_linha = bo_ex.opc_linha;
+        ex_er.endereco[1] = bo_ex.endereco[1];
+        ex_er.endereco[0] = bo_ex.endereco[0];
+        statusEX = Finalizado;
+    }
 };
 
 void busca(){
@@ -680,17 +696,10 @@ void execucao(){
         int operation = (int)bo_ex.opc_linha;
 
 
-        if(statusER == Finalizado || statusER == Vazio){
+        if(statusER == Finalizado || statusER == Vazio){            
             executaULA(operation, operando);
-            ex_er.opc_linha = bo_ex.opc_linha;
-            ex_er.endereco[0] = bo_ex.endereco[0];
-            ex_er.endereco[1] = bo_ex.endereco[1];
-            statusEX = Finalizado;
-
         }
     }
-
-
     set_flag_bo(true);
     verificaAcao();
 }
@@ -869,6 +878,7 @@ void pipeline(){
 
 void avancarPipeline(){
     printf("Status do Pipeline");
+    printf("CLOCK ATUAL TAL %i", cpu_clk);
     printf("\nANTES AVANÇO---\n");
     printf("B - %i\n", statusB);
         printf("D - %i\n", statusD);
@@ -907,4 +917,7 @@ void avancarPipeline(){
     
 }
 
+void clockTick(){
+    cpu_clk++;
+}
 

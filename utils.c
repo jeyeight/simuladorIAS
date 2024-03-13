@@ -238,6 +238,80 @@ unsigned short enderecoParaShort(unsigned char endereco[]){
     return retorno;
 }
 
+int fornecerPeso(enum Operacoes Operacao){
+    switch (Operacao){
+        case ADD:
+            return Pesos[0];
+            break;
+        case ADDModulo:
+            return Pesos[1];
+            break;
+        case SUB:
+            return Pesos[2];
+            break;
+        case SUBModulo:
+            return Pesos[3];
+            break;
+        case MUL:
+            return Pesos[4];
+            break;
+        case DIV:
+            return Pesos[5];
+            break;
+        case LSH:
+            return Pesos[6];
+            break;
+        case RSH:
+            return Pesos[7];
+            break;
+        case STOR:
+            return Pesos[8];
+            break;
+        case STOREsq:
+            return Pesos[9];
+            break;
+        case STORDir: 
+            return Pesos[10];
+            break;
+        case LOADMQ:
+            return Pesos[11];
+            break;
+        case LOADMQM:
+            return Pesos[12];
+            break;
+        case LOAD:
+            return Pesos[13];
+            break;
+        case LOADMenos:
+            return Pesos[14];
+            break;
+        case LOADModulo:
+            return Pesos[15];
+            break;
+        case LOADMenosModulo:
+            return Pesos[16];
+            break;
+        case JUMPDir:
+            return Pesos[17];
+            break;
+        case JUMPEsq:
+            return Pesos[18];
+            break;
+        case JUMPPDir:
+            return Pesos[19];
+            break;
+        case JUMPPEsq:
+            return Pesos[20];
+            break;
+        case EXIT:
+            return Pesos[21];
+            break;
+        default:
+            exit("Não existe esse peso");
+            break;
+    };
+};
+
 // bool isNegative(unsigned char* memoria, int number){
 //     long long int linha = 0;
 

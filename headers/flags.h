@@ -13,6 +13,7 @@
 #define FLAG_FLUSH  0b0000000010000000
 #define FLAG_DPS    0b0000000100000000
 #define FLAG_DPA    0b0000001000000000
+#define FLAG_CLK    0b0000010000000000
 
 #define ZERAR_ESTAGIOS 0b1111111111000000
 
@@ -59,6 +60,10 @@ bool get_flag_dependencia_address();
 void set_flag_flush(bool value);
 
 bool get_flag_flush();
+
+void set_flag_clk(bool value);
+
+bool get_flag_clk();
 
 void zerarEstagiosPipe();
 

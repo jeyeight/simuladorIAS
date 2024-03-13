@@ -53,6 +53,7 @@ const char *nomesOperacoes[] = {
 
 int main(int argc, char* argv[]){
     inicializarProcessador();
+    cpu_clk = 0;
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
     m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
@@ -63,6 +64,8 @@ int main(int argc, char* argv[]){
     set_flag_dependencia_address(false);
     set_flag_dependencia_stor(false);
     set_flag_lir(true);
+    set_flag_clk(false);
+
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
 
     if(PC > 4096 || PC < 0){
@@ -83,8 +86,11 @@ int main(int argc, char* argv[]){
     {
         set_flag_pipe(true);
         verificaAcao();
+        clockTick();
     }
     escreverArquivo(m, fdSaida);
+
+    printf("CLOCK:%i\n", cpu_clk);
 
     free(m);
     fclose(fdEntrada);
