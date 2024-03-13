@@ -73,8 +73,8 @@ int main(int argc, char* argv[]){
         exit(EXIT_FAILURE);
     }
 
+    inicializarPesos();
     verificaPesos(fdEntrada);
-
     carregarMemoria(m, fdEntrada, fdSaida);
     //Clocks, Pipeline, PC e UC
     while (!isExit)

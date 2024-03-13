@@ -39,7 +39,7 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
     }
 
     int Peso = fornecerPeso(Operacao);
-    printf("Peso = %i, clkTemp = %i, cpu_clock = %i\n", Peso, clkTemp, cpu_clk);
+    printf("Peso = %i, clkTemp = %i, cpu_clock = %i\n Operacao=%i\n", Peso, clkTemp, cpu_clk, Operacao);
     if((cpu_clk - clkTemp) >= (Peso-1)){
         clkTemp = 0;
         

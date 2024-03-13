@@ -80,6 +80,7 @@ void verificaPesos(FILE * fdEntrada){
     caracter[0] = 'm'; //teste
     zerarString(instrucao, 10);
     while(caracter[0] != '*'){
+        zerarString(peso, 10);
         while(caracter[0] != ' '){
             caracter[0] = fgetc(fdEntrada);
             if(caracter[0] != ' ' && caracter[0] != '\n'){
@@ -109,9 +110,21 @@ void verificaPesos(FILE * fdEntrada){
     //caracter[0] = fgetc(fdEntrada); //ler a \n sei la
 }
 
+void inicializarPesos(){
+    for (int i = 0; i < 23; i++)
+    {
+        Pesos[i] = 1;
+    }
+    
+}
+
+
 void setar_peso(char* operacao, int peso){
     for (int i = 0; i < 22; i++) {
+        printf("Comparando antes de entrar: %s : %s \n", operacao, nomesOperacoes[i]);
         if (strcmp(operacao, nomesOperacoes[i]) == 0) {
+            printf("Comparação acima correta: %s : %s \n", operacao, nomesOperacoes[i]);
+            printf("Atribui %i", peso);
             Pesos[i] = peso;
         }
     }

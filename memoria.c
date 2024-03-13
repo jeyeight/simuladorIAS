@@ -101,6 +101,7 @@ opc converterInstrucao(char inputEsq[], char inputDir[], short* endereco){
     }else{
         printf("%i", (int)opcode);
         perror("Operação não suportada");
+        printf("%s", inputEsq);
         exit(1);
     }
 
