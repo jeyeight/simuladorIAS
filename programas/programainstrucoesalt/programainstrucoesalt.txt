@@ -1,0 +1,25 @@
+LOAD –M(X)//
+LOAD |M(X)|//
+LOAD -|M(X)|//
+ADD |M(X)|
+SUB |M(X)| 
+
+
+X -> Número 1
+Y -> Número 2
+2*(-X)
+(|Y|)/2
+3X - Y/2
+
+LOAD -M(0)
+LSH 
+STOR M(2)
+LOAD| M(1)
+RSH
+STOR M(3)
+LOAD-| M(2) 
+ADD| M(0)
+SUB| M(2)
+STOR M(4)
+
+

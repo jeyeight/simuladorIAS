@@ -239,7 +239,7 @@ bool isNegativeChar(unsigned char c) {
 }
 
 unsigned long long int modulo(unsigned long long int n){
-    return n &= QUADRAGESIMO_BIT;
+    return n &= (QUADRAGESIMO_BIT -1);
 }
 
 unsigned short enderecoParaShort(unsigned char endereco[]){

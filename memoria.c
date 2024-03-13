@@ -99,9 +99,10 @@ opc converterInstrucao(char inputEsq[], char inputDir[], short* endereco){
     }else if(strcmp(inputEsq, "EXIT") == 0){
         opcode = (opc)OPC_EXIT;
     }else{
-        printf("%i", (int)opcode);
+        printf("AQUI O OPCODE:%i\n", (int)opcode);
         perror("Operação não suportada");
-        printf("%s", inputEsq);
+        printf("ESQ:%s\n", inputEsq);
+        printf("DIR:%s\n", inputDir);
         exit(1);
     }
 
