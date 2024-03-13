@@ -19,7 +19,7 @@ RSH: 75
 STORM: 100
 EXIT: 1
 */
-1
+10
 2
 3
 4
@@ -31,6 +31,7 @@ EXIT: 1
 6
 10
 LOAD M(0)
+STOR M(501,28:39)
 ADD M(1)  
 STOR M(0) 
 EXIT

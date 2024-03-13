@@ -14,6 +14,7 @@ int statusB = Vazio; // tem q ter 3, vazio, finalizado, fazendo.
 int statusD = Vazio; //tecnicamente, o fazendo estaria apenas no
 int statusBO = Vazio;
 int statusEX = Vazio;
+int clkTemp;
 int statusER = Vazio;
 bool newInstruction = true;
 bool isExit = false;
@@ -27,15 +28,17 @@ void inicializarProcessador(){
 void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
     unsigned long long int acumulador;
     unsigned long long int memoria;
-    int clkTemp;
     if(!get_flag_clk()) {
         clkTemp = cpu_clk;
         set_flag_clk(true);
+        printf("clkTemp virou o %i\n", clkTemp);
     }
 
     int Peso = fornecerPeso(Operacao);
-
-    if((cpu_clk - clkTemp) >= Peso){
+    printf("Peso = %i, clkTemp = %i, cpu_clock = %i\n", Peso, clkTemp, cpu_clk);
+    if((cpu_clk - clkTemp) >= (Peso-1)){
+        clkTemp = 0;
+        printf("Entramos para Executar! \ncpu_clock = %i e clkTemp = %i\n", cpu_clk, clkTemp);
         set_flag_clk(false);
         switch (Operacao){
             case ADD:
