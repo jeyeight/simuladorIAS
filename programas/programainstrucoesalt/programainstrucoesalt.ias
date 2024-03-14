@@ -22,12 +22,13 @@ EXIT: 1
 2
 4
 LOAD- M(0)
-LSH 
+LSH
 STOR M(2)
 LOAD |M(1)|
 RSH
 STOR M(3)
-LOAD- |M(2)| 
+LOAD- |M(2)|
 ADD |M(0)|
 SUB |M(2)|
 STOR M(4)
+EXIT

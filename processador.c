@@ -88,12 +88,13 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 if(statusER == Finalizado || statusER == Vazio) ex_er.classe = EscritaRegistrador;
                 break;
             case ADDModulo:
-                               printf("Entrando no add!\n");
+                printf("Entrando no add!\n");
                 printf("%i - Peso ADD", Pesos[ADD]);
                 //exit(1);
 
                 acumulador = registradorParaInteiro(BR.AC, false, -1);
                 
+
                 if(isNegativeULL(acumulador)){
                     negativeOP1 = true;
                     acumulador &= (QUADRAGESIMO_BIT-1);
@@ -103,15 +104,15 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                     negOP1 = acumulador;
                 }
 
-                if(isNegativeULL(Operando1)){
-                    negativeOP2 = true;
-                    Operando1 &= (QUADRAGESIMO_BIT-1);
-                    negOP2 = Operando1;
-                    negOP2 = -negOP2;
-                }
-                else{
-                    negOP2 = Operando1;
-                }
+                // if(isNegativeULL(Operando1)){
+                //     negativeOP2 = true;
+                //     Operando1 &= (QUADRAGESIMO_BIT-1);
+                //     negOP2 = Operando1;
+                //     negOP2 = -negOP2;
+                // }
+                // else{
+                negOP2 = Operando1;
+                //}
                 
                 negOP1 += modulo(negOP2);
                 if(negOP1 < 0){
@@ -122,12 +123,12 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 else{
                     acumulador = negOP1;
                 }
-
+                //printf("SAIDA : %llu\n", acumulador);
+                //exit(1);
                 //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
                 if(statusER == Finalizado || statusER == Vazio)  transferirRR(ex_er.reg1, BR.AC);
                 if(statusER == Finalizado || statusER == Vazio) inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
                 if(statusER == Finalizado || statusER == Vazio) ex_er.classe = EscritaRegistrador;
-                break;
                 break;
             case SUB:
                 acumulador = registradorParaInteiro(BR.AC, false, -1);
@@ -167,7 +168,132 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 break;
             case SUBModulo:
                 acumulador = registradorParaInteiro(BR.AC, false, -1);
+                // printf("Operando1 Antes - %lld\n", Operando1);
+                // printf("Acumulador Antes - %lld\n", acumulador);
                 
+                if(isNegativeULL(acumulador)){
+                    negativeOP1 = true;
+                    acumulador &= (QUADRAGESIMO_BIT-1);
+                    
+                    negOP1 = acumulador;
+                    //printf("neg op 1 %lld agr \n", negOP1);
+                    negOP1 = -negOP1;
+                    //printf("neg op 1 %lld dps \n", negOP1);
+                }else{
+                    negOP1 = acumulador;
+                }
+
+                // if(isNegativeULL(Operando1)){
+                //     negativeOP2 = true;
+                //     Operando1 &= (QUADRAGESIMO_BIT-1);
+                //     negOP2 = Operando1;
+                //     negOP2 = -negOP2;
+                // }
+                // else{
+                //     negOP2 = Operando1;
+                // }
+                negOP2 = Operando1;
+                //printf("negop1 = %lld", negOP1);
+                //printf("negop2 = %lld", modulo(negOP2));
+                negOP1 -= modulo(negOP2);
+                if(negOP1 < 0){
+                    negOP1 = -negOP1;
+                    acumulador = negOP1;
+                    acumulador |= QUADRAGESIMO_BIT;
+                }
+                else{
+                    acumulador = negOP1;
+                }
+                //printf("Acumulador depois - %lld\n", acumulador);
+                //exit(1);
+
+                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+                if(statusER == Finalizado || statusER == Vazio)  transferirRR(ex_er.reg1, BR.AC);
+                if(statusER == Finalizado || statusER == Vazio) inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
+                if(statusER == Finalizado || statusER == Vazio) ex_er.classe = EscritaRegistrador;
+                break;
+            case MUL:
+                bool acIsNegative = false;
+                bool mqIsNegative = false;
+                unsigned long long int Mq = registradorParaInteiro(BR.MQ, false, -1);
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
+                if(isNegativeULL(Mq)){
+                    negativeOP1 = true;
+                    Mq &= (QUADRAGESIMO_BIT-1);
+                    negOP1 = Mq;
+                    negOP1 = -negOP1;
+                    printf("negOP1 - %lld\n", negOP1);
+                    //exit(1);
+                }else{
+                    negOP1 = Mq;
+                }
+
+                if(isNegativeULL(Operando1)){
+                    negativeOP2 = true;
+                    Operando1 &= (QUADRAGESIMO_BIT-1);
+                    negOP2 = Operando1;
+                    negOP2 = -negOP2;
+                }
+                else{
+                    negOP2 = Operando1;
+                }
+
+                printf("%lld - negop2\n", negOP2);
+                negOP1 = negOP1 * negOP2;
+                printf("%lld - negop1 depois\n", negOP1);
+                //exit(1);
+
+
+                if(negOP1 < 0){
+                    if(-negOP1 > LIMITE_39_BITS){
+                        printf("passou");
+                        //exit(1);
+                        acIsNegative = true;
+                    }
+                    else{
+                        mqIsNegative = true;
+                    }
+                    negOP1 = -negOP1;
+                    acumulador = negOP1;
+                    //acumulador |= QUADRAGESIMO_BIT;
+                }
+                else{
+                    acumulador = negOP1;
+                }
+
+                //acumulador = Mq * Operando1;
+
+                if(acIsNegative || mqIsNegative){
+                    if(acIsNegative){
+                        unsigned long long int temporario = acumulador >> 40;
+                        temporario |= QUADRAGESIMO_BIT;
+                        inteiroParaRegistrador(temporario,ex_er.reg1, false, -1);
+                        acumulador &= FULL_BYTE;
+                        inteiroParaRegistrador(acumulador,ex_er.reg2, false, -1);
+                        //acumulador |= QUADRAGESIMO_BIT;
+
+                    }
+                    else{
+                        inteiroParaRegistrador(0, ex_er.reg1, false, -1);
+                        acumulador |= QUADRAGESIMO_BIT;
+                        inteiroParaRegistrador(acumulador,ex_er.reg2, false, -1);
+
+
+                    }
+                    // Mq = acumulador - LIMITE_39_BITS;
+                    // acumulador = LIMITE_39_BITS;
+                }else{
+                    inteiroParaRegistrador(0, ex_er.reg1, false, -1);
+                    inteiroParaRegistrador(acumulador,ex_er.reg2, false, -1);
+                }
+                //inteiroParaRegistrador(Mq, BR.MQ, false, -1);
+                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
+                ex_er.classe = EscritaDoisRegistradores;
+                break;
+            case DIV:
+                long long int resultado = 0;
+                long long int resto = 0;
+                acumulador = registradorParaInteiro(BR.AC, false, -1);
                 if(isNegativeULL(acumulador)){
                     negativeOP1 = true;
                     acumulador &= (QUADRAGESIMO_BIT-1);
@@ -186,46 +312,25 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 else{
                     negOP2 = Operando1;
                 }
-                negOP1 -= modulo(negOP2);
-                if(negOP1 < 0){
-                    negOP1 = -negOP1;
-                    acumulador = negOP1;
-                    acumulador |= QUADRAGESIMO_BIT;
+                resultado = (negOP1 / negOP2);
+                resto = (negOP1 % negOP2);
+                if(resultado < 0){
+                    resultado = -resultado;
+                    resultado |= QUADRAGESIMO_BIT;
                 }
                 else{
-                    acumulador = negOP1;
+                    //mq = resultado;
+                }
+                if(resto < 0){
+                    resto = -resto;
+                    resto |= QUADRAGESIMO_BIT;
                 }
 
-                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
-                if(statusER == Finalizado || statusER == Vazio)  transferirRR(ex_er.reg1, BR.AC);
-                if(statusER == Finalizado || statusER == Vazio) inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
-                if(statusER == Finalizado || statusER == Vazio) ex_er.classe = EscritaRegistrador;
-                break;
-            case MUL:
-                unsigned long long int Mq = registradorParaInteiro(BR.MQ, false, -1);
-                acumulador = registradorParaInteiro(BR.AC, false, -1);
-                acumulador = Mq * Operando1;
-                if(acumulador > LIMITE_39_BITS){
-                    unsigned long long int temporario = acumulador >> 40;
-                    inteiroParaRegistrador(temporario,ex_er.reg1, false, -1);
-                    acumulador &= FULL_BYTE;
-                    // Mq = acumulador - LIMITE_39_BITS;
-                    // acumulador = LIMITE_39_BITS;
-                }else{
-                    inteiroParaRegistrador(0, ex_er.reg1, false, -1);
-                }
-                inteiroParaRegistrador(acumulador,ex_er.reg2, false, -1);
-                //inteiroParaRegistrador(Mq, BR.MQ, false, -1);
-                //inteiroParaRegistrador(acumulador, BR.AC, false, -1);
-                ex_er.classe = EscritaDoisRegistradores;
-                break;
-            case DIV:
                 long long int mq = registradorParaInteiro(BR.MQ, false, -1);
-                acumulador = registradorParaInteiro(BR.AC, false, -1);
-                mq = (acumulador / Operando1);
-                acumulador = (acumulador % Operando1);
-                inteiroParaRegistrador(mq, ex_er.reg2, false, -1);
-                inteiroParaRegistrador(acumulador, ex_er.reg1, false, -1);
+                //mq = (acumulador / Operando1);
+                //acumulador = (acumulador % Operando1);
+                inteiroParaRegistrador(resultado, ex_er.reg2, false, -1);
+                inteiroParaRegistrador(resto, ex_er.reg1, false, -1);
                 ex_er.classe = EscritaDoisRegistradores;
                 break;
             case LSH:
@@ -233,6 +338,7 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 printf("VALOR ANTES DO SHIFT - %i", acumulador);
                 acumulador <<= 1;
                 printf("VALOR SHIFTADO - %i", acumulador);
+                //exit(1);
                 //inteiroParaRegistrador(acumulador, BR.AC, false, -1);  
                 transferirRR(ex_er.reg1, BR.AC);
                 inteiroParaRegistrador(acumulador, ex_er.dado, false, -1);
@@ -304,7 +410,11 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
             case LOADMenos:
                 //transferirMR(BR.AC, m, Operando1);
                 //BR.AC[0] ^= PRIMEIRO_BIT;
+                //unsigned long long int mascara = 1 << 39;
+                //printf("%lld operando antes\n", Operando1);
                 Operando1 ^= QUADRAGESIMO_BIT;
+                //printf("%lld operando depois\n", Operando1);
+                //exit(1);
                 transferirRR(ex_er.reg1, BR.AC);
                 inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
                 ex_er.classe = EscritaRegistrador;
@@ -312,14 +422,24 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
             case LOADModulo:
                 //transferirMR(BR.AC, m, modulo(Operando1));
                 transferirRR(ex_er.reg1, BR.AC);
+                //Operando1 = (QUADRAGESIMO_BIT + 2);
+                printf("Operando 1 Antes - %lld\n", Operando1);
+
+                printf("Operando 1 Depois - %lld\n", modulo(Operando1));
+                //exit(1);
+
                 inteiroParaRegistrador(modulo(Operando1), ex_er.dado, false, -1);
                 ex_er.classe = EscritaRegistrador;
                 break;
             case LOADMenosModulo:
                 //transferirMR(BR.AC, m, modulo(Operando1));
                 //BR.AC[0] ^= PRIMEIRO_BIT;
+                //Operando1 = (QUADRAGESIMO_BIT + 4);
+                //printf("Operando 1 - %lld\n", Operando1);
                 Operando1 = modulo(Operando1);
                 Operando1 ^= QUADRAGESIMO_BIT;
+                //printf("Operando 1 - %lld\n", Operando1);
+                //exit(1);
                 transferirRR(ex_er.reg1, BR.AC);
                 inteiroParaRegistrador(Operando1, ex_er.dado, false, -1);
 
@@ -902,6 +1022,13 @@ void escritaResultados(){
                 setBarramentoDados(valor);
                 setBarramentoEndereco(temp);
                 escreverMemoria(tipo);
+
+                // printf("Fui escrever stor, escrevendo o valor: ");
+                // for (int i = 0; i<5; i++){
+                //    printf("%i\n", valor[i]);
+                // }  
+
+                // exit(1);
 
                 
                 if(elementoNaFila(dependencia_stor, enderecoParaShort(temp))){

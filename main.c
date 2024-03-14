@@ -76,12 +76,25 @@ int main(int argc, char* argv[]){
     inicializarPesos();
     verificaPesos(fdEntrada);
     carregarMemoria(m, fdEntrada, fdSaida);
+    
     //Clocks, Pipeline, PC e UC
     while (!isExit)
     {
         set_flag_pipe(true);
         verificarAcao();
         clockTick();
+        if(isExit){
+            printf("Quero sair, deu exit\n");
+        }
+        // if(cpu_clk > 3000){
+        //     printf("Abortando");
+        //     escreverArquivo(m, fdSaida);
+            
+            
+
+            
+        //     exit(1);
+        // }
     }
     escreverArquivo(m, fdSaida);
 

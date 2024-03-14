@@ -28,7 +28,7 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
 
     converterNumeros(memoria, fdEntrada);
 
-    while(!feof(fdEntrada)){
+    while(!feof(fdEntrada) || !isExit){
         caracter[0] = fgetc(fdEntrada);
         
         while((!isspace(caracter[0])) && (caracter[0] != EOF) && (caracter[0] != '\n')){
@@ -39,12 +39,14 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
         if((strcmp(inputEsq, "LSH") == 0) || (strcmp(inputEsq, "RSH") == 0) || (strcmp(inputEsq, "EXIT") == 0)){
             inputDir[0] = '\0';
             isLshORRsh = true;
+            printf("é exit");
         }
 
         if(feof(fdEntrada)) isExit = true;
         
         if(!isLshORRsh && !isExit){
             caracter[0] = fgetc(fdEntrada);
+            printf("ent n entrei aq");
             while((caracter[0] != '\n') && (isExit == false) && (caracter[0] != -1)){
                 strcat(inputDir, caracter);
                 caracter[0] = fgetc(fdEntrada);
@@ -55,16 +57,21 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
 
         isLshORRsh = false;
 
+        printf("meu inputEsq é %s\n", inputEsq);
+
         opcode = converterInstrucao(inputEsq, inputDir, &endereco);
 
         isLeft = (inputEsqORDir % 2 == 0);
 
         escreveInstrucao(opcode, endereco, isLeft, isExit, memoria);
+        printf("escrevi %i opcode, e %hd endereco\n", opcode, endereco);
 
 
         inputEsq[0] = '\0';
         inputDir[0] = '\0';
         zerarString(inputDir,30);
+        zerarString(inputEsq,30);
+
 
         inputEsqORDir++;
     }
@@ -73,6 +80,7 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
 
 opc converterInstrucao(char inputEsq[], char inputDir[], short* endereco){
     opc opcode;
+    printf("o inputEsq é : %s\n", inputEsq);
 
     if(strcmp(inputEsq, "LOAD") == 0){
         opcode = verificaLoad(inputDir);
