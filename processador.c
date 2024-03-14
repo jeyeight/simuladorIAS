@@ -318,6 +318,14 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 inteiroParaRegistrador(Operando1, ex_er.dado);
                 set_flag_lir(false);
                 flushPipeline();
+                while (!estaVazia(dependencia_stor))
+                {
+                    desenfileirar(dependencia_stor);
+                }
+                while (!estaVazia(dependencia_address))
+                {
+                    desenfileirar(dependencia_address);
+                }
                 set_flag_flush(true);
                 break;
             case JUMPEsq:
@@ -325,6 +333,14 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                 inteiroParaRegistrador(Operando1, ex_er.dado);
                 ex_er.classe = EscritaRegistrador;
                 flushPipeline();
+                while (!estaVazia(dependencia_stor))
+                {
+                    desenfileirar(dependencia_stor);
+                }
+                while (!estaVazia(dependencia_address))
+                {
+                    desenfileirar(dependencia_address);
+                }
                 set_flag_flush(true);
                 break;
             case JUMPPDir:
@@ -335,6 +351,14 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                     inteiroParaRegistrador(Operando1, ex_er.dado);
                     ex_er.classe = EscritaRegistrador;
                     flushPipeline();
+                    while (!estaVazia(dependencia_stor))
+                    {
+                        desenfileirar(dependencia_stor);
+                    }
+                    while (!estaVazia(dependencia_address))
+                    {
+                        desenfileirar(dependencia_address);
+                    }
                     set_flag_flush(true);
                 }
                 else{
@@ -346,6 +370,14 @@ void executaULA(enum Operacoes Operacao, unsigned long long int Operando1){
                     ex_er.classe = EscritaRegistrador;
                     transferirRR(ex_er.reg1, BR.PC);
                     inteiroParaRegistrador(Operando1, ex_er.dado);
+                    while (!estaVazia(dependencia_stor))
+                    {
+                        desenfileirar(dependencia_stor);
+                    }
+                    while (!estaVazia(dependencia_address))
+                    {
+                        desenfileirar(dependencia_address);
+                    }
                     flushPipeline();
                     set_flag_flush(true);
                 }
@@ -693,6 +725,14 @@ void escritaResultados(){
 
                 if(statusB == Travado){
                     flushPipeline();
+                    while (!estaVazia(dependencia_stor))
+                    {
+                        desenfileirar(dependencia_stor);
+                    }
+                    while (!estaVazia(dependencia_address))
+                    {
+                        desenfileirar(dependencia_address);
+                    }
                 }
                 
             }

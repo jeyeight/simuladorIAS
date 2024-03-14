@@ -5,7 +5,7 @@
 #include "headers/uc.h"
 #include "headers/processador.h"
 #include "headers/memoria.h"
-
+#include "headers/fila.h"
 // 0 0 0 0 0 0 0 0    0 0 0 0 0 0 0 0 
 //primeiro - chamar pipeline
 //segundo - chamar escrita_resultados
