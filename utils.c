@@ -17,16 +17,13 @@ void verificaArgumentos(int argc, char* argv[], FILE** fdEntrada, FILE** fdSaida
     char *nomeArquivoEntrada = NULL;
 
     while ((opt = getopt(argc, argv, "p:i:")) != -1) {
-        printf("receba");
         switch (opt) {
             case 'p':
                 nomeArquivoEntrada = optarg;
                 break;
             case 'i':
-                //strcpy((char*)BR.PC, optarg);
-                //printf("%s", optarg);
                 long long int optnovo = atoi(optarg);
-                inteiroParaRegistrador(optnovo, BR.PC, false, -1);
+                inteiroParaRegistrador(optnovo, BR.PC);
                 break;
             default:
                 fprintf(stderr, "Uso: %s -p nomedoarquivodeentrada.ias -i PC\n", argv[0]);
@@ -105,9 +102,8 @@ void verificaPesos(FILE * fdEntrada){
         }
         
     }
-    caracter[0] = fgetc(fdEntrada); //ler novamente o *
-    caracter[0] = fgetc(fdEntrada); //ler a /
-    //caracter[0] = fgetc(fdEntrada); //ler a \n sei la
+    caracter[0] = fgetc(fdEntrada);
+    caracter[0] = fgetc(fdEntrada);
 }
 
 void inicializarPesos(){
@@ -121,37 +117,13 @@ void inicializarPesos(){
 
 void setar_peso(char* operacao, int peso){
     for (int i = 0; i < 22; i++) {
-        printf("Comparando antes de entrar: %s : %s \n", operacao, nomesOperacoes[i]);
         if (strcmp(operacao, nomesOperacoes[i]) == 0) {
-            printf("Comparação acima correta: %s : %s \n", operacao, nomesOperacoes[i]);
-            printf("Atribui %i", peso);
             Pesos[i] = peso;
         }
     }
 }
 
-void printBits(long long int num)
-{
-   for(int bit=0;bit<(int)(sizeof(long long int) * 8); bit++)
-   {
-      printf("%i ", num & 0x01);
-      num = num >> 1;
-   }
-   printf("\n");
-}
-
-void printBitsChar(char num)
-{
-   for(int bit=0;bit<(int)(sizeof(unsigned char) * 8); bit++)
-   {
-      printf("%i ", num & 0x01);
-      num = num >> 1;
-   }
-   printf("\n");
-}
-
 char* itoa(int value, char* result, int base) {
-    // check that the base if valid
     if (base < 2 || base > 36) { *result = '\0'; return result; }
 
     char* ptr = result, *ptr1 = result, tmp_char;
@@ -163,11 +135,9 @@ char* itoa(int value, char* result, int base) {
         *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
     } while ( value );
 
-    // Apply negative sign
     if (tmp_value < 0) *ptr++ = '-';
     *ptr-- = '\0';
   
-    // Reverse the string
     while(ptr1 < ptr) {
         tmp_char = *ptr;
         *ptr--= *ptr1;
@@ -181,8 +151,6 @@ void printaEnderecoMar(){
     endereco |= BR.MAR[3];
     endereco <<= 8;
     endereco |= BR.MAR[4];
-
-    printf("endereco bumbumzinho %i\n", endereco);
 }
 
 unsigned long long int registradorParaInteiro(unsigned char valor[5], bool isMemoria, int indiceMemoria){
@@ -215,8 +183,7 @@ unsigned long long int registradorParaInteiro(unsigned char valor[5], bool isMem
     return retorno;
 }
 
-void inteiroParaRegistrador(unsigned long long int numero, unsigned char dado[5], bool isMemoria, int posMemoria){
-    //dado = reg ou dado mesmo! anderson tem dado em casa? :0
+void inteiroParaRegistrador(unsigned long long int numero, unsigned char dado[5]){
     dado[0] = (numero & 0XFF00000000) >>32;
 
     dado[1] = (numero & 0X00FF000000) >> 24;
@@ -320,7 +287,8 @@ int fornecerPeso(enum Operacoes Operacao){
             return Pesos[21];
             break;
         default:
-            exit("Não existe esse peso");
+            perror("Não existe esse peso!");
+            exit(1);
             break;
     };
 };
@@ -333,18 +301,3 @@ bool isNegativeULL(unsigned long long int n){
         return false;
     }
 }
-
-
-
-// bool isNegative(unsigned char* memoria, int number){
-//     long long int linha = 0;
-
-//     linha |= memoria[byte_atual];
-
-//     if((linha >= 128) && (contadorNumeros < quantidade_dados)){
-//             linha -= 128;
-//             return = true;
-//     }else{
-//         return false;
-//     }
-// }

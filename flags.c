@@ -18,6 +18,7 @@ void set_flag_b(bool value) {
 bool get_flag_b() {
     return flags & FLAG_B;
 }
+
 void set_flag_d(bool value) {
     if (value)
     {
@@ -32,6 +33,7 @@ void set_flag_d(bool value) {
 bool get_flag_d() {
     return flags & FLAG_D;
 }
+
 void set_flag_bo(bool value) {
     if (value)
     {
@@ -46,6 +48,7 @@ void set_flag_bo(bool value) {
 bool get_flag_bo() {
     return flags & FLAG_BO;
 }
+
 void set_flag_ex(bool value) {
     if (value)
     {
@@ -60,6 +63,7 @@ void set_flag_ex(bool value) {
 bool get_flag_ex() {
     return flags & FLAG_EX;
 }
+
 void set_flag_er(bool value) {
     if (value)
     {
@@ -76,7 +80,8 @@ bool get_flag_er() {
 }
 
 void set_flag_pipe(bool value) {
-    if (value){
+    if (value)
+    {
         flags |= FLAG_PIPE; 
     }
     else{
@@ -88,7 +93,7 @@ bool get_flag_pipe() {
     return flags & FLAG_PIPE;
 }
 
-void set_flag_lir(bool value) { //left instruction requiredd
+void set_flag_lir(bool value) {
     if (value)
     {
         flags |= FLAG_LIR; 

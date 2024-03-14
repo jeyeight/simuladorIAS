@@ -27,8 +27,8 @@ void execucao();
 void pipeline();
 void avancarPipeline();
 void inicializarProcessador();
-extern int statusB; // tem q ter 3, vazio, finalizado, fazendo. 
-extern int statusD; //tecnicamente, o fazendo estaria apenas no
+extern int statusB;  
+extern int statusD; 
 extern int statusBO;
 extern int statusEX;
 extern int statusER;

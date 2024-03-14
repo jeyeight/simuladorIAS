@@ -10,8 +10,7 @@
 #include "headers/memoria.h" 
 #include "headers/barramento.h"
 
-//Arquivo responsável por fazer a tradução do arquivo de entrada e carregar a memória da máquina 
-void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
+void carregarMemoria(unsigned char* memoria, FILE* fdEntrada){
     char inputEsq[30];
     char inputDir[30];
     char caracter[2];
@@ -39,14 +38,12 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
         if((strcmp(inputEsq, "LSH") == 0) || (strcmp(inputEsq, "RSH") == 0) || (strcmp(inputEsq, "EXIT") == 0)){
             inputDir[0] = '\0';
             isLshORRsh = true;
-            printf("é exit");
         }
 
         if(feof(fdEntrada)) isExit = true;
         
         if(!isLshORRsh && !isExit){
             caracter[0] = fgetc(fdEntrada);
-            printf("ent n entrei aq");
             while((caracter[0] != '\n') && (isExit == false) && (caracter[0] != -1)){
                 strcat(inputDir, caracter);
                 caracter[0] = fgetc(fdEntrada);
@@ -57,15 +54,11 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
 
         isLshORRsh = false;
 
-        printf("meu inputEsq é %s\n", inputEsq);
-
         opcode = converterInstrucao(inputEsq, inputDir, &endereco);
 
         isLeft = (inputEsqORDir % 2 == 0);
 
         escreveInstrucao(opcode, endereco, isLeft, isExit, memoria);
-        printf("escrevi %i opcode, e %hd endereco\n", opcode, endereco);
-
 
         inputEsq[0] = '\0';
         inputDir[0] = '\0';
@@ -75,12 +68,10 @@ void carregarMemoria(unsigned char* memoria, FILE* fdEntrada, FILE* fdSaida){
 
         inputEsqORDir++;
     }
-    //escreverArquivo(memoria, fdSaida);
 }
 
 opc converterInstrucao(char inputEsq[], char inputDir[], short* endereco){
     opc opcode;
-    printf("o inputEsq é : %s\n", inputEsq);
 
     if(strcmp(inputEsq, "LOAD") == 0){
         opcode = verificaLoad(inputDir);
@@ -107,10 +98,7 @@ opc converterInstrucao(char inputEsq[], char inputDir[], short* endereco){
     }else if(strcmp(inputEsq, "EXIT") == 0){
         opcode = (opc)OPC_EXIT;
     }else{
-        printf("AQUI O OPCODE:%i\n", (int)opcode);
         perror("Operação não suportada");
-        printf("ESQ:%s\n", inputEsq);
-        printf("DIR:%s\n", inputDir);
         exit(1);
     }
 
@@ -214,12 +202,9 @@ opc verificaLoad(char inputDir[]){
 opc verificaStor(char inputDir[]){
     opc opcode;
     int contador = 0;
-    printf("VERONA: %s\n", inputDir);
-    while((inputDir[contador] != ',') && (contador <= 8) && (inputDir[contador] != "\n")){ 
+    while((inputDir[contador] != ',') && (contador <= 8) && (inputDir[contador] != '\n')){ 
         contador++;
-        printf("%c - caracter\n", inputDir[contador]);  
     }
-    printf("CONTADORPORRA - %i", contador);
     if(contador > 8){
         opcode = (opc)OPC_STOR; 
     }else{
@@ -401,7 +386,7 @@ void transferirRR(Registrador destino, Registrador origem){
     }
 }
 
-void transferirMR(Registrador destino, Memoria m, unsigned long long int PosicaoInicialMemoria){
+void transferirMR(Memoria m, unsigned long long int PosicaoInicialMemoria){
     Dado linha;
 
     for(int i = 0; i < 5; i++){
@@ -410,20 +395,6 @@ void transferirMR(Registrador destino, Memoria m, unsigned long long int Posicao
     }
     setBarramentoDados(linha);
 }
-void transferirRM(Registrador origem, Memoria destino, int PosicaoMemoria){
-    for(int i = 0; i < 5; i++){
-        destino[PosicaoMemoria] = origem[i];
-        PosicaoMemoria++;
-    }
-    
-}
-void transferirMM(Memoria m, int PosicaoMemoriaSrc, int PosicaoMemoriaDest){
-    for(int i = 0; i < 5; i++){
-        m[PosicaoMemoriaDest] = m[PosicaoMemoriaSrc];
-        PosicaoMemoriaSrc++;
-        PosicaoMemoriaDest++;
-    }
-}
 
 unsigned long long int converteEndereco(Endereco * ender){
     unsigned long long int posicao = 0;
@@ -431,9 +402,7 @@ unsigned long long int converteEndereco(Endereco * ender){
     posicao <<= 8;
     posicao |= *ender[1];
 
-    printf("%lld posicao\n", posicao);
     posicao *= 5;
-    printf("%lld posicao\n", posicao);
 
     return posicao;
 }

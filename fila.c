@@ -1,5 +1,5 @@
 #include "headers/fila.h"
-// Função para criar uma fila vazia
+
 Fila* criarFila() {
     Fila* fila = (Fila*)malloc(sizeof(Fila));
     fila->frente = -1;
@@ -7,34 +7,27 @@ Fila* criarFila() {
     return fila;
 }
 
-// Função para verificar se a fila está vazia
 short estaVazia(Fila* fila) {
     return fila->frente == -1;
 }
 
-// Função para verificar se a fila está cheia
 short estaCheia(Fila* fila) {
     return (fila->tras + 1) % TAMANHO_MAX_FILA == fila->frente;
 }
 
-// Função para enfileirar um elemento
 void enfileirar(Fila* fila, short item) {
     if (estaCheia(fila)) {
-        printf("A fila está cheia!\n");
         return;
     }
     if (estaVazia(fila))
         fila->frente = 0;
     fila->tras = (fila->tras + 1) % TAMANHO_MAX_FILA;
     fila->itens[fila->tras] = item;
-    printf("%d enfileirado na posição %d\n", item, fila->tras);
 }
 
-// Função para desenfileirar um elemento
 short desenfileirar(Fila* fila) {
     short item;
     if (estaVazia(fila)) {
-        printf("A fila está vazia!\n");
         return -1;
     }
     item = fila->itens[fila->frente];
@@ -47,7 +40,6 @@ short desenfileirar(Fila* fila) {
     return item;
 }
 
-// Função para obter o primeiro elemento da fila sem removê-lo
 short primeiroElemento(Fila* fila) {
     if (estaVazia(fila)) {
         printf("A fila está vazia!\n");

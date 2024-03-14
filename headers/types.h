@@ -137,10 +137,10 @@ typedef struct{
 typedef struct{
     opc opc_linha;
     Endereco endereco;
-    Dado dado; //o que irá escrever. 
+    Dado dado;
     enum classesEscritaResultados classe;
     Registrador reg1;
-    Registrador reg2; //será o AC nas operações de MUL e DIV.
+    Registrador reg2;
 }EX_ER;
 
 extern const char *nomesOperacoes[];

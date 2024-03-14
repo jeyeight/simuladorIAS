@@ -52,15 +52,15 @@ const char *nomesOperacoes[] = {
 };
 
 int main(int argc, char* argv[]){
-    inicializarProcessador();
     cpu_clk = 0;
     FILE* fdEntrada = NULL;
     FILE* fdSaida = NULL;
     m = (unsigned char*) malloc(4096 * 5 * sizeof(char));
     unsigned long long int PC = (unsigned long long int)registradorParaInteiro(BR.PC, false, -1);
 
-    setFlagsIniciais();
 
+    inicializarProcessador();
+    setFlagsIniciais();
     verificaArgumentos(argc, argv, &fdEntrada, &fdSaida);
 
     if(PC > 4096){
@@ -75,30 +75,17 @@ int main(int argc, char* argv[]){
 
     inicializarPesos();
     verificaPesos(fdEntrada);
-    carregarMemoria(m, fdEntrada, fdSaida);
+    carregarMemoria(m, fdEntrada);
     
-    //Clocks, Pipeline, PC e UC
     while (!isExit)
     {
         set_flag_pipe(true);
         verificarAcao();
         clockTick();
-        if(isExit){
-            printf("Quero sair, deu exit\n");
-        }
-        // if(cpu_clk > 3000){
-        //     printf("Abortando");
-        //     escreverArquivo(m, fdSaida);
-            
-            
-
-            
-        //     exit(1);
-        // }
     }
     escreverArquivo(m, fdSaida);
 
-    printf("CLOCK:%i\n", cpu_clk);
+    printf("Simulação finalizada ! \nNúmero de Clocks: %llu\n", cpu_clk);
 
     free(m);
     fclose(fdEntrada);
