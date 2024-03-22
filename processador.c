@@ -428,7 +428,7 @@ void busca(){
 
                 }
             }else if(!newInstruction && !temDependencia){ 
-                if((statusD == Finalizado  ||statusD == Vazio) && (statusB != Travado)){
+                if((statusD == Finalizado  || statusD == Vazio) && (statusB != Travado)){
                     statusB = Finalizado;
                 }
             }

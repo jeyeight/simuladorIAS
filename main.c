@@ -83,9 +83,15 @@ int main(int argc, char* argv[]){
         verificarAcao();
         clockTick();
     }
+    
     escreverArquivo(m, fdSaida);
 
     printf("Simulação finalizada ! \nNúmero de Clocks: %llu\n", cpu_clk);
+
+    // for (int i = 0; i < 20480; i++)
+    // {
+    //     printf("%i", m[i]);
+    // }    
 
     free(m);
     fclose(fdEntrada);
