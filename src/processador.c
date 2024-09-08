@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "headers/types.h"
-#include "headers/utils.h"
-#include "headers/fila.h"
-#include "headers/barramento.h"
-#include "headers/memoria.h"
-#include "headers/flags.h"
-#include "headers/uc.h"
-#include "headers/processador.h"
+#include "../headers/types.h"
+#include "../headers/utils.h"
+#include "../headers/fila.h"
+#include "../headers/barramento.h"
+#include "../headers/memoria.h"
+#include "../headers/flags.h"
+#include "../headers/uc.h"
+#include "../headers/processador.h"
 
 int statusB = Vazio;  
 int statusD = Vazio; 

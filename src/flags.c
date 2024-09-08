@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "headers/types.h"
-#include "headers/flags.h"
+#include "../headers/types.h"
+#include "../headers/flags.h"
 
 short flags = 0;
 

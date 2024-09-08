@@ -3,8 +3,8 @@
 #include <string.h>
 #include <getopt.h>
 #include <stdbool.h>
-#include "headers/types.h"
-#include "headers/utils.h"
+#include "../headers/types.h"
+#include "../headers/utils.h"
 
 void zerarString(char string[], int tamanho){
     for(int i = 0; i < tamanho; i++){

@@ -1,4 +1,4 @@
-#include "headers/barramento.h"
+#include "../headers/barramento.h"
 
 void setBarramentoDados(Dado dado){
     for (int i = 0; i < 5; i++){

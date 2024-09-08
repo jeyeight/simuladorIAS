@@ -5,10 +5,10 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <getopt.h>
-#include "headers/types.h"
-#include "headers/utils.h"
-#include "headers/memoria.h" 
-#include "headers/barramento.h"
+#include "../headers/types.h"
+#include "../headers/utils.h"
+#include "../headers/memoria.h" 
+#include "../headers/barramento.h"
 
 void carregarMemoria(unsigned char* memoria, FILE* fdEntrada){
     char inputEsq[30];

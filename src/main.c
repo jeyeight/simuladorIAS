@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "headers/types.h"
-#include "headers/utils.h"
-#include "headers/memoria.h"
-#include "headers/fila.h"
-#include "headers/processador.h"
-#include "headers/barramento.h"
-#include "headers/flags.h"
-#include "headers/uc.h"
+#include "../headers/types.h"
+#include "../headers/utils.h"
+#include "../headers/memoria.h"
+#include "../headers/fila.h"
+#include "../headers/processador.h"
+#include "../headers/barramento.h"
+#include "../headers/flags.h"
+#include "../headers/uc.h"
 
 short enderecoLeft;
 int posicao_memoria = 0;
